@@ -24,23 +24,34 @@ int main()
 	// v.push_back(30);
 	try{
 
-	std::vector<int> v;
+	ft::vector<char> v;
 
-	v.push_back(11);
-	v.push_back(12);
-	v.push_back(13);
-	v.push_back(14);
-	v.push_back(15);
-	v.push_back(16);
+	v.push_back(48);
+	v.push_back(49);
+	v.push_back(50);
+	v.push_back(51);
+	v.push_back(52);
+	v.push_back(53);
+	v.push_back(54);
+	v.push_back(55);
+
+	int i = 5;
+	int *p = &i;
+
+	// ft::vector<int>::iterator it = v.begin();
+	// ft::vector<int>::iterator ite = v.end();
+	// ft::vector<int>::iterator ab;
+
+	// ab = it;
 
 
-	int  *p = v.data();
-	++p;
-	*p = 42;
-	// std::cout << *p << std::endl;
-	// std::vector<int>::iterator it = v.begin();
-	// std::vector<int>::iterator ite = v.end();
+	// std::cout << *ab << "\t" << *ite << "\n";
+	// std::cout << "ab : " << *ab << "\t it : " << *ite << "\n";
 
+
+	// std::cout << *ab <<"\tp: " << *p << "\n****\n";
+	
+	
 	// while (it != ite)
 	// {
 	// 	std::cout << *it << "\n";

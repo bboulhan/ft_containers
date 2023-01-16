@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:12:08 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/09 15:33:56 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/15 16:42:44 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,10 @@ int main()
 	p.push_back(12);
 	p.push_back(13);
 	p.push_back(14);
-	p.push_back(14);
-	p.push_back(14);
-	p.push_back(14);
-	p.push_back(14);
-	p.push_back(14);
-	p.push_back(14);
-	p.push_back(14);
-	p.push_back(14);
 
-	p.resize(4);
-	p.resize(4);
-	
+	p.assign(22, 22);
+	p.clear();
+
 	std::vector<int>::iterator it = p.begin();
 
 	while (it != p.end()){
@@ -46,20 +38,28 @@ int main()
 	std::cout << "---------------------\n";
 	std::cout << p.size() << "\t" << p.capacity() << "\n";
 
-	std::cout << p[5000] << std::endl;
+	}
+	catch(std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
+
 	std::cout << "###################################\n";
-
-
+/***************************************************************************************************************/
+		
+	try{
 	ft::vector<int> a;
 
 	a.push_back(10);
 	a.push_back(11);
 	a.push_back(12);
 	a.push_back(13);
-	a.push_back(13);
-	a.push_back(13);
-	a.push_back(13);
-	a.push_back(13);
+	a.push_back(14);
+	
+
+	a.assign(22, 22);
+	a.clear();
+
+
 
 	// a.resize(4);
 
@@ -70,7 +70,6 @@ int main()
 	std::cout << "---------------------\n";
 	
 	std::cout << a.size() << "\t" << a.capacity() << "\n";
-	std::cout << a[5000] << std::endl;
 	}
 	catch(std::exception &e){
 		std::cout << e.what() << std::endl;

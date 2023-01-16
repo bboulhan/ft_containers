@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/09 16:27:15 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/16 17:54:11 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ namespace ft{
 			typedef typename Alloc::pointer         		pointer;
 			typedef typename Alloc::const_pointer    		const_pointer;
 
-			// typedef ft::vector_iterator<T>               iterator;
+			typedef ft::iterator<T>               			iterator;
 			// typedef ft::vector_iterator<T, true>         const_iterator;
 			// typedef ft::reverse_iterator<iterator>       reverse_iterator;
 			// typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -79,6 +79,26 @@ namespace ft{
 		capacity_v = copy.capacity_v;
 		return (*this);
 	}
+	
+/************************************ Iterators *******************************************************/		
+
+	iterator begin(){
+		if (size_v > 0)
+			return iterator(&container[0]);
+		return iterator();
+	}
+	
+	iterator end(){
+		if (size_v > 0)
+			return iterator(&container[size_v]);
+		return iterator();
+	}
+
+
+
+
+		
+
 		
 /************************************ Modifiers ********************************************/	
 
@@ -121,6 +141,42 @@ namespace ft{
 		}
 	}
 
+	void assign(size_type n, const value_type &val){
+		if (n > max_size())
+			throw std::length_error("vector");
+		if (n <= capacity_v){
+			int i = size_v;
+			while (i--)
+				pop_back();
+			while (++i < n)
+				alloc.construct(container + i, val);
+		}
+		else{
+			alloc.deallocate(container, capacity_v);
+			try{
+				container = alloc.allocate(n);
+				for(int i = 0; i < n; i++){
+					alloc.construct(container + i, val);
+				}
+				capacity_v = n;
+			}
+			catch(...){
+				throw std::bad_alloc();
+			}
+		}
+		size_v = n;
+	}
+
+	void clear(){
+		for(int i = size_v; i > 0;i--){
+			pop_back();
+		}
+		size_v = 0;
+	}
+
+
+
+
 /********************************** Capacity ******************************/
 
 	size_type size() const{
@@ -142,7 +198,7 @@ namespace ft{
 	}
 	
 	void resize(size_type n, value_type val = value_type()){
-		if (n < 0 || n > max_size())
+		if (n > max_size())
 			throw std::length_error("vector");
 		if (n == size_v)
 			return ;
@@ -159,7 +215,7 @@ namespace ft{
 		size_v = n;	
 	}
 	
-	void shrink_to_fit(){
+	/*void shrink_to_fit(){
 		if (size_v == capacity_v)
 			return ;
 		try{
@@ -175,10 +231,10 @@ namespace ft{
 		catch(...){
 			throw std::bad_alloc();
 		}
-	}
+	}*/
 	
 	void reserve(size_type n){
-		if (n > max_size() || n < 0)
+		if (n > max_size())
 			throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
 		if (n <= capacity_v)
 			return ;
@@ -199,32 +255,32 @@ namespace ft{
 	}
 	
 	reference at(size_type n){
-		if (n < 0 || n >= size_v)
+		if (n >= size_v)
 			throw std::out_of_range("vector");
 		return (container[n]);
 	}
 	
-	const_reference at(size_type n) const{
-		if (n < 0 || n >= size_v)
-			throw std::out_of_range("vector");
-		return (container[n]);
-	}
+	// const_reference at(size_type n) const{
+	// 	if (n < 0 || n >= size_v)
+	// 		throw std::out_of_range("vector");
+	// 	return (container[n]);
+	// }
 
 	reference front(){
 		return (container[0]);
 	}
 	
-	const_reference front() const {
-		return (container[0]);
-	}
+	// const_reference front() const {
+	// 	return (container[0]);
+	// }
 
 	reference back(){
 		return (container[size_v - 1]);
 	}
 
-	const_reference back() const{
-		return (container[size_v - 1]);
-	}
+	// const_reference back() const{
+	// 	return (container[size_v - 1]);
+	// }
 
 	value_type *data(){
 		return (container);

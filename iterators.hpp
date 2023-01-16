@@ -1,98 +1,83 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft.hpp                                             :+:      :+:    :+:   */
+/*   iterators.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/16 17:52:53 by bboulhan         ###   ########.fr       */
+/*   Created: 2023/01/15 14:08:26 by bboulhan          #+#    #+#             */
+/*   Updated: 2023/01/16 15:52:10 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_HPP
-# define FT_HPP
+#ifndef ITERATORS_HPP
+# define ITERATORS_HPP
 
 #include <iostream>
-#include <cmath>
+
 
 namespace ft{
 
-	int get_capacity(int x){
-		int a = 0;
-		int y = 0;
-		while (x > 1){
-			y++;
-			a += x % 2;
-			x = x / 2;
-		}
-		if (a > 0)
-			y++;
-		return (pow(2, y));
-	}
-
 	template<class T>
-	class iterator{
-		public:
-			typedef T value_type;
-			typedef T* pointer;
-			typedef T& reference;
-			typedef std::ptrdiff_t difference_type;
-			typedef std::random_access_iterator_tag iterator_category;
-		private:
-			pointer 	ptr;
-		public:
-			iterator() {ptr = NULL;}
-			iterator(const iterator &src){ *this = src;}
-			iterator(pointer container) : ptr(container) {
-			// 	std::cout << *ptr << "\tcontainer : " << *container << "\n";
-			}
-			
-			iterator &operator=(const iterator &op){
-				this->ptr = op.ptr;
-				// std::cout << *ptr << "\t op : " << *op.ptr << "\n";
-				return *this;
-			}
-
-			iterator &operator++(){
-				++ptr;
-				return *this;
-			}
-
-			iterator operator++(int){
-				iterator tmp(*this);
-				++(*this);
-				return tmp;
-			}
-
-			iterator &operator--(){
-				--ptr;
-				return *this;
-			}
-
-			iterator operator--(int){
-				iterator tmp(*this);
-				--(*this);
-				return tmp;
-			}
-			
-			reference operator*(){
-				return *this->ptr;
-			}
-			
-			bool operator!=(const iterator &comp){
-				if (this->ptr != comp.ptr)
-					return true;
-				return false;
-			}
-			
+	class iterators{
 		
+
+
 		
 	};
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
-		
 }
+
+
+
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // namespace ft
 // {
@@ -140,5 +125,3 @@ namespace ft{
 // 			friend bool operator>(const iterator &lhs, const iterator &rhs) { return (lhs._ptr > rhs._ptr); }
 // 			friend bool operator>=(const iterator &lhs, const
 // 	};
-
-#endif

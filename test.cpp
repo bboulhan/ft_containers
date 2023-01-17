@@ -23,34 +23,28 @@ int main()
 	// v.push_back(20);
 	// v.push_back(30);
 	try{
-
-	ft::vector<char> v;
+	
+	std::vector<int> a(3,3);
+	std::vector<int> v(2, 2);
 
 	v.push_back(48);
 	v.push_back(49);
 	v.push_back(50);
 	v.push_back(51);
 	v.push_back(52);
-	v.push_back(53);
-	v.push_back(54);
-	v.push_back(55);
+	a.push_back(11);
+	a.push_back(12);
+	a.push_back(13);
 
-	int i = 5;
-	int *p = &i;
-
-	// ft::vector<int>::iterator it = v.begin();
-	// ft::vector<int>::iterator ite = v.end();
-	// ft::vector<int>::iterator ab;
-
-	// ab = it;
-
-
-	// std::cout << *ab << "\t" << *ite << "\n";
-	// std::cout << "ab : " << *ab << "\t it : " << *ite << "\n";
-
-
-	// std::cout << *ab <<"\tp: " << *p << "\n****\n";
+	std::vector<int>::iterator ab = a.begin();
+	std::vector<int>::iterator abb = a.end();
 	
+	
+	std::vector<int>::iterator it = v.begin();
+	std::vector<int>::iterator ite = v.end();
+	// std::vector<int>::iterator ab;
+
+	v.insert(it, ab, abb);
 	
 	// while (it != ite)
 	// {
@@ -60,6 +54,7 @@ int main()
 
 	for (int i = 0; i < v.size(); i++)
 		std::cout << v[i] << std::endl;
+
 	std::cout << "---------------------\n";
 
 	std::cout << v.size() << "\t capacity : " << v.capacity() << "\n"; 

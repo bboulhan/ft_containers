@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/16 17:52:53 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/17 16:13:51 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,10 @@ namespace ft{
 		public:
 			iterator() {ptr = NULL;}
 			iterator(const iterator &src){ *this = src;}
-			iterator(pointer container) : ptr(container) {
-			// 	std::cout << *ptr << "\tcontainer : " << *container << "\n";
-			}
+			iterator(pointer container) : ptr(container) {}
 			
 			iterator &operator=(const iterator &op){
 				this->ptr = op.ptr;
-				// std::cout << *ptr << "\t op : " << *op.ptr << "\n";
 				return *this;
 			}
 
@@ -79,20 +76,125 @@ namespace ft{
 			reference operator*(){
 				return *this->ptr;
 			}
+
+			pointer operator->(){
+				return this->ptr;
+			}
 			
 			bool operator!=(const iterator &comp){
 				if (this->ptr != comp.ptr)
 					return true;
 				return false;
 			}
+
+			bool operator==(const iterator &comp){
+				if (this->ptr == comp.ptr)
+					return true;
+				return false;
+			}
+
+			bool operator<(const iterator &comp){
+				if (this->ptr < comp.ptr)
+					return true;
+				return false;
+			}
+
+			bool operator>(const iterator &comp){
+				if (this->ptr > comp.ptr)
+					return true;
+				return false;
+			}
+
+			bool operator<=(const iterator &comp){
+				if (this->ptr <= comp.ptr)
+					return true;
+				return false;
+			}
+
+			bool operator>=(const iterator &comp){
+				if (this->ptr >= comp.ptr)
+					return true;
+				return false;
+			}
+
+			iterator operator+(difference_type n){
+				return iterator(this->ptr + n);
+			}
+
+			iterator operator-(difference_type n){
+				return iterator(this->ptr - n);
+			}
+
+			iterator &operator+=(difference_type n){
+				this->ptr = this->ptr + n;
+				return *this;
+			}
+			
+			iterator &operator-=(difference_type n){
+				this->ptr = this->ptr - n;
+				return *this;
+			}
+			
+			value_type operator[](difference_type n){
+				return (this->ptr[n]);
+			}
+
+			
+			
 			
 		
 		
 	};
-
 	
 		
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // namespace ft
 // {

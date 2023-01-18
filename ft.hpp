@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/17 16:13:51 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/18 16:53:25 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,23 @@ namespace ft{
 		if (a > 0)
 			y++;
 		return (pow(2, y));
+	}
+
+	template<class T>
+	T *add(T *data, T elem, unsigned int size){
+		std::allocator<T> alloc;
+		T *tmp;
+		if (size == 0){
+			tmp = alloc.allocate(1);
+			alloc.construct(tmp, elem);
+			return tmp;
+		}
+		tmp = alloc.allocate(size + 1);
+		for(unsigned int i = 0; i < size; i++)
+			alloc.construct(tmp + i, data[i]);
+		alloc.construct(tmp + size, elem);
+		alloc.deallocate(data, size);
+		return tmp;
 	}
 
 	template<class T>
@@ -123,6 +140,20 @@ namespace ft{
 
 			iterator operator-(difference_type n){
 				return iterator(this->ptr - n);
+			}
+			
+			difference_type operator-(const iterator &op){
+				difference_type n = 0;
+				pointer p = this->ptr;
+				if (this->ptr < op.ptr){
+					while (p++ != op.ptr)
+						n++;
+				}
+				else{
+					while (p-- != op.ptr)
+						n--;
+				}
+				return n;
 			}
 
 			iterator &operator+=(difference_type n){

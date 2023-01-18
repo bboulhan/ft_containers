@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:12:08 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/17 20:05:04 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/18 20:18:31 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,66 +17,74 @@
 
 int main()
 {
-	// std::vector<int> p;
+	std::vector<int> p(6,4);
 	// p.push_back(10);
 	// p.push_back(11);
 	// p.push_back(12);
 	// p.push_back(13);
 	// p.push_back(13);
 	
-	// try{
-	// std::vector<int> ab;
+	try{
+	std::vector<int> ab(5, 5);
 	// ab.push_back(55);
 	// ab.push_back(56);
 	// ab.push_back(57);
 	// ab.push_back(58);
 	// ab.push_back(59);
 
-	// ab.assign(p.begin(), p.end());
 	
 
-	// std::vector<int>::iterator it = ab.begin();
-	// std::vector<int>::iterator ite = ab.end();
-	
-	// std::cout << it[2] << "\n";
-	
+	std::vector<int>::iterator it = ab.begin();
 
+	ab.insert(it, p.begin(), p.end());
 	
-	// while (it != ite){
-	// 	std::cout << *it << std::endl;
-	// 	it++;
-	// }
+	// it = ab.insert(it, 100);
+	// it = ab.insert(it, 200);
+	// it = ab.insert(it, 300);
+	// it = ab.insert(it, 400);
 	
-	// std::cout << "---------------------\n";
-	// std::cout << ab.size() << "\t" << ab.capacity() << "\n";
+	it = ab.begin();
+	
+	
+	while (it != ab.end()){
+		std::cout << *it << std::endl;
+		it++;
+	}
+	
+	std::cout << "---------------------\n";
+	std::cout << ab.size() << "\t" << ab.capacity() << "\n";
 
-	// }
-	// catch(std::exception &e){
-	// 	std::cout << e.what() << std::endl;
-	// }
+	}
+	catch(std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
 
 	std::cout << "###################################\n";
 /***************************************************************************************************************/
 		
-	try{
-	ft::vector<int> a;
+	/*try{
+	ft::vector<int> a(4,5);
 
-	a.push_back(10);
-	a.push_back(11);
-	a.push_back(12);
-	a.push_back(13);
-	a.push_back(14);
-
+	// a.push_back(55);
+	// a.push_back(56);
+	// a.push_back(57);
+	// a.push_back(58);
+	// a.push_back(59);
+	
 	
 
 	ft::vector<int>::iterator it = a.begin();
 
-	a.insert(it, 100);
-	ft::vector<int>::iterator ab = a.begin();
+	a.insert(it, p.begin(), p.end());
+	
+	// a.insert(it, 100);
+	// a.insert(it, 200);
+	// it = a.insert(it, 300);
+	// it = a.insert(it, 400);
+	
+	it = a.begin();
 
-	ft::vector<int>::iterator ite = a.end();
-
-	while (ab != ite){
+	while (it != a.end()){
 		std::cout << *it << std::endl;
 		it++;
 	}
@@ -94,5 +102,5 @@ int main()
 	catch(std::exception &e){
 		std::cout << e.what() << std::endl;
 	}		
-	// system("leaks a.out");
+	// system("leaks a.out");*/
 }

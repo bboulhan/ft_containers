@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/17 20:04:08 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/18 18:40:23 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,34 +101,35 @@ namespace ft{
 		
 /************************************ Modifiers ********************************************/
 
-	iterator insert(iterator pos, const value_type &val){
-		iterator it = begin();
-		if (size_v == capacity_v){
-			value_type *tmp;
-			tmp = alloc.allocate(capacity_v + 1);
-			size_v++;
-			for(int i = 0; i < size_v; i++){
-				if (it == pos)
-					alloc.construct(container + i, val);	
-				alloc.construct(container + i, *it);
-				it++;
-			}
-			alloc.deallocate(container, capacity_v);
-			container = tmp;
-			capacity_v++;
-		}
-		else{
-			vector tmp;
-			for(iterator it = begin(); it != pos; it++)
-				tmp.push_back(*it);
-			tmp.push_back(val);
-			for(iterator it = pos; it != end(); it++)
-				tmp.push_back(*it);
-			clear();
-			alloc.deallocate(container, capacity_v);
-			*this = tmp;
-		}
-		return  pos;
+	void insert(iterator pos, const value_type &val){
+		vector tmp(1, val);
+		
+		insert(pos, tmp.begin(), tmp.end());
+		
+		// for(iterator it = begin(); it != end();it++)
+		// 	std::cout << *it << "\n";
+		std::cout << "hey\n";
+		// int n = pos - this->begin();
+		// if (n < 0)
+		// 	n *= -1;
+		// std::cout << n << "\t *n : " << container[n - 1] << "\n";
+		// return iterator(&container[n - 1]);
+	}
+
+	template<class inIter>
+	void insert(iterator pos, inIter first, inIter last){
+		vector tmp;
+		tmp.container = alloc.allocate(capacity_v);
+		tmp.capacity_v = capacity_v;
+		for(iterator it = begin(); it != pos; it++)
+			tmp.push_back(*it);
+		for(inIter it = first; it != last; it++)
+			tmp.push_back(*it);
+		for(iterator it = pos; it != end(); it++)
+			tmp.push_back(*it);
+		clear();
+		alloc.deallocate(container, capacity_v);
+		*this = tmp;
 	}
 	
 

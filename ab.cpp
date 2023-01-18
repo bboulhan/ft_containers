@@ -1,49 +1,68 @@
 #include <iostream>
+// #include "ft.hpp"
+// namespace ft{
+// 	int i = 0;
+// 	void print(){
+// 		std::cout << "hello there\n";
+// 	}
+// 	template <class T>
+// 	T sum(T a, T b){
+// 		return a + b;
+// 	}
+// }
 
-namespace ft{
-	int i = 0;
-	void print(){
-		std::cout << "hello there\n";
-	}
-	template <class T>
-	T sum(T a, T b){
-		return a + b;
-	}
-}
+// void f(){
+// 	int *c = new int[10];
+// 	std::cout << "hey\n";
+// 		throw "execption";
+// }
 
-void f(){
-	int *c = new int[10];
-	std::cout << "hey\n";
-		throw "execption";
-}
+	template<class T>
+	T *add(T *data, T elem, unsigned int size){
+		std::cout << "hey\n";
+		std::allocator<T> alloc;
+		T *tmp;
+		tmp = alloc.allocate(size + 1);
+		for(unsigned int i = 0; i < size; i++)
+			alloc.construct(tmp + i, data[i]);
+		alloc.construct(tmp + size, elem);
+		alloc.deallocate(data, size);
+		return tmp;
+	}
+
 
 
 int main()
 {
-	std::allocator<char> ibra;
+	std::allocator<int> ibra;
 
-	char *arr = ibra.allocate(6);
+	int *arr = ibra.allocate(6);
 
-	for(int  i = 0; i < 5;i++){
+	for(int  i = 0; i < 6;i++){
 		ibra.construct(arr + i, i + 48);
 		std::cout << arr[i] << "\n";
 	}
-	ibra.construct(arr + 5, 0);
-	ibra.destroy(arr);
-	ibra.deallocate(arr, 6);
-	char *str = ibra.allocate(6);
-	strcpy(str, "hello");
-	
 	std::cout << "--------\n";
-	void *p = &arr[0];
-	void *d = &str[0];
+
+	arr = add(arr, 222, 6);
+
+	for(int i = 0;i < 7; i++){
+		std::cout << arr[i] << "\n";
+	}
+
+/**********************************/
+
+	// int *arr = new int[6];
+	// for(int i = 0;i < 6;i++)
+	// 	arr[i] = (i + 1) * 10;
 	
-	std::cout << arr << "\t" << p << "\n";
-	std::cout << str << "\t" << d << "\n";
+	// arr = ad(arr, 555, 6);
+
+	// for(int i = 0;i < 7; i++){
+	// 		std::cout << arr[i] << "\n";
+	// }
+
 
 	// system("leaks a.out");
-	// for(int i = 0;i < 5; i++){
-	// 	std::cout << arr[i] << "\n";
-	// }
 
 }

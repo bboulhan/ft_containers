@@ -24,7 +24,6 @@ int main()
 	// v.push_back(30);
 	try{
 	
-	std::vector<int> a(3,3);
 	std::vector<int> v(2, 2);
 
 	v.push_back(48);
@@ -32,32 +31,44 @@ int main()
 	v.push_back(50);
 	v.push_back(51);
 	v.push_back(52);
-	a.push_back(11);
-	a.push_back(12);
-	a.push_back(13);
 
-	std::vector<int>::iterator ab = a.begin();
-	std::vector<int>::iterator abb = a.end();
 	
+
 	
 	std::vector<int>::iterator it = v.begin();
-	std::vector<int>::iterator ite = v.end();
-	// std::vector<int>::iterator ab;
+	std::vector<int>::iterator ab = it;
 
-	v.insert(it, ab, abb);
-	
-	// while (it != ite)
-	// {
-	// 	std::cout << *it << "\n";
-	// 	it++;
+	// for(int  i = 1; i < 10;i++){
+		// std::cout << "ab : " << *ab  << "\tit : "  << *it <<"\n";
+		// std::cout << "adress ab : " << &(*ab)  << "\tit : "  << &(*it) <<"\n";
+		// std::cout << v.size() << "\t capacity : " << v.capacity() << "\n"; 
+	// v.insert(it, ab, abb);
+	// 	ab = v.insert(it, i*100);
+		// std::cout << "ab : " << *ab  << "\tit : "  << *it <<"\n";
+		// std::cout << "adress ab : " << &(*ab)  << "\tit : "  << &(*it) <<"\n";
 	// }
+	it = v.insert(it, 100);
+	it = v.insert(it, 200);
+	it = v.insert(it, 300);
 
-	for (int i = 0; i < v.size(); i++)
-		std::cout << v[i] << std::endl;
+	char i = v.begin() - v.end() ;
 
+	it = v.begin();
+	
+	
+	while (it != v.end())
+	{
+		std::cout << *it << "\t adrees "  << &(*it)<< "\n";
+		it++;
+	}
 	std::cout << "---------------------\n";
 
+	// for (int i = 0; i < v.size(); i++)
+	// 	std::cout << v[i] << std::endl;
+
+	std::cout << "---------------------\n";
 	std::cout << v.size() << "\t capacity : " << v.capacity() << "\n"; 
+	std::cout << i << "\n";
 	}
 	catch(std::exception &e){
 		std::cout << e.what() << std::endl;

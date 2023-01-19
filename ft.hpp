@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/18 16:53:25 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/19 18:02:21 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <unistd.h>
 
 namespace ft{
 
@@ -46,6 +47,16 @@ namespace ft{
 		alloc.construct(tmp + size, elem);
 		alloc.deallocate(data, size);
 		return tmp;
+	}
+
+	template<class T>
+	T *copycat(T *data, unsigned int size){
+		std::allocator<T> alloc;
+		T *copy_cat;
+		copy_cat = alloc.allocate(size);
+		for (unsigned int i = 0; i < size; i++)
+			alloc.construct(copy_cat + i, data[i]);
+		return copy_cat;		
 	}
 
 	template<class T>
@@ -147,11 +158,11 @@ namespace ft{
 				pointer p = this->ptr;
 				if (this->ptr < op.ptr){
 					while (p++ != op.ptr)
-						n++;
+						n--;
 				}
 				else{
 					while (p-- != op.ptr)
-						n--;
+						n++;
 				}
 				return n;
 			}

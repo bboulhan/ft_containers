@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:12:08 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/18 20:18:31 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/19 19:42:47 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,19 @@
 
 int main()
 {
-	std::vector<int> p(6,4);
-	// p.push_back(10);
-	// p.push_back(11);
-	// p.push_back(12);
+	std::vector<int> p(3,4);
+	p.push_back(10);
+	p.push_back(11);
+	p.push_back(12);
 	// p.push_back(13);
 	// p.push_back(13);
-	
+
+
 	try{
-	std::vector<int> ab(5, 5);
-	// ab.push_back(55);
-	// ab.push_back(56);
-	// ab.push_back(57);
+	std::vector<int> ab(3, 5);
+	ab.push_back(55);
+	ab.push_back(56);
+	ab.push_back(57);
 	// ab.push_back(58);
 	// ab.push_back(59);
 
@@ -36,12 +37,17 @@ int main()
 
 	std::vector<int>::iterator it = ab.begin();
 
-	ab.insert(it, p.begin(), p.end());
+	// ab.insert(it, p.begin(), p.end());
+	// ab.insert(it + 2, 10, 22);
 	
-	// it = ab.insert(it, 100);
-	// it = ab.insert(it, 200);
-	// it = ab.insert(it, 300);
+	it = ab.insert(it +2, 100);
+	it = ab.insert(it + 1, 200);
+	// it = ab.insert(it-3, 300);
 	// it = ab.insert(it, 400);
+	// it = ab.insert(it+ 4 , 500);
+	// it = ab.insert(it, 600);
+	// it = ab.insert(it, 700);
+	
 	
 	it = ab.begin();
 	
@@ -53,7 +59,6 @@ int main()
 	
 	std::cout << "---------------------\n";
 	std::cout << ab.size() << "\t" << ab.capacity() << "\n";
-
 	}
 	catch(std::exception &e){
 		std::cout << e.what() << std::endl;
@@ -63,11 +68,11 @@ int main()
 /***************************************************************************************************************/
 		
 	/*try{
-	ft::vector<int> a(4,5);
+	ft::vector<int> a(3,5);
 
-	// a.push_back(55);
-	// a.push_back(56);
-	// a.push_back(57);
+	a.push_back(55);
+	a.push_back(56);
+	a.push_back(57);
 	// a.push_back(58);
 	// a.push_back(59);
 	
@@ -75,12 +80,16 @@ int main()
 
 	ft::vector<int>::iterator it = a.begin();
 
-	a.insert(it, p.begin(), p.end());
+	// a.insert(it, p.begin(), p.end());
 	
-	// a.insert(it, 100);
-	// a.insert(it, 200);
-	// it = a.insert(it, 300);
+	a.insert(it, 10, 22);
+	// it = a.insert(it + 2, 100);
+	// it = a.insert(it + 1, 200);
+	// it = a.insert(it - 3, 300);
 	// it = a.insert(it, 400);
+	// it = a.insert(it+ 4 , 500);
+	// it = a.insert(it, 600);
+	// it = a.insert(it, 700);
 	
 	it = a.begin();
 
@@ -101,6 +110,6 @@ int main()
 	}
 	catch(std::exception &e){
 		std::cout << e.what() << std::endl;
-	}		
-	// system("leaks a.out");*/
+	}*/
+	// system("leaks a.out");
 }

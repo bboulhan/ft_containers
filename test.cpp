@@ -24,19 +24,19 @@ int main()
 	// v.push_back(30);
 	try{
 	
-	std::vector<int> v(2, 2);
+	std::vector<int> v(5, 2);
 
-	v.push_back(48);
-	v.push_back(49);
-	v.push_back(50);
-	v.push_back(51);
-	v.push_back(52);
+	// v.push_back(48);
+	// v.push_back(49);
+	// v.push_back(50);
+	// v.push_back(51);
+	// v.push_back(52);
 
 	
 
 	
 	std::vector<int>::iterator it = v.begin();
-	std::vector<int>::iterator ab = it;
+	// std::vector<int>::iterator ab = it;
 
 	// for(int  i = 1; i < 10;i++){
 		// std::cout << "ab : " << *ab  << "\tit : "  << *it <<"\n";
@@ -51,7 +51,6 @@ int main()
 	it = v.insert(it, 200);
 	it = v.insert(it, 300);
 
-	char i = v.begin() - v.end() ;
 
 	it = v.begin();
 	
@@ -68,7 +67,6 @@ int main()
 
 	std::cout << "---------------------\n";
 	std::cout << v.size() << "\t capacity : " << v.capacity() << "\n"; 
-	std::cout << i << "\n";
 	}
 	catch(std::exception &e){
 		std::cout << e.what() << std::endl;

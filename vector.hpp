@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/18 18:40:23 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/19 19:44:06 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,11 @@ namespace ft{
 		capacity_v = copy.capacity_v;
 		return (*this);
 	}
+
+	// ~vector(){
+	// 	clear();
+	// 	alloc.deallocate(container, capacity_v);
+	// }
 	
 /************************************ Iterators *******************************************************/		
 
@@ -101,19 +106,37 @@ namespace ft{
 		
 /************************************ Modifiers ********************************************/
 
-	void insert(iterator pos, const value_type &val){
-		vector tmp(1, val);
-		
-		insert(pos, tmp.begin(), tmp.end());
-		
-		// for(iterator it = begin(); it != end();it++)
-		// 	std::cout << *it << "\n";
-		std::cout << "hey\n";
-		// int n = pos - this->begin();
-		// if (n < 0)
-		// 	n *= -1;
-		// std::cout << n << "\t *n : " << container[n - 1] << "\n";
-		// return iterator(&container[n - 1]);
+	void insert(iterator pos, size_type n, const value_type &val){
+		for(size_type i = 0; i < n; i++)
+			pos = insert(pos, val);
+	}
+
+	iterator insert(iterator pos, const value_type &val){
+		if (size_v + 1 <= capacity_v){
+			value_type tmp;
+			size_type n = size_v;
+			for (iterator it = end(); it != pos; it--){
+				alloc.construct(container + n, container[n - 1]);
+				n--;
+			}
+			alloc.construct(container + n, val);
+			size_v++;
+			return pos;
+		}
+		else{
+			value_type *tmp = ft::copycat(container, size_v);
+			size_type n = 0;
+			size_type z = size_v;
+			size_type x = pos - begin();
+			clear();
+			for (size_type i = 0; i < x; i++)
+				push_back(tmp[n++]);
+			push_back(val);
+			for(size_type i = x; i < z; i++)
+				push_back(tmp[n++]);
+			alloc.deallocate(tmp, n - 1);
+			return iterator(&container[x]);
+		}
 	}
 
 	template<class inIter>

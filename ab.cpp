@@ -1,5 +1,7 @@
 #include <iostream>
-// #include "ft.hpp"
+#include "ft.hpp"
+#include "vector.hpp"
+#include <vector>
 // namespace ft{
 // 	int i = 0;
 // 	void print(){
@@ -17,51 +19,24 @@
 // 		throw "execption";
 // }
 
-	template<class T>
-	T *add(T *data, T elem, unsigned int size){
-		std::cout << "hey\n";
-		std::allocator<T> alloc;
-		T *tmp;
-		tmp = alloc.allocate(size + 1);
-		for(unsigned int i = 0; i < size; i++)
-			alloc.construct(tmp + i, data[i]);
-		alloc.construct(tmp + size, elem);
-		alloc.deallocate(data, size);
-		return tmp;
-	}
-
-
 
 int main()
 {
-	std::allocator<int> ibra;
-
-	int *arr = ibra.allocate(6);
-
-	for(int  i = 0; i < 6;i++){
-		ibra.construct(arr + i, i + 48);
-		std::cout << arr[i] << "\n";
-	}
-	std::cout << "--------\n";
-
-	arr = add(arr, 222, 6);
-
-	for(int i = 0;i < 7; i++){
-		std::cout << arr[i] << "\n";
-	}
-
-/**********************************/
-
-	// int *arr = new int[6];
-	// for(int i = 0;i < 6;i++)
-	// 	arr[i] = (i + 1) * 10;
+	std::vector<int> p(5,5);
 	
-	// arr = ad(arr, 555, 6);
+	std::vector<int>::iterator p1 = p.begin();
+	std::vector<int>::iterator p2 = p.end();
+	
+	ft::vector<int>a(5, 5);
 
-	// for(int i = 0;i < 7; i++){
-	// 		std::cout << arr[i] << "\n";
-	// }
+	ft::vector<int>::iterator a1 = a.begin();
+	ft::vector<int>::iterator a2 = a.end();
 
+	int i = p2 -p1;
+	int y = a2 -a1;
+
+	std::cout << "i : " << i << "\n";
+	std::cout << "y : " << y << "\n";
 
 	// system("leaks a.out");
 

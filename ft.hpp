@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/19 18:02:21 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/20 18:26:24 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,17 @@ namespace ft{
 		copy_cat = alloc.allocate(size);
 		for (unsigned int i = 0; i < size; i++)
 			alloc.construct(copy_cat + i, data[i]);
-		return copy_cat;		
+		return copy_cat;
+	}
+
+	template<class T>
+	T *smart_copycat(T *data, int begin, int end){
+		std::allocator<T> alloc;
+		T *Smart_Copycat;
+		Smart_Copycat = alloc.allocator(end - begin);
+		for (int i = begin; i <= end; i++)
+			alloc.construct(Smart_Copycat + i, data[i]);
+		return Smart_Copycat;
 	}
 
 	template<class T>

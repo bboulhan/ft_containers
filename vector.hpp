@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/19 19:44:06 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:21:00 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,13 @@ namespace ft{
 /************************************ Modifiers ********************************************/
 
 	void insert(iterator pos, size_type n, const value_type &val){
+		size_type ps = pos - begin();
+		if (abs(pos - begin()) > size_v)
+			ps = size_v;
+		reserve(size_v + n);
+		iterator it(&container[ps]);
 		for(size_type i = 0; i < n; i++)
-			pos = insert(pos, val);
+			it = insert(it, val);
 	}
 
 	iterator insert(iterator pos, const value_type &val){
@@ -141,7 +146,10 @@ namespace ft{
 
 	template<class inIter>
 	void insert(iterator pos, inIter first, inIter last){
+		size_type n = abs(last - first);
 		vector tmp;
+		if (n >= capacity_v)
+			capacity_v += n;
 		tmp.container = alloc.allocate(capacity_v);
 		tmp.capacity_v = capacity_v;
 		for(iterator it = begin(); it != pos; it++)
@@ -155,8 +163,26 @@ namespace ft{
 		*this = tmp;
 	}
 	
+	iterator erase(iterator pos){
+		value_type *tmp = ft::copycat(container, size_v);
+		size_type n = size_v;
+		size_type ps = pos - begin();
+		clear();
+		for (size_type i = 0; i < n; i++){
+			if (i != ps)
+				push_back(tmp[i]);
+		}
+		alloc.deallocate(tmp, n);
+		return pos;
+	}
 
-
+	iterator erase(iterator first, iterator last){
+		int n = last - first;
+		for (int i = 0; i < n; i++)
+			erase(first);
+		return first;
+	}
+ 
 
 	void pop_back(){
 		alloc.destroy(&container[size_v - 1]);

@@ -18,52 +18,35 @@ class my_allocat : public std::allocator<T>{
 
 int main()
 {
-	// std::vector<int, my_allocat<int> > v(5, 2);
-	// v.push_back(10);
-	// v.push_back(20);
-	// v.push_back(30);
 	try{
 	
-	std::vector<int> v(5, 2);
+	std::vector<int> v(1,1);
 
-	// v.push_back(48);
-	// v.push_back(49);
-	// v.push_back(50);
-	// v.push_back(51);
-	// v.push_back(52);
+	v.push_back(2);
+	v.push_back(3);
+	v.push_back(4);
+	v.push_back(5);
+	v.push_back(6);
+	v.push_back(7);
+	v.push_back(8);
+	v.push_back(9);
 
-	
-
-	
 	std::vector<int>::iterator it = v.begin();
-	// std::vector<int>::iterator ab = it;
-
-	// for(int  i = 1; i < 10;i++){
-		// std::cout << "ab : " << *ab  << "\tit : "  << *it <<"\n";
-		// std::cout << "adress ab : " << &(*ab)  << "\tit : "  << &(*it) <<"\n";
-		// std::cout << v.size() << "\t capacity : " << v.capacity() << "\n"; 
-	// v.insert(it, ab, abb);
-	// 	ab = v.insert(it, i*100);
-		// std::cout << "ab : " << *ab  << "\tit : "  << *it <<"\n";
-		// std::cout << "adress ab : " << &(*ab)  << "\tit : "  << &(*it) <<"\n";
-	// }
-	it = v.insert(it, 100);
-	it = v.insert(it, 200);
-	it = v.insert(it, 300);
-
+	
+	it = v.erase(it + 1);
+	it = v.erase(it + 1);
+	it = v.erase(it + 1, it +3);
+	it = v.erase(it + 1);
 
 	it = v.begin();
-	
-	
+	// std::vector<int>::iterator ab = it;
+
 	while (it != v.end())
 	{
-		std::cout << *it << "\t adrees "  << &(*it)<< "\n";
+		std::cout << *it << "\n";
 		it++;
-	}
-	std::cout << "---------------------\n";
+	};
 
-	// for (int i = 0; i < v.size(); i++)
-	// 	std::cout << v[i] << std::endl;
 
 	std::cout << "---------------------\n";
 	std::cout << v.size() << "\t capacity : " << v.capacity() << "\n"; 

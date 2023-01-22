@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/20 18:26:24 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/22 17:40:24 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <unistd.h>
 
 namespace ft{
+
 
 	int get_capacity(int x){
 		int a = 0;
@@ -69,134 +70,74 @@ namespace ft{
 		return Smart_Copycat;
 	}
 
+
+	
+	// template<class T>
+	// struct is_integral{
+	// 	bool type;
+	// 	is_integral(T value_type){
+	// 		if (value_type == int())
+	// 			type = true;
+	// 		else
+	// 			type = false;
+	// 	}
+	// 	is_integral(T *value_type){
+	// 		if (*value_type == int())
+	// 			type = true;
+	// 		else
+	// 			type = false;
+	// 	}
+		
+	// 	bool operator()(void){
+	// 		if (type == 1)
+	// 			return true;
+	// 		return false;
+	// 	}
+	// };
+
+	template<bool B, class T = void>
+	struct enable_if {};
+
 	template<class T>
-	class iterator{
-		public:
-			typedef T value_type;
-			typedef T* pointer;
-			typedef T& reference;
-			typedef std::ptrdiff_t difference_type;
-			typedef std::random_access_iterator_tag iterator_category;
-		private:
-			pointer 	ptr;
-		public:
-			iterator() {ptr = NULL;}
-			iterator(const iterator &src){ *this = src;}
-			iterator(pointer container) : ptr(container) {}
-			
-			iterator &operator=(const iterator &op){
-				this->ptr = op.ptr;
-				return *this;
-			}
+	struct enable_if<true, T> { typedef T type; };
 
-			iterator &operator++(){
-				++ptr;
-				return *this;
-			}
+	template <typename T>
+	struct is_integral { static const bool value = false; };
 
-			iterator operator++(int){
-				iterator tmp(*this);
-				++(*this);
-				return tmp;
-			}
+	template <>
+	struct is_integral<bool> { static const bool value = true; };
 
-			iterator &operator--(){
-				--ptr;
-				return *this;
-			}
+	template <>
+	struct is_integral<char> { static const bool value = true; };
 
-			iterator operator--(int){
-				iterator tmp(*this);
-				--(*this);
-				return tmp;
-			}
-			
-			reference operator*(){
-				return *this->ptr;
-			}
+	template <>
+	struct is_integral<short> { static const bool value = true; };
 
-			pointer operator->(){
-				return this->ptr;
-			}
-			
-			bool operator!=(const iterator &comp){
-				if (this->ptr != comp.ptr)
-					return true;
-				return false;
-			}
+	template <>
+	struct is_integral<int> { static const bool value = true; };
 
-			bool operator==(const iterator &comp){
-				if (this->ptr == comp.ptr)
-					return true;
-				return false;
-			}
+	template <>
+	struct is_integral<long> { static const bool value = true; };
 
-			bool operator<(const iterator &comp){
-				if (this->ptr < comp.ptr)
-					return true;
-				return false;
-			}
+	template <>
+	struct is_integral<long long> { static const bool value = true; };
 
-			bool operator>(const iterator &comp){
-				if (this->ptr > comp.ptr)
-					return true;
-				return false;
-			}
+	template <>
+	struct is_integral<unsigned char> { static const bool value = true; };
 
-			bool operator<=(const iterator &comp){
-				if (this->ptr <= comp.ptr)
-					return true;
-				return false;
-			}
+	template <>
+	struct is_integral<unsigned short> { static const bool value = true; };
 
-			bool operator>=(const iterator &comp){
-				if (this->ptr >= comp.ptr)
-					return true;
-				return false;
-			}
+	template <>
+	struct is_integral<unsigned int> { static const bool value = true; };
 
-			iterator operator+(difference_type n){
-				return iterator(this->ptr + n);
-			}
+	template <>
+	struct is_integral<unsigned long> { static const bool value = true; };
 
-			iterator operator-(difference_type n){
-				return iterator(this->ptr - n);
-			}
-			
-			difference_type operator-(const iterator &op){
-				difference_type n = 0;
-				pointer p = this->ptr;
-				if (this->ptr < op.ptr){
-					while (p++ != op.ptr)
-						n--;
-				}
-				else{
-					while (p-- != op.ptr)
-						n++;
-				}
-				return n;
-			}
+	template <>
+	struct is_integral<unsigned long long> { static const bool value = true; };
 
-			iterator &operator+=(difference_type n){
-				this->ptr = this->ptr + n;
-				return *this;
-			}
-			
-			iterator &operator-=(difference_type n){
-				this->ptr = this->ptr - n;
-				return *this;
-			}
-			
-			value_type operator[](difference_type n){
-				return (this->ptr[n]);
-			}
 
-			
-			
-			
-		
-		
-	};
 	
 		
 }

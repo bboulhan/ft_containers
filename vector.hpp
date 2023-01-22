@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/20 19:21:00 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/22 17:40:39 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include "ft.hpp"
+#include "utils.hpp"
 
 namespace ft{
 	template <class T, class Alloc = std::allocator<T> >
@@ -145,7 +146,7 @@ namespace ft{
 	}
 
 	template<class inIter>
-	void insert(iterator pos, inIter first, inIter last){
+	void insert(iterator pos, inIter first, inIter last, typename ft::enable_if<!ft::is_integral<inIter>::value>::type* = 0){
 		size_type n = abs(last - first);
 		vector tmp;
 		if (n >= capacity_v)

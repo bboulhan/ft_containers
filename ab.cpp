@@ -19,24 +19,26 @@
 // 		throw "execption";
 // }
 
+template <class T>
+void is_int (T x )
+{
+	
+
+	std::is_integral<T> d;
+	
+	if (d.type == true)
+		std::cout << "integral\n";
+	else
+		std::cout << "is not integral\n";
+};
+
+
 
 int main()
 {
-	std::vector<int> p(5,5);
-	
-	std::vector<int>::iterator p1 = p.begin();
-	std::vector<int>::iterator p2 = p.end();
-	
-	ft::vector<int>a(5, 5);
-
-	ft::vector<int>::iterator a1 = a.begin();
-	ft::vector<int>::iterator a2 = a.end();
-
-	int i = p2 -p1;
-	int y = a2 -a1;
-
-	std::cout << "i : " << i << "\n";
-	std::cout << "y : " << y << "\n";
+	ft::vector<int> a(2,2);
+	ft::vector<int>::iterator it = a.begin();
+	is_int(56);
 
 	// system("leaks a.out");
 

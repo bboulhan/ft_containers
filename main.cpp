@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:12:08 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/20 19:22:08 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/22 17:41:22 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,21 @@
 
 int main()
 {
-	std::vector<int> p(11,4);
-	p.push_back(10);
-	// p.push_back(11);
-	// p.push_back(12);
+	std::vector<int> p;
+	for (int i = 1; i < 10; i++)
+		p.push_back(i);
 	
 	try{
-	std::vector<int> ab(1, 1);
-	ab.push_back(55);
-	ab.push_back(56);
-	ab.push_back(57);
-	ab.push_back(58);
-	ab.push_back(59);
-	ab.push_back(60);
-	ab.push_back(61);
+	std::vector<int> ab;
+	for (int i = 11; i < 20; i++)
+		ab.push_back(i);
 
 	std::vector<int>::iterator it = ab.begin();
 
-	// ab.insert(it, p.begin(), p.end());
+	ab.insert(it, p.begin(), p.end());
 	
-	// ab.insert(it + 2, 10, 22);
+	it = ab.begin();
+	ab.insert(it + 2, 10, 22);
 	
 	// it = ab.insert(it +2, 100);
 	// it = ab.insert(it + 1, 200);
@@ -49,9 +44,9 @@ int main()
 	// it = ab.erase(it);
 	// it = ab.erase(it);
 	// it = ab.erase(it);
-	it = ab.erase(it , it +3);
-	it = ab.erase(it , it +2);
-	it = ab.begin();
+	// it = ab.erase(it , it +3);
+	// it = ab.erase(it , it +2);
+	// it = ab.begin();
 
 
 	// ab.erase(it + 2, ab.end());
@@ -75,15 +70,11 @@ int main()
 /***************************************************************************************************************/
 		
 	try{
-	ft::vector<int> a(1,1);
+	ft::vector<int> a;
 
-	a.push_back(55);
-	a.push_back(56);
-	a.push_back(57);
-	a.push_back(58);
-	a.push_back(59);
-	a.push_back(60);
-	a.push_back(61);
+	for (int i = 11; i < 20; i++)
+		a.push_back(i);
+
 	ft::vector<int>::iterator it = a.begin();
 	
 	// it = a.erase(it +2);
@@ -91,14 +82,15 @@ int main()
 	// it = a.erase(it);
 	// it = a.erase(it);
 	
-	it = a.erase(it , it +3);
-	it = a.erase(it , it +2);
-	it = a.begin();
+	// it = a.erase(it , it +3);
+	// it = a.erase(it , it +2);
+	// it = a.begin();
 
-	// a.insert(it, p.begin(), p.end());
+	a.insert(it, p.begin(), p.end());
+	it = a.begin();
+	a.insert(it + 2, 10, 22);
 	// it = a.insert(it + 2, 100);
 	// it = a.insert(it + 1, 200);
-	// a.insert(it, 12, 22);
 	// it = a.insert(it + 3, 300);
 	// it = a.insert(it, 400);
 	// it = a.insert(it+ 4 , 500);

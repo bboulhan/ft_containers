@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/22 17:40:39 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/23 15:48:38 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,21 @@ namespace ft{
 			throw std::bad_alloc();
 		}
 	}
-	// template <class itr> vector (itr first, itr last, const Alloc& _alloc = Alloc());
+	template <class itr> 
+	vector (itr first, itr last, const Alloc& _alloc = Alloc()){
+		try{
+		size_type n = last - first;
+		size_type i = 0;
+		container = alloc.allocate(n);
+		for(itr it = first; it != last; it++)
+			alloc.construct(container + i++, *it);
+		size_v = n;
+		capacity_v = n;
+		}
+		catch(...){
+			throw std::bad_alloc();
+		}
+	}
 	
 	vector(const vector &copy){
 		container = copy.container;
@@ -282,7 +296,11 @@ namespace ft{
 		size_v = 0;
 	}
 
-
+	void swap(vector &x){
+		vector tmp = *this;
+		*this = x;
+		x = tmp;
+	}
 
 
 /********************************** Capacity ******************************/

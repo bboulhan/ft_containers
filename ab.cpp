@@ -2,44 +2,39 @@
 #include "ft.hpp"
 #include "vector.hpp"
 #include <vector>
-// namespace ft{
-// 	int i = 0;
-// 	void print(){
-// 		std::cout << "hello there\n";
-// 	}
-// 	template <class T>
-// 	T sum(T a, T b){
-// 		return a + b;
-// 	}
-// }
 
-// void f(){
-// 	int *c = new int[10];
-// 	std::cout << "hey\n";
-// 		throw "execption";
-// }
+class person{
+	int age;
+	std::string name;
+	public:
+		person(int age, std::string name){
+			this->age = age;
+			this->name = name;
+		}
+		int getAge(){
+			return (this->age);
+		}
+		std::string getName(){
+			return (this->name);
+		}
+		friend void print(person &p);
 
-template <class T>
-void is_int (T x )
-{
-	
-
-	std::is_integral<T> d;
-	
-	if (d.type == true)
-		std::cout << "integral\n";
-	else
-		std::cout << "is not integral\n";
 };
 
+void print(person &p){
+	p.age = 22;
+	p.name = "frisa";
+	std::cout << "age : " << p.age << std::endl;
+	std::cout << "name : " << p.name << std::endl;
+}
 
 
 int main()
 {
-	ft::vector<int> a(2,2);
-	ft::vector<int>::iterator it = a.begin();
-	is_int(56);
-
+	person ibra(21, "ibra");
+	print(ibra);
+	std::cout << "age : " << ibra.getAge() << std::endl;
+	std::cout << "name : " << ibra.getName() << std::endl;
 	// system("leaks a.out");
 
 }

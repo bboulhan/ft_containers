@@ -5,41 +5,16 @@
 #include "ft.hpp"
 #include "RedBlackTree.hpp"
 
-using namespace std;
-void print2DUtil(node *root , int space)
-{
-    // Base case
-    if (root == NULL)
-        return;
- 
-    // Increase distance between levels
-    space += COUNT;
- 
-    // Process right child first
-    print2DUtil(root->right, space);
- 
-    // Print current node after space
-    // count
- 
-    printf("\n");
-    for (int i = COUNT; i < space; i++)
-        printf(" ");
-    cerr << root->data << endl;
-    // Process left child
-    print2DUtil(root->left, space);
-}
-
-void print2D(node *root)
-{
-   // Pass initial space count as 0
-   print2DUtil(root, 0);
-}
-
-
 
 int main(){
 
 	RedBlackTree tree(50);
+	
+	// for(int i = 1; i <= 50; i++){
+	// 	tree.insert(i);
+	// 	tree.insert(100 - i);
+
+	// }
 	tree.insert(40);
 	tree.insert(30);
 	tree.insert(60);
@@ -50,16 +25,29 @@ int main(){
 	tree.insert(80);
 	tree.insert(51);
 	tree.insert(72);
+	tree.insert(25);
+	tree.insert(22);
+	tree.insert(54);
+	tree.insert(50);
 
+
+
+
+
+	std::cout << "\n";
 	print2D(tree.root);
-	tree.right_rotation(tree.get_root()->right);
-	tree.right_rotation(tree.get_root()->right);
 
-	std::cout << "\n---------------------------------------------\n";
-	print2D(tree.root);
-	print_the_tree(tree.get_root()->right);
-	print_the_tree(tree.get_root()->right->left);
+	// tree.right_rotation(tree.root);
+	// std::cout << "\n---------------------------------------------\n";
+	
+	// print2D(tree.root);
+	// print_the_tree(tree.root);
+	// tree.left_rotation(tree.get_root()->right->left);
 
+	// print2D(tree.root);
+	// std::cout << "\n---------------------------------------------\n";
+	// print_the_tree(tree.get_root()->right->left);
+	// system("leaks a.out");
 
 
 

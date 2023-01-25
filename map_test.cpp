@@ -28,7 +28,6 @@ int main(){
 	tree.insert(25);
 	tree.insert(22);
 	tree.insert(54);
-	tree.insert(50);
 
 
 
@@ -37,11 +36,20 @@ int main(){
 	std::cout << "\n";
 	print2D(tree.root);
 
+	// tree.Delete(22);
+	// tree.Delete(25);
+	// tree.Delete(54);
+	// tree.Delete(80);
+	// tree.Delete(72);
+	// tree.Delete(55);
+
+
 	// tree.right_rotation(tree.root);
-	// std::cout << "\n---------------------------------------------\n";
+	std::cout << "\n---------------------------------------------\n";
 	
+	print_the_tree(tree.min(tree.search(72)));
 	// print2D(tree.root);
-	// print_the_tree(tree.root);
+	// print_the_tree(tree.search(55));
 	// tree.left_rotation(tree.get_root()->right->left);
 
 	// print2D(tree.root);

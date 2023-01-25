@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/25 18:12:52 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/25 22:00:42 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,8 +159,6 @@ class RedBlackTree{
 			}
 		}
 
-		
-
 		void right_rotation(node *tree){
 			node *tmp = NULL;
 			node *parent = NULL;
@@ -238,6 +236,69 @@ class RedBlackTree{
 			}
 			return tmp2;
 		}
+
+		void transplant(node *del, node *tree){
+			if (!del->parent)
+				this->root = tree;
+			else if (del->parent->left == del)
+				del->parent->left = tree;
+			else
+				del->parent->right = tree;
+			if (tree)
+				tree->parent = del->parent;
+		}
+
+		node *search(int data){
+			node *tmp = root;
+			while (tmp && tmp->data != data){
+				if (tmp->data < data)
+					tmp = tmp->right;
+				else
+					tmp = tmp->left;
+			}
+			return tmp;
+		}
+
+		node *min(node *del){
+			node *tmp = del;
+			node *min = tmp;
+			
+			// if (tmp->right)
+			// 	tmp = tmp->right;
+			while (tmp && del->data > tmp->data){
+				min = tmp;
+				if (tmp->left)
+					tmp = tmp->left;
+				else
+					tmp = tmp->right;
+			}
+			return min;
+		}
+
+		void Delete(int data){
+			node *del = search(data);
+			node *child = NULL;
+			if (!del->left && !del->right)
+				transplant(del, NULL);
+			else if (!del->left){
+				child = del->right;
+				transplant(del, del->right);
+			}
+			else if (!del->right){
+				child = del->left;
+				transplant(del, del->left);
+			}
+			else{
+				node *tmp = min(del);
+				transplant(tmp, NULL);
+				tmp->right = tmp
+			}
+			
+			if (del->color == black && child)
+				child->color = black;
+		
+			delete del;
+		}
 		
 		
 	friend void print_the_tree(node *tree);
@@ -248,6 +309,8 @@ class RedBlackTree{
 
 
 	void print_the_tree(node *tree){
+		if (!tree)
+			return;
 		std::cout << "data: " << tree->data << "\tcolor: " << tree->color << std::endl;
 		if (tree->parent)
 			std::cout << "parent data: " << tree->parent->data << "\tparent color: " << tree->parent->color << std::endl;

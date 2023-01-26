@@ -8,47 +8,44 @@
 
 int main(){
 
-	RedBlackTree tree(50);
+	RedBlackTree tree;
 	
-	// for(int i = 1; i <= 50; i++){
-	// 	tree.insert(i);
-	// 	tree.insert(100 - i);
 
-	// }
+	tree.insert(12);
+	tree.insert(15);
+	tree.insert(8);
+	tree.insert(23);
+	tree.insert(13);
+	tree.insert(9);
+	tree.insert(1);
+	tree.insert(10);
 	tree.insert(40);
-	tree.insert(30);
 	tree.insert(60);
-	tree.insert(70);
-	tree.insert(55);
-	tree.insert(58);
-	tree.insert(53);
-	tree.insert(80);
-	tree.insert(51);
-	tree.insert(72);
-	tree.insert(25);
-	tree.insert(22);
-	tree.insert(54);
+	tree.insert(66);
+	tree.insert(7);
+	tree.insert(5);
+
 
 
 
 
 
 	std::cout << "\n";
-	print2D(tree.root);
+	// print2D(tree.root);
 
-	// tree.Delete(22);
-	// tree.Delete(25);
-	// tree.Delete(54);
-	// tree.Delete(80);
-	// tree.Delete(72);
-	// tree.Delete(55);
+
+	
+	std::cout << "\n---------------------------------------------\n";
+
+	tree.Delete(15);
+	// tree.Delete(8);
 
 
 	// tree.right_rotation(tree.root);
 	std::cout << "\n---------------------------------------------\n";
 	
-	print_the_tree(tree.min(tree.search(72)));
-	// print2D(tree.root);
+	// print_the_tree(tree.min(tree.search(72)));
+	print2D(tree.root);
 	// print_the_tree(tree.search(55));
 	// tree.left_rotation(tree.get_root()->right->left);
 

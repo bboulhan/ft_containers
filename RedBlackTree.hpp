@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/26 22:46:01 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/27 19:18:45 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ struct node{
 		left = NULL;
 		parent = NULL;
 	}
+	node() : color(black), right(NULL), left(NULL), parent(NULL) {}
 };
 
 
@@ -57,6 +58,18 @@ void print2D(node *root)
    print2DUtil(root, 0);
 }
 
+void print_the_tree(node *tree){
+		if (!tree)
+			return;
+		std::cout << "data: " << tree->data << "\tcolor: " << tree->color << std::endl;
+		if (tree->parent)
+			std::cout << "parent data: " << tree->parent->data << "\tparent color: " << tree->parent->color << std::endl;
+		if (tree->left)
+			std::cout << "left data: " << tree->left->data << "\tleft color: " << tree->left->color << std::endl;
+		if (tree->right)
+			std::cout << "right data: " << tree->right->data << "\tright color: " << tree->right->color << std::endl;
+}
+
 struct info{
 	node *parent;
 	node *grand_parent;
@@ -73,6 +86,7 @@ class RedBlackTree{
 	public:
 		node *root;
 		friend void print2D(node *root);
+		friend void print_the_tree(node *tree);
 		RedBlackTree(){
 			root = NULL;
 			Nil = NULL;
@@ -265,12 +279,10 @@ class RedBlackTree{
 			
 			if (tmp->right)
 				tmp = tmp->right;
+			max = tmp;
 			while (tmp){
 				max = tmp;
-				if (tmp->left)
-					tmp = tmp->left;
-				else
-					tmp = tmp->right;
+				tmp = tmp->left;
 			}
 			return max;
 		}
@@ -284,19 +296,16 @@ class RedBlackTree{
 			min = tmp;
 			while(tmp){
 				min = tmp;
-				if (tmp->right)
-					tmp = tmp->right;
-				else
-					tmp = tmp->left;
+				tmp = tmp->right;
 			}
 			return min;
 		}
 
 		void Delete(int data){
 			node *del = search(data);
-			node *sibling = NULL;
-			node *original_parent = NULL;
+			node *tmp = min(del);
 			int original_color = 3;
+			bool fake_node = false;
 
 			if (!del->left && !del->right)
 				replace(del, NULL);
@@ -308,18 +317,17 @@ class RedBlackTree{
 				del->left->color = black;
 				replace(del, del->left);
 			}
-			else{				
-				node *tmp = min(del);
-				original_color = tmp->color;
-				if (del->parent){
-					if (tmp->parent->right == tmp)
-						sibling = tmp->parent->left;
-					else
-						sibling = tmp->parent->right;
+			else{
+				node *child = tmp->left;
+				if (!child){
+					child = new node();
+					child->parent = tmp;
+					tmp->left = child;
+					fake_node = true;
 				}
-				if (tmp->parent)
-					original_parent = tmp->parent;
-				replace(tmp, NULL);
+				
+				original_color = tmp->color;
+				replace(tmp, child);
 				tmp->left = del->left;
 				tmp->right = del->right;
 				if (del->left)
@@ -327,57 +335,76 @@ class RedBlackTree{
 				if (del->right)
 					del->right->parent = tmp;
 				replace(del, tmp);
+				if (original_color == black)
+					del_fix(child);
+				else
+					tmp->color = black;
+				if (fake_node == true)
+					clean(child);
 			}
-			print2D(root);
 
-			// std::cout << "sibling data : " << sibling->data << "\n"; 
-			// std::cout << "sibling parent data : " << sibling->parent->data << "\n"; 
-			// std::cout << "original_parent data : " << original_parent->data << "\n";
-			// std::cout << "original parent parent data : " << original_parent->parent->data << "\n";
-			// if (original_parent->right)
-			// 	std::cout << "original parent right : " << original_parent->right->data << "\n";
-			// if (original_parent->left)
-			// 	std::cout << "original parent left : " << original_parent->left->data << "\n";
+			delete del;
+		}
+		
+		void del_fix(node *fix){
+			node *tmp = NULL;
+			node *sibling = NULL;
+
+			if (fix->parent->right == fix)
+				sibling = fix->parent->left;
+			else
+				sibling = fix->parent->right;
 			
+			// print2D(root);
+			// print_the_tree(fix);
+			// print_the_tree(sibling);
 			
-			if (sibling && original_color == black){
-				node *tmp = new node(0);
-				if (sibling->color == red){
+			while (fix->color == black && fix != root){
+				if(sibling && sibling->color == red){
 					sibling->color = black;
 					sibling->parent->color = red;
-					if (sibling->parent->right == sibling){
-						sibling->parent->left = tmp;
-						tmp->parent = sibling->parent;
-						left_rotation(tmp->parent);
-						sibling = tmp->parent->right;
+					left_rotation(fix->parent);
+					sibling = fix->parent->right;
+				}
+				else if (special_case(sibling, fix) == true)
+					fix = fix->parent;
+				else if (sibling && sibling->color == black){
+					if (((sibling->left && sibling->left == black) || !sibling->left) && ((sibling->right && sibling->right == black) || !sibling->right)){
+						if (sibling->left)
+							sibling->left->color = black;
+						sibling->color = red;
+						right_rotation(sibling);
+						sibling = fix->parent->right;
 					}
-					else{
-						sibling->parent->right = tmp;
-						tmp->parent = sibling->parent;
-						right_rotation(tmp->parent);
-						sibling = original_parent->left;
+					else if (sibling->right && sibling->right->color == red){
+						sibling->color = red;
+						fix->parent->color = black;
+						sibling->right->color = black;
+						// print2D(root);
+						left_rotation(fix->parent);
+						fix = root;
 					}
 				}
-				else if (sibling->color == black){
-					if ((sibling->right && sibling->right->color == black) || !sibling->right){
-						if ((sibling->left && sibling->left->color == black) || !sibling->left){
-							sibling->color = red;
-						}
-					}
-				}
-
-
-				
-				clean(tmp);						
 			}
-			// else if (sibling) {
-			// 	sibling->parent->color = black;
-			// }
-		
+			fix->color = black;
+	
 			
 			
-		
-			delete del;
+		}
+ 
+		bool special_case(node *sibling, node *fix){
+			if ((sibling && sibling->color == black) || !sibling)
+			{
+				if ((sibling->right && sibling->right->color == black) || !sibling->right)
+				{
+						if ((sibling->left && sibling->color == black) || !sibling->left){
+							if (sibling)
+								sibling->color = red;
+							return true;
+						}
+				}
+			}
+			return false;
 		}
 		
 		void clean(node *trash){
@@ -389,25 +416,12 @@ class RedBlackTree{
 		}
 		
 		
-	friend void print_the_tree(node *tree);
 };
 
 
 
 
 
-
-	void print_the_tree(node *tree){
-		if (!tree)
-			return;
-		std::cout << "data: " << tree->data << "\tcolor: " << tree->color << std::endl;
-		if (tree->parent)
-			std::cout << "parent data: " << tree->parent->data << "\tparent color: " << tree->parent->color << std::endl;
-		if (tree->left)
-			std::cout << "left data: " << tree->left->data << "\tleft color: " << tree->left->color << std::endl;
-		if (tree->right)
-			std::cout << "right data: " << tree->right->data << "\tright color: " << tree->right->color << std::endl;
-	}
 
 
 

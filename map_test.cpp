@@ -11,7 +11,7 @@ int main(){
 	RedBlackTree tree;
 	
 
-	tree.insert(12);
+	tree.insert(11);
 	tree.insert(15);
 	tree.insert(8);
 	tree.insert(23);
@@ -24,6 +24,7 @@ int main(){
 	tree.insert(66);
 	tree.insert(7);
 	tree.insert(5);
+	tree.insert(12);
 
 
 
@@ -31,14 +32,19 @@ int main(){
 
 
 	std::cout << "\n";
-	// print2D(tree.root);
+	print2D(tree.root);
 
 
 	
 	std::cout << "\n---------------------------------------------\n";
 
+	tree.Delete(40);
+	tree.Delete(8);
 	tree.Delete(15);
-	// tree.Delete(8);
+	tree.Delete(13);
+	tree.Delete(5);
+	tree.Delete(11);
+
 
 
 	// tree.right_rotation(tree.root);

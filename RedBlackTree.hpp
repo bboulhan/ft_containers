@@ -6,98 +6,124 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/27 19:18:45 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/28 23:21:17 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REDBLACKTREE_HPP
 # define REDBLACKTREE_HPP
 
+
 #include <iostream>
 # define black 0
 # define red 1
-
+#define COUNT 10
 // 	COLOR 1 == RED | COLOR 0 = BLACK //
 
+
+template<class T>
 struct node{
-	int data;
+	T data;
 	int color;
-	// info *token;
 	node *parent;
 	node *right;
 	node *left;
-	node(int value) : data(value){
+	node(T value){
+		data = value;
 		color = red;
-		// token = NULL;
 		right = NULL;
 		left = NULL;
 		parent = NULL;
 	}
-	node() : color(black), right(NULL), left(NULL), parent(NULL) {}
-};
-
-
-void print2DUtil(node *root , int space)
-{
-    if (root == NULL)
-        return;
-    space += COUNT;
-    print2DUtil(root->right, space);
-    std::cout << "\n";
-    for (int i = COUNT; i < space; i++)
-        std::cout << " ";
-    if (root->color == 1)
-		std::cerr << "\033[1;31m"<< root->data << "\033[0m\n";
-	else
-		std::cerr << "\033[1;34m"<< root->data << "\033[0m\n";
-    print2DUtil(root->left, space);
-}
-
-void print2D(node *root)
-{
-   print2DUtil(root, 0);
-}
-
-void print_the_tree(node *tree){
-		if (!tree)
-			return;
-		std::cout << "data: " << tree->data << "\tcolor: " << tree->color << std::endl;
-		if (tree->parent)
-			std::cout << "parent data: " << tree->parent->data << "\tparent color: " << tree->parent->color << std::endl;
-		if (tree->left)
-			std::cout << "left data: " << tree->left->data << "\tleft color: " << tree->left->color << std::endl;
-		if (tree->right)
-			std::cout << "right data: " << tree->right->data << "\tright color: " << tree->right->color << std::endl;
-}
-
-struct info{
-	node *parent;
-	node *grand_parent;
-	node *uncle;
-	info(){
-		parent = NULL;
-		grand_parent = NULL;
-		uncle = NULL;
+	node() : color(black), right(NULL), left(NULL), parent(NULL) {
+		data = NULL;
 	}
 };
 
+// template <class T>
+// void print2DUtil(node<T> *root , int space)
+// {
+//     if (root == NULL)
+//         return;
+//     space += COUNT;
+//     print2DUtil(root->right, space);
+//     std::cout << "\n";
+//     for (int i = COUNT; i < space; i++)
+//         std::cout << " ";
+//     if (root->color == 1)
+// 		std::cerr << "\033[1;31m"<< root->data << "\033[0m\n";
+// 	else
+// 		std::cerr << "\033[1;34m"<< root->data << "\033[0m\n";
+//     print2DUtil(root->left, space);
+// }
+
+// template <class T>
+// void print2D(node<T> *root)
+// {
+//    print2DUtil(root, 0);
+// }
+
+	
+	
+	
+
+
+
+// template<>
+// void print_the_tree(node *tree){
+// 	if (!tree)
+// 		return;
+// 	std::cout << "data: " << tree->data << "\tcolor: " << tree->color << std::endl;
+// 	if (tree->parent)
+// 		std::cout << "parent data: " << tree->parent->data << "\tparent color: " << tree->parent->color << std::endl;
+// 	if (tree->left)
+// 		std::cout << "left data: " << tree->left->data << "\tleft color: " << tree->left->color << std::endl;
+// 	if (tree->right)
+// 		std::cout << "right data: " << tree->right->data << "\tright color: " << tree->right->color << std::endl;
+// }
+
+template <class T, class Compare, class Alloc>
 class RedBlackTree{
-	node *Nil;
 	public:
+		typedef node<T> node;
+        typedef Compare value_compare;
+        // typedef Key key_type;
+        typedef T value_type;
+	
 		node *root;
-		friend void print2D(node *root);
-		friend void print_the_tree(node *tree);
+	// private:
+	
+	public:
+	
+		void display(node *tree, int space){		
+			if (root == NULL)
+				return;
+			if (root)
+				std::cout << root->data.first << std::endl;
+			// sleep(1);
+			space += COUNT;
+			display(root->right, space);
+			std::cout << "\n";
+			for (int i = COUNT; i < space; i++)
+				std::cout << " ";
+			if (root && root->color == red)
+				std::cerr << "\033[1;31m"<< root->data.first << "\033[0m\n";
+			else if (root)
+				std::cerr << "\033[1;34m"<< root->data.first << "\033[0m\n";
+			display(root->left, space);
+		}
+		// friend void print2D(node<T> *root);
+		// friend void print_the_tree(node<T> *tree);
 		RedBlackTree(){
 			root = NULL;
-			Nil = NULL;
 		};
-		RedBlackTree(int data){
+		RedBlackTree(T data){
 			root = new node(data);
 			root->color = black;
 		}
 		node *get_root(){return root;}
 		
-		void insert(int data){
+		void insert(T data){
 			node *parent = where(data);
 			if (parent == NULL){
 				root = new node(data);
@@ -114,6 +140,7 @@ class RedBlackTree{
 			
 		}
 		
+
 		void check_violation(node *gay)
 		{
 			if (root == gay && gay->color == red){
@@ -190,7 +217,6 @@ class RedBlackTree{
 			else if (parent)
 				parent->right = child_L;
 			
-			// std::cout << "here\n";
 			if (child_L->right){
 				tmp->left = child_L->right;
 				child_L->right->parent = tmp;
@@ -216,7 +242,6 @@ class RedBlackTree{
 			parent = tree->parent;
 			child_R = tree->right;
 
-
 			if (parent && tmp->data < parent->data)	
 				parent->left = child_R;
 			else if (parent)
@@ -238,7 +263,7 @@ class RedBlackTree{
 		}
 
 		
-		node *where(int data){
+		node *where(T data){
 			node *tmp = root;
 			node *tmp2 = tmp;
 			while (tmp){
@@ -262,7 +287,7 @@ class RedBlackTree{
 				tree->parent = del->parent;
 		}
 
-		node *search(int data){
+		node *search(T data){
 			node *tmp = root;
 			while (tmp && tmp->data != data){
 				if (tmp->data < data)
@@ -301,7 +326,7 @@ class RedBlackTree{
 			return min;
 		}
 
-		void Delete(int data){
+		void Delete(T data){
 			node *del = search(data);
 			node *tmp = min(del);
 			int original_color = 3;
@@ -387,9 +412,6 @@ class RedBlackTree{
 				}
 			}
 			fix->color = black;
-	
-			
-			
 		}
  
 		bool special_case(node *sibling, node *fix){

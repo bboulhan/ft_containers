@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/22 17:40:24 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/28 13:42:29 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,30 +70,85 @@ namespace ft{
 		return Smart_Copycat;
 	}
 
+	template<class InIter1, class InIter2>
+	bool equal(InIter1 first1, InIter1 last1, InIter2 first2){
+		while (first1 != last1){
+			if (*first1 != *first2)
+				return false;
+			first1++;
+			first2++;
+		}
+		return true;
+	}
 
+	template<class InIter1, class InIter2, class binPre>
+	bool equal(InIter1 first1, InIter1 last1, InIter2 first2, binPre pred){
+		while (first1 != last1){
+			if (!pred(*first1, *first2))
+				return false;
+			first1++;
+			first2++;
+		}
+		return true;
+	}
 	
-	// template<class T>
-	// struct is_integral{
-	// 	bool type;
-	// 	is_integral(T value_type){
-	// 		if (value_type == int())
-	// 			type = true;
-	// 		else
-	// 			type = false;
-	// 	}
-	// 	is_integral(T *value_type){
-	// 		if (*value_type == int())
-	// 			type = true;
-	// 		else
-	// 			type = false;
-	// 	}
+	template<class T1, class T2>
+	struct pair{
+		typedef T1 first_type;
+		typedef T2 second_type;
+		T1 first;
+		T2 second;
 		
-	// 	bool operator()(void){
-	// 		if (type == 1)
-	// 			return true;
-	// 		return false;
-	// 	}
-	// };
+		pair(): first(T1()), second(T2()){}
+		pair(const first_type &a, const second_type &b): first(a), second(b){}
+		
+		template<class U, class V>
+		pair(const pair<U, V> &pr): first(pr.first), second(pr.second){}
+		pair &operator=(const pair &pr){
+			first = pr.first;
+			second = pr.second;
+			return *this;
+		}
+	};
+
+	template<class T1, class T2>
+	bool operator==(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs){
+		return (lhs.first == rhs.first && lhs.second == rhs.second);
+	}
+
+	template<class T1, class T2>
+	bool operator!=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs){
+		return !(lhs == rhs);
+	}
+
+	template<class T1, class T2>
+	bool operator<(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs){
+		return (lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second));
+	}
+
+	template<class T1, class T2>
+	bool operator<=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs){
+		return !(rhs < lhs);
+	}
+
+	template<class T1, class T2>
+	bool operator>(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs){
+		return (rhs < lhs);
+	}
+
+	template<class T1, class T2>
+	bool operator>=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs){
+		return !(lhs < rhs);
+	}
+
+	template<class T1, class T2>
+	pair<T1, T2> make_pair(T1 x, T2 y){
+		return (pair<T1, T2>(x, y));
+	}
+	
+	
+	
+
 
 	template<bool B, class T = void>
 	struct enable_if {};

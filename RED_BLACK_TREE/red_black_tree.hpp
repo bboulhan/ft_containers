@@ -1,148 +1,104 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RedBlackTree.hpp                                   :+:      :+:    :+:   */
+/*   red_black_tree.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/30 21:57:35 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/01/29 14:06:52 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REDBLACKTREE_HPP
 # define REDBLACKTREE_HPP
 
-
 #include <iostream>
-#include "ft.hpp"
-#include <unistd.h>
 # define black 0
 # define red 1
 #define COUNT 10
+
 // 	COLOR 1 == RED | COLOR 0 = BLACK //
 
-
-template<class T>
 struct node{
-	T data;
+	int data;
 	int color;
+	// info *token;
 	node *parent;
 	node *right;
 	node *left;
-	node(T value){
-		data = value;
+	node(int value) : data(value){
 		color = red;
+		// token = NULL;
 		right = NULL;
 		left = NULL;
 		parent = NULL;
 	}
-	node() : color(black), right(NULL), left(NULL), parent(NULL) {
+	node() : color(black), right(NULL), left(NULL), parent(NULL) {}
+};
+
+
+void print2DUtil(node *root , int space)
+{
+    if (root == NULL)
+        return;
+    space += COUNT;
+    print2DUtil(root->right, space);
+    std::cout << "\n";
+    for (int i = COUNT; i < space; i++)
+        std::cout << " ";
+    if (root->color == 1)
+		std::cerr << "\033[1;31m"<< root->data << "\033[0m\n";
+	else
+		std::cerr << "\033[1;34m"<< root->data << "\033[0m\n";
+    print2DUtil(root->left, space);
+}
+
+void print2D(node *root)
+{
+   print2DUtil(root, 0);
+}
+
+void print_the_tree(node *tree){
+		if (!tree)
+			return;
+		std::cout << "data: " << tree->data << "\tcolor: " << tree->color << std::endl;
+		if (tree->parent)
+			std::cout << "parent data: " << tree->parent->data << "\tparent color: " << tree->parent->color << std::endl;
+		if (tree->left)
+			std::cout << "left data: " << tree->left->data << "\tleft color: " << tree->left->color << std::endl;
+		if (tree->right)
+			std::cout << "right data: " << tree->right->data << "\tright color: " << tree->right->color << std::endl;
+}
+
+struct info{
+	node *parent;
+	node *grand_parent;
+	node *uncle;
+	info(){
+		parent = NULL;
+		grand_parent = NULL;
+		uncle = NULL;
 	}
 };
 
-// template <class T>
-// void print2DUtil(node<T> *root , int space)
-// {
-//     if (root == NULL)
-//         return;
-//     space += COUNT;
-//     print2DUtil(root->right, space);
-//     std::cout << "\n";
-//     for (int i = COUNT; i < space; i++)
-//         std::cout << " ";
-//     if (root->color == 1)
-// 		std::cerr << "\033[1;31m"<< root->data << "\033[0m\n";
-// 	else
-// 		std::cerr << "\033[1;34m"<< root->data << "\033[0m\n";
-//     print2DUtil(root->left, space);
-// }
-
-// template <class T>
-// void print2D(node<T> *root)
-// {
-//    print2DUtil(root, 0);
-// }
-
-
-template <class T, class Compare, class Alloc>
 class RedBlackTree{
+	node *Nil;
 	public:
-		typedef node<T> node;
-        typedef Compare value_compare;
-        // typedef Key key_type;
-        typedef T value_type;
-	
 		node *root;
-		std::allocator <node> alloc;
-	// private:
-	
-	public:
-
-	
-		void display(node *root, int space){		
-			if (root == NULL)
-				return;
-			// std::cout << root->data.first << std::endl;
-			space += COUNT;
-			display(root->right, space);
-			std::cout << "\n";
-			for (int i = COUNT; i < space; i++)
-				std::cout << " ";
-			usleep(1000);
-			if (root->color == red)
-				std::cerr << "\033[1;31m"<< root->data.first << " " << root->data.second << "\033[0m\n";
-			else
-				std::cerr << "\033[1;34m"<< root->data.first << " " << root->data.second << "\033[0m\n";
-			display(root->left, space);
-		}
-
-		void display_data(node *tree){
-			if (tree == NULL)
-				return;
-			std::cout << "first : " <<tree->data.first << "\tsecond : " << tree->data.second << std::endl;
-			if (tree->parent)
-				std::cout << "parent first : " <<tree->parent->data.first << "\tparent second : " << tree->parent->data.second << std::endl;
-			if (tree->left)
-				std::cout << "left first : " <<tree->left->data.first << "\tleft second : " << tree->left->data.second << std::endl;
-			if (tree->right)
-				std::cout << "right first : " <<tree->right->data.first << "\tright second : " << tree->right->data.second << std::endl;
-		}
-
+		friend void print2D(node *root);
+		friend void print_the_tree(node *tree);
 		RedBlackTree(){
 			root = NULL;
+			Nil = NULL;
 		};
-
-		RedBlackTree &operator=(const RedBlackTree &op){
-			root = op.root;
-			return *this;
-		};
-
-		RedBlackTree(const RedBlackTree &copy){
-			memcpy(this, &copy, sizeof(RedBlackTree));
-		};
-		
-		RedBlackTree(T data){
-			root = alloc.allocate(1);
-			alloc.construct(root->data, data);
+		RedBlackTree(int data){
+			root = new node(data);
 			root->color = black;
 		}
-
-		~RedBlackTree(){
-			deleter(root);	
-		}
-		
-		void deleter(node *tree){
-			if (tree == NULL)
-				return;
-			deleter(tree->left);
-			deleter(tree->right);
-			delete tree;
-		}
-
 		node *get_root(){return root;}
 		
-		void insert(T data){
+		void insert(int data){
 			node *parent = where(data);
 			if (parent == NULL){
 				root = new node(data);
@@ -159,7 +115,6 @@ class RedBlackTree{
 			
 		}
 		
-
 		void check_violation(node *gay)
 		{
 			if (root == gay && gay->color == red){
@@ -186,6 +141,7 @@ class RedBlackTree{
 				uncle->color = black;
 				gay->parent->color = black;
 				grand_pa->color = red;
+			// std::cout << "the grandPA data : " << grand_pa->data << "\n";
 				check_violation(grand_pa);
 			}
 			else{
@@ -196,18 +152,25 @@ class RedBlackTree{
 				}
 				else if (gay->parent->left && gay->parent->data > grand_pa->data && gay->parent->left == gay){
 					right_rotation(gay->parent);
+					// print2D(root);
+					// std::cout << "gay data : " << gay->data << "\n";
+					// std::cout << "gay parent data : " << original_parent->data << "\n";
+					
 					check_violation(original_parent);
 				}
 				// line case //
 				else{
-					if (gay->parent->data < grand_pa->data && gay->parent->left && gay->parent->left == gay)
+					if (gay->parent->data < grand_pa->data && gay->parent->left && gay->parent->left == gay){
+						
 						right_rotation(grand_pa);
+					}
 					else
 						left_rotation(grand_pa);
 					grand_pa->color = (grand_pa->color + 1) % 2;
 					gay->parent->color = (gay->parent->color + 1) % 2;
 					check_violation(grand_pa);
 				}
+				// std::cout << "hey\n";
 			}
 		}
 
@@ -228,6 +191,7 @@ class RedBlackTree{
 			else if (parent)
 				parent->right = child_L;
 			
+			// std::cout << "here\n";
 			if (child_L->right){
 				tmp->left = child_L->right;
 				child_L->right->parent = tmp;
@@ -253,6 +217,7 @@ class RedBlackTree{
 			parent = tree->parent;
 			child_R = tree->right;
 
+
 			if (parent && tmp->data < parent->data)	
 				parent->left = child_R;
 			else if (parent)
@@ -274,7 +239,7 @@ class RedBlackTree{
 		}
 
 		
-		node *where(T data){
+		node *where(int data){
 			node *tmp = root;
 			node *tmp2 = tmp;
 			while (tmp){
@@ -298,7 +263,7 @@ class RedBlackTree{
 				tree->parent = del->parent;
 		}
 
-		node *search(T data){
+		node *search(int data){
 			node *tmp = root;
 			while (tmp && tmp->data != data){
 				if (tmp->data < data)
@@ -337,7 +302,7 @@ class RedBlackTree{
 			return min;
 		}
 
-		void Delete(T data){
+		void Delete(int data){
 			node *del = search(data);
 			node *tmp = min(del);
 			int original_color = 3;
@@ -385,17 +350,27 @@ class RedBlackTree{
 		void del_fix(node *fix){
 			node *tmp = NULL;
 			node *sibling = NULL;
+
+			if (fix->parent->right == fix)
+				sibling = fix->parent->left;
+			else
+				sibling = fix->parent->right;
+			
+	
+			// print_the_tree(fix);
+			// print_the_tree(sibling);
 			
 			while (fix->color == black && fix != root){
-
+				
 				if (fix->parent->right == fix)
 					sibling = fix->parent->left;
 				else
 					sibling = fix->parent->right;
-
+				
 				if(sibling && sibling->color == red){
 					sibling->color = black;
 					sibling->parent->color = red;
+					
 					left_rotation(fix->parent);
 					sibling = fix->parent->right;
 				}
@@ -407,7 +382,6 @@ class RedBlackTree{
 							sibling->left->color = black;
 						sibling->color = red;
 						right_rotation(sibling);
-						sibling = fix->parent->right;
 					}
 					else if (sibling->right && sibling->right->color == red){
 						sibling->color = red;
@@ -425,6 +399,7 @@ class RedBlackTree{
 				}
 			}
 			fix->color = black;
+	
 		}
  
 		bool special_case(node *sibling, node *fix){

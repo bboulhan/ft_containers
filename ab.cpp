@@ -1,40 +1,53 @@
+
 #include <iostream>
 #include "ft.hpp"
 #include "vector.hpp"
 #include <vector>
 
+template<class T, class Alloc = std::allocator<T> >
 class person{
 	int age;
-	std::string name;
+	T *name;
 	public:
-		person(int age, std::string name){
+	Alloc alloc;
+		person() : age(21) {
+			name = alloc.allocate(1);
+			alloc.construct(name, "ibra");
+		};
+		person(int age, T name){
 			this->age = age;
-			this->name = name;
+			this->name = alloc.allocate(1);
+			alloc.construct(this->name, name);
 		}
 		int getAge(){
 			return (this->age);
 		}
-		std::string getName(){
+		T *getName(){
 			return (this->name);
 		}
-		friend void print(person &p);
+		template<class S>
+		friend void print(person<S> *p);
 
 };
 
-void print(person &p){
-	p.age = 22;
-	p.name = "frisa";
-	std::cout << "age : " << p.age << std::endl;
-	std::cout << "name : " << p.name << std::endl;
+template<class S>
+void print(person<S> *p){
+	// p.age = 22;
+	// p.name = "frisa";
+	std::cout << "age : " << p->age << std::endl;
+	std::cout << "name : " << *p->name << std::endl;
 }
 
 
 int main()
 {
-	person ibra(21, "ibra");
-	print(ibra);
-	std::cout << "age : " << ibra.getAge() << std::endl;
-	std::cout << "name : " << ibra.getName() << std::endl;
+	std::allocator<person<std::string> > alloc;
+
+	person<std::string> *ab;
+	ab = alloc.allocate(1);
+	alloc.construct(ab, person<std::string>(10, "kkk"));
+	print(ab);
+
 	// system("leaks a.out");
 
 }

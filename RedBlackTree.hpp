@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/31 19:15:27 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/01 19:09:26 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,15 @@ struct node{
 	}
 	node() : data(NULL), color(black), right(NULL), left(NULL), parent(NULL) {
 	}
+	void clear(){
+		if (data){
+			alloc.destroy(data);
+			alloc.deallocate(data, 1);
+		}
+	}
 	// ~node(){
-	// 	std::cout << "hey\n";
-	// 	delete data;
+	// 	if (data)
+	// 		delete data;
 	// }
 };
 
@@ -61,24 +67,31 @@ class RedBlackTree{
 	
 		std::allocator <node> alloc;
 		node *root;
+		node *nil;
+	private:
+		size_type _size;
+
+	public:
+	
+	/******************************************** iterators ********************************************************/
 
 		class iterator{
 			public:
 				typedef T value_type;
 				typedef T* pointer;
 				typedef T& reference;
+				typedef node* base;
 				typedef std::ptrdiff_t difference_type;
 				typedef std::random_access_iterator_tag iterator_category;
-				node *p;
-			
-			private:
-				pointer 	ptr;
 				
 			
+			private:
+				base 	ptr;		
+				
 			public:
 				iterator() {ptr = NULL;}
 				iterator(const iterator &src){ *this = src;}
-				iterator(pointer container) : ptr(container) {}
+				iterator(base container) : ptr(container) {}
 				
 				iterator &operator=(const iterator &op){
 					this->ptr = op.ptr;
@@ -86,43 +99,56 @@ class RedBlackTree{
 				}
 				
 				pointer operator->() const{
-					return ptr;
+					return this->ptr->data;
 				}
 		
 				reference operator*() const{
-					return *ptr;
+					return *this->ptr->data;
 				}
 		
-				// iterator &operator++(){
-				// 	node tmp;
-				// 	node p;
-					
-				// 	tmp->data = ptr;
-				// 	p = next(tmp);
-				// 	ptr = p->data;
-				// 	return *this;
-				// }
+				iterator &operator++(){
+					ptr = next(ptr);
+					return *this;
+				}
 	
 				iterator operator++(int){
-					node tmp;
-					node *p;
+					iterator tmp = *this;
+					ptr = next(ptr);
+					return tmp;
+				}
 
-					tmp.data = ptr;
-					p = next(&tmp);
-					ptr = p->data;
-					return iterator(tmp.data);
+				iterator operator--(){
+					ptr = prev(ptr);
+					return *this;
+				}
+
+				iterator operator--(int){
+					iterator tmp = *this;
+					ptr = prev(ptr);
+					return tmp;
+				}
+
+				bool operator==(const iterator &op) const{
+					return (this->ptr->data == op.ptr->data);
+				}
+
+				bool operator!=(const iterator &op) const{
+					return (this->ptr->data != op.ptr->data);
 				}
 		};
 		
-		
 	
-	private:
-		size_type _size;
-	
-	public:
+	/********************************************** operators ***********************************************/	
 
+	
+
+
+		
+
+	/************************************************ display ************************************************/
+	
 		void display(node *root, int space){		
-			if (root == NULL)
+			if (root == NULL || root == nil)
 				return;
 			// std::cout << root->data.first << std::endl;
 			space += COUNT;
@@ -150,8 +176,11 @@ class RedBlackTree{
 				std::cout << "right first : " <<tree->right->data->first << "\tright second : " << tree->right->data->second << std::endl;
 		}
 
+	/****************************************** Constructors *****************************************/
+
 		RedBlackTree(){
 			root = NULL;
+			nil = NULL;
 		};
 
 		RedBlackTree &operator=(const RedBlackTree &op){
@@ -167,30 +196,55 @@ class RedBlackTree{
 			root = alloc.allocate(1);
 			alloc.construct(root, node(data));
 			root->color = black;
+			nil = alloc.allocate(1);
+			alloc.construct(nil, node());
+			nil->parent = root;
+			root->right = nil;
 		}
+
+	/******************************************** desctructor **********************************************/
 
 		// ~RedBlackTree(){
-		// 	deleter(root);	
+			// deleter(root);	
 		// }
 		
-		void deleter(node *tree){
-			if (tree == NULL)
-				return;
-			deleter(tree->left);
-			deleter(tree->right);
-			delete tree;
+		void deleter(){
+			node *tmp = first_elem();
+			node *trash;
+			while (tmp != nil){
+				trash = tmp;
+				tmp = next(tmp);
+				trash->clear();
+				std::cout << "hey\n";
+				alloc.destroy(trash);
+				alloc.deallocate(trash, 1);
+			}
 		}
 
+		void clean(node *trash){
+			if (trash->parent->right == trash)
+				trash->parent->right = NULL;
+			else
+				trash->parent->left = NULL;
+			delete trash;
+		}
 		
-		void insert(T data){
+		/******************************************* modifiers ****************************************************/
+		
+		node *insert(T data){
 			node *parent = where(data);
 			if (parent == NULL){
 				root = alloc.allocate(1);
 				alloc.construct(root, node(data));
 				root->color = black;
 				this->_size++;
-				return;
+				nil = alloc.allocate(1);
+				alloc.construct(nil, node());
+				nil->parent = root;
+				root->right = nil;
+				return root;
 			}
+			nil->parent->right = NULL;
 			node *child = alloc.allocate(1);
 			alloc.construct(child, node(data));
 			child->parent = parent;
@@ -200,7 +254,9 @@ class RedBlackTree{
 				parent->left = child;
 			this->_size++;
 			check_violation(child);
-			
+			nil->parent = last_elem();
+			nil->parent->right = nil;
+			return child;
 		}
 		
 
@@ -317,20 +373,6 @@ class RedBlackTree{
 				root = child_R;
 		}
 
-		
-		node *where(T data){
-			node *tmp = root;
-			node *tmp2 = tmp;
-			while (tmp){
-				tmp2 = tmp;
-				if (data > *tmp->data)
-					tmp = tmp->right;
-				else
-					tmp = tmp->left;
-			}
-			return tmp2;
-		}
-
 		void replace(node *del, node *tree){
 			if (!del->parent)
 				this->root = tree;
@@ -342,50 +384,17 @@ class RedBlackTree{
 				tree->parent = del->parent;
 		}
 
-		node *search(T data){
-			node *tmp = root;
-			while (tmp && *tmp->data != data){
-				if (*tmp->data < data)
-					tmp = tmp->right;
-				else
-					tmp = tmp->left;
-			}
-			return tmp;
-		}
-
-		node *max(node *del){
-			node *tmp = del;
-			node *max = tmp;
-			
-			if (tmp->right)
-				tmp = tmp->right;
-			max = tmp;
-			while (tmp){
-				max = tmp;
-				tmp = tmp->left;
-			}
-			return max;
-		}
-
-		node *min(node *del){
-			node *tmp = del;
-			node *min;
-			
-			if (tmp->left)
-				tmp = tmp->left;
-			min = tmp;
-			while(tmp){
-				min = tmp;
-				tmp = tmp->right;
-			}
-			return min;
-		}
-
 		void Delete(T data){
+			nil->parent->right = NULL;
 			node *del = search(data);
+			if (!del)
+				return ;
 			node *tmp = min(del);
 			int original_color = 3;
 			bool fake_node = false;
+
+			if (del == NULL)
+				return ;
 
 			if (!del->left && !del->right)
 				replace(del, NULL);
@@ -424,6 +433,8 @@ class RedBlackTree{
 					clean(child);
 			}
 			this->_size--;
+			nil->parent = last_elem();
+			nil->parent->right = nil;
 			delete del;
 		}
 		
@@ -487,12 +498,60 @@ class RedBlackTree{
 			return false;
 		}
 		
-		void clean(node *trash){
-			if (trash->parent->right == trash)
-				trash->parent->right = NULL;
-			else
-				trash->parent->left = NULL;
-			delete trash;
+	/******************************************** search utils ***********************************************/
+		
+		node *where(T data){
+			node *tmp = root;
+			node *tmp2 = tmp;
+			while (tmp && tmp != nil){
+				tmp2 = tmp;
+				if (data > *tmp->data)
+					tmp = tmp->right;
+				else
+					tmp = tmp->left;
+			}
+			return tmp2;
+		}
+
+		node *search(T data){
+			node *tmp = root;
+			while (tmp && tmp != nil && tmp->data->first != data.first){
+				if (tmp->data->first < data.first)
+					tmp = tmp->right;
+				else
+					tmp = tmp->left;
+			}
+			if (tmp == nil)
+				return NULL;
+			return tmp;
+		}
+
+		node *max(node *del){
+			node *tmp = del;
+			node *max = tmp;
+			
+			if (tmp->right)
+				tmp = tmp->right;
+			max = tmp;
+			while (tmp){
+				max = tmp;
+				tmp = tmp->left;
+			}
+			return max;
+		}
+
+		node *min(node *del){
+			node *tmp = del;
+			node *min;
+			
+			if (tmp->left)
+				tmp = tmp->left;
+			min = tmp;
+			while(tmp){
+				min = tmp;
+				tmp = tmp->right;
+			}
+			return min;
 		}
 
 		node *first_elem(){
@@ -511,6 +570,8 @@ class RedBlackTree{
 
 		static node *next(node *tree){
 			node *tmp = tree;
+			if (!tree || !tree->data)
+				return NULL;
 			if (!tmp->right){
 				tmp = tmp->parent;
 				while (tmp && *tmp->data < *tree->data)
@@ -525,13 +586,41 @@ class RedBlackTree{
 			return tmp;
 		}
 
-		void all_elem(node *first, node *last){
-			
+		static node *prev(node *tree){
+			node *tmp = tree;
+			if (!tree)
+				return NULL;
+			if (!tree->data)
+				return tree->parent;
+			if (!tmp->left){
+				tmp = tmp->parent;
+				while (tmp && *tmp->data > *tree->data)
+					tmp = tmp->parent;
+			}
+			else{
+				if (tmp->left)
+					tmp = tmp->left;
+				while (tmp->right && *tmp->data < *tree->data)
+					tmp = tmp->right;
+			}
+			return tmp;
+		}
+
+		void DownToUp(node *first, node *last){
 			while (first && first != last){
-				std::cout << first->data->first << "\n";
+				std::cout << first->data->first  << "\t" << first->data->second << "\n";
 				first = next(first);
 			}
 		}
+
+		void UpToDown(node *last, node *first){
+			while (last && last != first){
+				std::cout << last->data->first << "\t" << first->data->second << "\n";
+				last = prev(last);
+			}
+		}
+		
+		
 		
 		size_type size() const{
 			return this->_size;

@@ -36,8 +36,8 @@ int main(){
 	// std::cout << "\n---------------------------------------------\n";
 
 	
-	tree.Delete(15);
-	tree.Delete(13);
+	tree.Delete(80);
+
 
 
 

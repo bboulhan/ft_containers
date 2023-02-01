@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/29 14:06:52 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/01 15:18:04 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,6 +304,8 @@ class RedBlackTree{
 
 		void Delete(int data){
 			node *del = search(data);
+			if (del == NULL)
+				return ;
 			node *tmp = min(del);
 			int original_color = 3;
 			bool fake_node = false;

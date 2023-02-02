@@ -34,29 +34,18 @@ int main()
 	// cc.insert(std::pair<int, std::string>(80, "80YY"));
 
 
+	ab.erase(ab.begin(), ab.end());
 
 
+	// it = ab.begin();
 
-	it = ab.begin();
-
-	while (it != ab.end())
-	{
-		std::cout << (*it).first << "\t" << it->second << std::endl;
-		it++;
-	}
+	// while (it != ab.end())
+	// {
+	// 	std::cout << (*it).first << "\t" << it->second << std::endl;
+	// 	it++;
+	// }
 	std::cout << "\n---------------------------------------------\n";
 
-	ss = ab.find(15);
-	std::cout << (*ss).first << "\t" << ss->second << std::endl;
-	// std::cout <<  ab.count(12) << "\n";
-	ss = ab.lower_bound(23);
-	std::cout << (*ss).first << "\t" << ss->second << std::endl;
-	ss = ab.upper_bound(7);
-	std::cout << (*ss).first << "\t" << ss->second << std::endl;
-
-	std::pair<std::map<int, std::string>::iterator, std::map<int, std::string>::iterator> pp;
-	pp = ab.equal_range(7);
-	std::cout << (*pp.first).first << "\t" << pp.first->second << std::endl;
 
 	
 

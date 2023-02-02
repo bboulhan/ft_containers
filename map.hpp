@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/01 18:55:57 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/02 16:54:46 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <iostream>
 #include "RedBlackTree.hpp"
 #include "ft.hpp"
-#include "map_utils.hpp"
 
 namespace ft{
 
@@ -40,7 +39,7 @@ namespace ft{
 			typedef 		 RedBlackTree<value_type, Compare, Alloc>	RedBlackTree;
 		
 		
-		// private:
+		private:
 			RedBlackTree tree;
 			Alloc alloc;
 			
@@ -59,11 +58,16 @@ namespace ft{
 	
 			~map() {}
 
-			map(const map& copy) : tree(copy.tree) {}
+			map(const map& copy) : tree(copy.tree), alloc(copy.alloc) {}
 
 			map& operator=(const map& copy) {
 				tree = copy.tree;
+				alloc = copy.alloc;
 				return *this;
+			}
+
+			void display(){
+				tree.display_map(tree.get_root(), 0);
 			}
 
 			
@@ -75,7 +79,7 @@ namespace ft{
 		}
 
 		iterator end() {
-			return iterator(tree.nil);
+			return iterator(tree.get_nil());
 		}
 
 
@@ -98,15 +102,19 @@ namespace ft{
 	
 	/********************************************* Element access ******************************************************************/
 
-		// mapped_type &operator[](const key_type& k) {
-		// 	iterator(tree.search(ft::pair<key_type, mapped_type>(k, nullptr)));
-		// }
+		mapped_type& operator[] (const key_type& k) {
+			value_type val(k, mapped_type());
+			node *tmp = tree.find(val);
+			if (!tmp)
+				tmp = tree.insert(val);
+			return tmp->data->second;
+		}
 		
 
 	/*********************************************** Modifiers ***********************************************************************/
 
 		ft::pair<iterator, bool> insert(const value_type &val){
-			node *tmp = tree.search(val);
+			node *tmp = tree.find(val);
 			if (tmp)
 				return ft::pair<iterator, bool>(iterator(tmp), false);
 			if (!tmp)
@@ -115,7 +123,8 @@ namespace ft{
 		}
 
 		iterator insert(iterator position, const value_type& val) {
-			node *tmp = tree.search(val);
+			(void)position;
+			node *tmp = tree.find(val);
 			if (tmp)
 				return iterator(tmp);
 			tmp = tree.insert(val);
@@ -138,7 +147,7 @@ namespace ft{
 
 		size_type erase(const key_type& k) {			
 			value_type val(k, mapped_type());
-			node *tmp = tree.search(val);
+			node *tmp = tree.find(val);
 			if (!tmp)
 				return 0;
 			tree.Delete(val);
@@ -147,10 +156,12 @@ namespace ft{
 
 		void erase(iterator first, iterator last) {
 			iterator tmp = first;
+			iterator tmp2 = tmp;
 			while (tmp != last)
-			{
-				tree.Delete(*tmp);
+			{	
+				tmp2 = tmp;
 				tmp++;
+				tree.Delete(*tmp2);
 			}
 		}
 
@@ -160,7 +171,9 @@ namespace ft{
 			x.tree = tmp;
 		}
 
-
+		void clear() {
+			tree.deleter();
+		}
 		
 		
 
@@ -168,7 +181,7 @@ namespace ft{
 
 		iterator find(const key_type& k) {
 			value_type val(k, mapped_type());
-			node *tmp = tree.search(val);
+			node *tmp = tree.find(val);
 			if (!tmp)
 				return end();
 			return iterator(tmp);
@@ -211,10 +224,7 @@ namespace ft{
 			return alloc;
 		}
 		
-		void clear() {
-			tree.deleter();
-		}
-
+	
 	/*********************************************** Observers ************************************************************/
 	
 		

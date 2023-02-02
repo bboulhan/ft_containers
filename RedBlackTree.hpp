@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/01 19:09:26 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/02 17:20:59 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include <iostream>
 #include "ft.hpp"
 #include <unistd.h>
-#include "map_utils.hpp"
 
 # define black 0
 # define red 1
@@ -66,11 +65,10 @@ class RedBlackTree{
 		typedef typename Alloc::size_type size_type;
 	
 		std::allocator <node> alloc;
+	private:
 		node *root;
 		node *nil;
-	private:
 		size_type _size;
-
 	public:
 	
 	/******************************************** iterators ********************************************************/
@@ -135,33 +133,40 @@ class RedBlackTree{
 				bool operator!=(const iterator &op) const{
 					return (this->ptr->data != op.ptr->data);
 				}
-		};
-		
-	
-	/********************************************** operators ***********************************************/	
-
-	
-
-
-		
+		};	
 
 	/************************************************ display ************************************************/
 	
-		void display(node *root, int space){		
+		void display_set(node *root, int space){		
 			if (root == NULL || root == nil)
 				return;
 			// std::cout << root->data.first << std::endl;
 			space += COUNT;
-			display(root->right, space);
+			display_set(root->right, space);
 			std::cout << "\n";
 			for (int i = COUNT; i < space; i++)
 				std::cout << " ";
-			usleep(1000);
+			if (root->color == red)
+				std::cerr << "\033[1;31m"<< *root->data << "\033[0m\n";
+			else
+				std::cerr << "\033[1;34m"<< *root->data << "\033[0m\n";
+			display_set(root->left, space);
+		}
+	
+		void display_map(node *root, int space){		
+			if (root == NULL || root == nil)
+				return;
+			// std::cout << root->data.first << std::endl;
+			space += COUNT;
+			display_map(root->right, space);
+			std::cout << "\n";
+			for (int i = COUNT; i < space; i++)
+				std::cout << " ";
 			if (root->color == red)
 				std::cerr << "\033[1;31m"<< root->data->first << " " << root->data->second << "\033[0m\n";
 			else
 				std::cerr << "\033[1;34m"<< root->data->first << " " << root->data->second << "\033[0m\n";
-			display(root->left, space);
+			display_map(root->left, space);
 		}
 
 		void display_data(node *tree){
@@ -181,6 +186,7 @@ class RedBlackTree{
 		RedBlackTree(){
 			root = NULL;
 			nil = NULL;
+			_size = 0;
 		};
 
 		RedBlackTree &operator=(const RedBlackTree &op){
@@ -200,6 +206,7 @@ class RedBlackTree{
 			alloc.construct(nil, node());
 			nil->parent = root;
 			root->right = nil;
+			_size = 1;
 		}
 
 	/******************************************** desctructor **********************************************/
@@ -207,26 +214,43 @@ class RedBlackTree{
 		// ~RedBlackTree(){
 			// deleter(root);	
 		// }
+
+		void clearner(node *tree){
+			if (!tree || tree == nil)
+				return;
+			if (!tree->left && (!tree->right || tree->right == nil)){
+				clean(tree);
+				return;
+			}
+			clearner(tree->right);
+			clearner(tree->left);
+		}
+		
 		
 		void deleter(){
-			node *tmp = first_elem();
-			node *trash;
-			while (tmp != nil){
-				trash = tmp;
-				tmp = next(tmp);
-				trash->clear();
-				std::cout << "hey\n";
-				alloc.destroy(trash);
-				alloc.deallocate(trash, 1);
-			}
+			while (root->right || root->left)
+				clearner(root);
+			root->clear();
+			alloc.destroy(root);
+			alloc.deallocate(root, 1);
+			alloc.destroy(nil);
+			alloc.deallocate(nil, 1);
+			_size = 0;
+			root = NULL;
+			nil = NULL;	
 		}
 
 		void clean(node *trash){
+			if (!trash)
+				return;
 			if (trash->parent->right == trash)
 				trash->parent->right = NULL;
 			else
 				trash->parent->left = NULL;
-			delete trash;
+			trash->clear();
+			alloc.destroy(trash);
+			alloc.deallocate(trash, 1);
+			trash = NULL;
 		}
 		
 		/******************************************* modifiers ****************************************************/
@@ -434,8 +458,11 @@ class RedBlackTree{
 			}
 			this->_size--;
 			nil->parent = last_elem();
-			nil->parent->right = nil;
-			delete del;
+			if (nil->parent)
+				nil->parent->right = nil;
+			del->clear();
+			alloc.destroy(del);
+			alloc.deallocate(del, 1);
 		}
 		
 		void del_fix(node *fix){
@@ -469,7 +496,6 @@ class RedBlackTree{
 						sibling->color = red;
 						fix->parent->color = black;
 						sibling->right->color = black;
-						// print2D(root);
 						left_rotation(fix->parent);
 						fix = root;
 					}
@@ -513,10 +539,23 @@ class RedBlackTree{
 			return tmp2;
 		}
 
-		node *search(T data){
+		node *find(T data){
 			node *tmp = root;
 			while (tmp && tmp != nil && tmp->data->first != data.first){
 				if (tmp->data->first < data.first)
+					tmp = tmp->right;
+				else
+					tmp = tmp->left;
+			}
+			if (tmp == nil)
+				return NULL;
+			return tmp;
+		}
+
+		node *search(T data){
+			node *tmp = root;
+			while (tmp && tmp != nil && *tmp->data != data){
+				if (*tmp->data < data)
 					tmp = tmp->right;
 				else
 					tmp = tmp->left;
@@ -563,7 +602,7 @@ class RedBlackTree{
 
 		node *last_elem(){
 			node *tmp = root;
-			while (tmp->right)
+			while (tmp && tmp->right)
 				tmp = tmp->right;
 			return tmp;
 		}
@@ -620,10 +659,18 @@ class RedBlackTree{
 			}
 		}
 		
+	/********************************************** getters **************************************************************/
 		
+		node *get_nil(){
+			return nil;	
+		}
 		
 		size_type size() const{
 			return this->_size;
+		}
+
+		node *get_root(){
+			return root;
 		}
 
 		

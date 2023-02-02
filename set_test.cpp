@@ -1,13 +1,12 @@
 
 #include <iostream>
 #include "ft.hpp"
-#include "vector.hpp"
-#include <vector>
 #include <set>
+#include "set.hpp"
 
 int main()
 {
-	std::set<int> set;
+	ft::set<int> set;
 
 	set.insert(30);
 	set.insert(22);
@@ -25,8 +24,8 @@ int main()
 	set.insert(39);
 	set.insert(18);
 
-	std::set<int>::iterator it = set.begin();
-	std::set<int>::iterator ss;
+	ft::set<int>::iterator it = set.begin();
+	ft::set<int>::iterator ss;
 
 	it++;it++;
 	set.erase(it);
@@ -36,11 +35,11 @@ int main()
 	// std::cout << *(set.lower_bound(28)) << std::endl;
 	// std::cout << *(set.upper_bound(28)) << std::endl;
 
-
+	// set.display();
 
 	it = set.begin();
 	// set.clear();
-	set.erase(it, set.end());
+	// set.erase(it, set.end());
 
 	// it = set.begin();
 

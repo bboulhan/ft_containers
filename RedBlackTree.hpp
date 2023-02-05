@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/05 12:27:48 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/05 17:45:04 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,22 +42,20 @@ struct node{
 		left = NULL;
 		parent = NULL;
 	}
-	node() : color(black), right(NULL), left(NULL), parent(NULL) {
-		data = NULL;
-	}
+	node() : data(NULL), color(black), right(NULL), left(NULL), parent(NULL) {}
 	void clear(){
 		if (data){
 			alloc.destroy(data);
 			alloc.deallocate(data, 1);
 		}
 	}
-	node (const node &src) : parent(src.parent), right(src.right), left(src.left), color(src.color){
-		alloc = src.alloc;
-		if (src.data){
-			data = alloc.allocate(1);
-			alloc.construct(data, *src.data);
-		}
-	}	
+	// node (const node &src) : parent(src.parent), right(src.right), left(src.left), color(src.color){
+	// 	alloc = src.alloc;
+	// 	if (src.data){
+	// 		data = alloc.allocate(1);
+	// 		alloc.construct(data, *src.data);
+	// 	}
+	// }	
 	
 	// ~node(){
 	// 	if (data)
@@ -149,7 +147,6 @@ class RedBlackTree{
 		void display_set(node *root, int space){		
 			if (root == NULL || root == nil)
 				return;
-			// std::cout << root->data.first << std::endl;
 			space += COUNT;
 			display_set(root->right, space);
 			std::cout << "\n";
@@ -165,7 +162,6 @@ class RedBlackTree{
 		void display_map(node *root, int space){		
 			if (root == NULL || root == nil)
 				return;
-			// std::cout << root->data.first << std::endl;
 			space += COUNT;
 			display_map(root->right, space);
 			std::cout << "\n";
@@ -201,11 +197,14 @@ class RedBlackTree{
 			_size = 0;
 		};
 
-		// RedBlackTree &operator=(const RedBlackTree &op){
-			
-		// 	return *this;
-		// };
+		RedBlackTree &operator=(const RedBlackTree &op){
+			memcpy(this, &op, sizeof(RedBlackTree));	
+			return *this;
+		};
 		
+		RedBlackTree(const RedBlackTree &copy){
+			memcpy(this, &copy, sizeof(RedBlackTree));	
+		};
 		// void copy_cat(node *root, node *copy){
 		// 	if (!copy || !copy->data)
 		// 		return;
@@ -217,25 +216,15 @@ class RedBlackTree{
 		// 	copy_cat(root->left, copy->left);
 		// }
 
-		void copyy(node *x){
-			if (!x || !x->data)
-				return ;
-			insert(*x->data);
-			copyy(x->right);
-			copyy(x->left);
-		}
+		// void copyy(node *x){
+		// 	if (!x || !x->data)
+		// 		return ;
+		// 	insert(*x->data);
+		// 	copyy(x->right);
+		// 	copyy(x->left);
+		// }
 		
 		
-		// RedBlackTree(const RedBlackTree &copy){
-			
-		// 	copy.nil->data = NULL;
-		// 	nil = alloc.allocate(1);
-		// 	alloc.construct(nil, node());
-		// 	nil->parent = copy.nil->parent;
-		// 	nil->data = NULL;
-		
-			
-		// };
 		
 		RedBlackTree(T data){
 			root = alloc.allocate(1);
@@ -250,9 +239,35 @@ class RedBlackTree{
 		}
 
 	/******************************************** desctructor **********************************************/
+		void destroy(node *__node)
+		{
+			if (__node)
+			{
+				destroy(__node->left);
+				destroy(__node->right);
+				__node->clear();
+				alloc.deallocate(__node, 1);
+			}
+		}
 
+		void clear()
+		{
+			destroy(root);
+			_size = 0;
+			// __begin_node_ = __end_node_;
+    		// __end_node_->__left_ = nullptr;
+		}
+
+		~RedBlackTree(){
+			clear();
+		}
 		// ~RedBlackTree(){
-			// deleter(root);	
+		// 	if (root){
+		// 		deleter();
+		// 	}
+		// 	alloc.destroy(nil);
+		// 	alloc.deallocate(nil, 1);
+		// 	// std::cout << "wtf\n";
 		// }
 
 		void clearner(node *tree){

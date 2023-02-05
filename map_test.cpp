@@ -5,7 +5,7 @@
 #include "RedBlackTree.hpp"
 #include "map.hpp"
 
-int main(){
+void test(){
 
 	ft::map<int, std::string> ab;
 	
@@ -25,16 +25,26 @@ int main(){
 	ab.insert(ft::pair<int, std::string>(70, "OUB4"));
 	ab.insert(ft::pair<int, std::string>(65, "WQQ65"));
 	ab.insert(ft::pair<int, std::string>(45, "UI45"));
+	ab.insert(ft::make_pair(49, "pol"));
 
-	ft::map<int, std::string> cc;
+	// ft::map<int, std::string> cc;
 
-	// std::cout << "hey\n";
+	ab.erase(ab.begin());
 	ab.erase(65);
 	ab.erase(45);
 	ab.erase(10);
+	ab.display();
+	std::cout << "size : " << ab.size() << std::endl;
+	std::cout << "hey\n";
+	// return  ab;
+}
 
-	ft::map<int, std::string>::iterator it = ab.begin();
-	ft::map<int, std::string>::iterator ss = ab.end();
+
+int main(){
+
+
+	// ft::map<int, std::string>::iterator it = ab.begin();
+	// ft::map<int, std::string>::iterator ss = ab.end();
 	// ft::map<int, std::string>::iterator it = cc.begin();
 	// ft::map<int, std::string>::iterator ss;
 	// std::cout << &(*it) << "\t" << &(*ss) << "\n";
@@ -64,12 +74,12 @@ int main(){
 	// 	std::cout << (*it).first << "\t" << it->second << std::endl;
 	// 	it++;
 	// }
-	ab.display();
-	std::cout << "size : " << ab.size() << std::endl;
+	test();
+	// ss.display();
 	std::cout << "\n---------------------------------------------\n";
-	cc.display();
+	// cc.display();
 
-	std::cout << "size : " << cc.size() << std::endl;
-	// system("leaks a.out");
+	// std::cout << "size : " << cc.size() << std::endl;
+	system("leaks a.out");
 	return 0;
 }

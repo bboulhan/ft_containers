@@ -64,6 +64,12 @@
 		"map": "cpp",
 		"__cxx_version": "cpp",
 		"memory_resource": "cpp",
-		"set": "cpp"
+		"set": "cpp",
+		"csignal": "cpp",
+		"deque": "cpp",
+		"fstream": "cpp",
+		"iomanip": "cpp",
+		"stack": "cpp",
+		"*.ipp": "cpp"
 	}
 }

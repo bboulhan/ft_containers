@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/28 13:42:29 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/04 17:07:59 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,9 +192,7 @@ namespace ft{
 	template <>
 	struct is_integral<unsigned long long> { static const bool value = true; };
 
-
 	
-		
 }
 
 

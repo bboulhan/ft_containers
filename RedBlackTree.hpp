@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/02 17:20:59 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/05 12:27:48 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ struct node{
 		left = NULL;
 		parent = NULL;
 	}
-	node() : data(NULL), color(black), right(NULL), left(NULL), parent(NULL) {
+	node() : color(black), right(NULL), left(NULL), parent(NULL) {
+		data = NULL;
 	}
 	void clear(){
 		if (data){
@@ -50,6 +51,14 @@ struct node{
 			alloc.deallocate(data, 1);
 		}
 	}
+	node (const node &src) : parent(src.parent), right(src.right), left(src.left), color(src.color){
+		alloc = src.alloc;
+		if (src.data){
+			data = alloc.allocate(1);
+			alloc.construct(data, *src.data);
+		}
+	}	
+	
 	// ~node(){
 	// 	if (data)
 	// 		delete data;
@@ -172,31 +181,61 @@ class RedBlackTree{
 		void display_data(node *tree){
 			if (tree == NULL)
 				return;
-			std::cout << "first : " <<tree->data->first << "\tsecond : " << tree->data->second << std::endl;
+			std::cout << tree->data << "\n";
 			if (tree->parent)
 				std::cout << "parent first : " <<tree->parent->data->first << "\tparent second : " << tree->parent->data->second << std::endl;
 			if (tree->left)
 				std::cout << "left first : " <<tree->left->data->first << "\tleft second : " << tree->left->data->second << std::endl;
 			if (tree->right)
 				std::cout << "right first : " <<tree->right->data->first << "\tright second : " << tree->right->data->second << std::endl;
+			if (tree->data)
+				std::cout << "first : " <<tree->data->first << "\tsecond : " << tree->data->second << std::endl;
 		}
 
 	/****************************************** Constructors *****************************************/
 
 		RedBlackTree(){
 			root = NULL;
-			nil = NULL;
+			nil = alloc.allocate(1);
+			alloc.construct(nil, node());
 			_size = 0;
 		};
 
-		RedBlackTree &operator=(const RedBlackTree &op){
-			memcpy(this, &op, sizeof(RedBlackTree));
-			return *this;
-		};
+		// RedBlackTree &operator=(const RedBlackTree &op){
+			
+		// 	return *this;
+		// };
+		
+		// void copy_cat(node *root, node *copy){
+		// 	if (!copy || !copy->data)
+		// 		return;
+		// 	// std::cout << copy->data->first << "\n";
+		// 	// std::cout << "hey 2\n";
+			
+		// 	insert(*copy->data);
+		// 	copy_cat(root->right, copy->right);
+		// 	copy_cat(root->left, copy->left);
+		// }
 
-		RedBlackTree(const RedBlackTree &copy){
-			memcpy(this, &copy, sizeof(RedBlackTree));
-		};
+		void copyy(node *x){
+			if (!x || !x->data)
+				return ;
+			insert(*x->data);
+			copyy(x->right);
+			copyy(x->left);
+		}
+		
+		
+		// RedBlackTree(const RedBlackTree &copy){
+			
+		// 	copy.nil->data = NULL;
+		// 	nil = alloc.allocate(1);
+		// 	alloc.construct(nil, node());
+		// 	nil->parent = copy.nil->parent;
+		// 	nil->data = NULL;
+		
+			
+		// };
 		
 		RedBlackTree(T data){
 			root = alloc.allocate(1);
@@ -204,6 +243,7 @@ class RedBlackTree{
 			root->color = black;
 			nil = alloc.allocate(1);
 			alloc.construct(nil, node());
+			nil->data = NULL;
 			nil->parent = root;
 			root->right = nil;
 			_size = 1;
@@ -228,16 +268,16 @@ class RedBlackTree{
 		
 		
 		void deleter(){
+			if (!root)
+				return;
 			while (root->right || root->left)
 				clearner(root);
 			root->clear();
 			alloc.destroy(root);
 			alloc.deallocate(root, 1);
-			alloc.destroy(nil);
-			alloc.deallocate(nil, 1);
+			replace(nil, NULL);
 			_size = 0;
 			root = NULL;
-			nil = NULL;	
 		}
 
 		void clean(node *trash){
@@ -262,10 +302,9 @@ class RedBlackTree{
 				alloc.construct(root, node(data));
 				root->color = black;
 				this->_size++;
-				nil = alloc.allocate(1);
-				alloc.construct(nil, node());
 				nil->parent = root;
 				root->right = nil;
+				nil->data = NULL;
 				return root;
 			}
 			nil->parent->right = NULL;

@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/02 16:54:46 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/05 12:34:22 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,34 +40,50 @@ namespace ft{
 		
 		
 		private:
-			RedBlackTree tree;
+			RedBlackTree *tree;
 			Alloc alloc;
 			
 			
 		public:
 			// explicit map(const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree(comp, alloc) {}
-			map() : tree() {}
+			map() {
+				tree = std::allocator<RedBlackTree>().allocate(1);
+				std::allocator<RedBlackTree>().construct(tree, RedBlackTree());
+				// tree = new RedBlackTree();
+			}
 			template <class InputIterator>
-			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree(comp, alloc) {
+			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) {
+				tree = std::allocator<RedBlackTree>().allocate(1);
+				std::allocator<RedBlackTree>().construct(tree, RedBlackTree());
+				// tree = new RedBlackTree();
 				while (first != last)
 				{
-					tree.insert(*first);
+					tree->insert(*first);
 					first++;
 				}
 			}
 	
 			~map() {}
 
-			map(const map& copy) : tree(copy.tree), alloc(copy.alloc) {}
-
-			map& operator=(const map& copy) {
-				tree = copy.tree;
+			map(const map& copy) {
+				tree = new RedBlackTree();
+				insert(copy.begin(), copy.end());
+				// tree = std::allocator<RedBlackTree>().allocate(1);
+				// std::allocator<RedBlackTree>().construct(tree, RedBlackTree(*copy.tree));
 				alloc = copy.alloc;
-				return *this;
 			}
 
+			// map& operator=(const map& copy) {
+			// 	if (this == &copy)
+			// 		return *this;
+			// 	tree = std::allocator<RedBlackTree>().allocate(1);
+			// 	std::allocator<RedBlackTree>().construct(tree, RedBlackTree(copy.tree));
+			// 	alloc = copy.alloc;
+			// 	return *this;
+			// }
+
 			void display(){
-				tree.display_map(tree.get_root(), 0);
+				tree->display_map(tree->get_root(), 0);
 			}
 
 			
@@ -75,11 +91,13 @@ namespace ft{
 	/******************************************** Iterators *******************************************************************/	
 
 		iterator begin() {
-			return iterator(tree.first_elem());
+			if (tree->get_root())
+				return iterator(tree->first_elem());
+			return (iterator(tree->get_nil()));
 		}
 
 		iterator end() {
-			return iterator(tree.get_nil());
+			return iterator(tree->get_nil());
 		}
 
 
@@ -87,13 +105,13 @@ namespace ft{
 	/********************************************* Capacity ******************************************************************/	
 
 		bool empty() const {
-			if (tree.size() == 0)
+			if (tree->size() == 0)
 				return true;
 			return false;
 		}
 
 		size_type size() const {
-			return tree.size();
+			return tree->size();
 		}
 
 		size_type max_size() const {
@@ -104,9 +122,9 @@ namespace ft{
 
 		mapped_type& operator[] (const key_type& k) {
 			value_type val(k, mapped_type());
-			node *tmp = tree.find(val);
+			node *tmp = tree->find(val);
 			if (!tmp)
-				tmp = tree.insert(val);
+				tmp = tree->insert(val);
 			return tmp->data->second;
 		}
 		
@@ -114,20 +132,20 @@ namespace ft{
 	/*********************************************** Modifiers ***********************************************************************/
 
 		ft::pair<iterator, bool> insert(const value_type &val){
-			node *tmp = tree.find(val);
+			node *tmp = tree->find(val);
 			if (tmp)
 				return ft::pair<iterator, bool>(iterator(tmp), false);
 			if (!tmp)
-			tmp = tree.insert(val);
+			tmp = tree->insert(val);
 			return ft::pair<iterator, bool>(iterator(tmp), true);
 		}
 
 		iterator insert(iterator position, const value_type& val) {
 			(void)position;
-			node *tmp = tree.find(val);
+			node *tmp = tree->find(val);
 			if (tmp)
 				return iterator(tmp);
-			tmp = tree.insert(val);
+			tmp = tree->insert(val);
 			return iterator(tmp);
 		}
 
@@ -136,21 +154,21 @@ namespace ft{
 			InputIterator tmp = first;
 			while (tmp != last)
 			{
-				tree.insert(*tmp);
+				tree->insert(*tmp);
 				tmp++;
 			}
 		}
 
 		void erase(iterator position) {
-			tree.Delete(*position);
+			tree->Delete(*position);
 		}
 
 		size_type erase(const key_type& k) {			
 			value_type val(k, mapped_type());
-			node *tmp = tree.find(val);
+			node *tmp = tree->find(val);
 			if (!tmp)
 				return 0;
-			tree.Delete(val);
+			tree->Delete(*tmp->data);
 			return 1;
 		}
 
@@ -161,7 +179,7 @@ namespace ft{
 			{	
 				tmp2 = tmp;
 				tmp++;
-				tree.Delete(*tmp2);
+				tree->Delete(*tmp2);
 			}
 		}
 
@@ -172,7 +190,9 @@ namespace ft{
 		}
 
 		void clear() {
-			tree.deleter();
+			if (!tree || !tree->get_root())
+				return;
+			tree->deleter();
 		}
 		
 		
@@ -181,7 +201,7 @@ namespace ft{
 
 		iterator find(const key_type& k) {
 			value_type val(k, mapped_type());
-			node *tmp = tree.find(val);
+			node *tmp = tree->find(val);
 			if (!tmp)
 				return end();
 			return iterator(tmp);
@@ -229,6 +249,8 @@ namespace ft{
 	
 		
 	};
+
+	
 
 };
 

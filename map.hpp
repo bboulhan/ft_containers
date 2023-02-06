@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/05 17:42:21 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/06 16:26:58 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft{
 		public:
 			typedef 									Key key_type;
 			typedef 									T mapped_type;
-			typedef 									ft::pair<Key,T> value_type;
+			typedef 									ft::pair<const Key,T> value_type;
 			typedef 									Compare key_compare;
 			// typedef value_compare (Compare c) : comp(c) {}
 
@@ -39,8 +39,8 @@ namespace ft{
 			typedef 		 RedBlackTree<value_type, Compare, Alloc>	RedBlackTree;
 		
 		
-		private:
 			RedBlackTree tree;
+		private:
 			Alloc alloc;
 			
 			
@@ -50,7 +50,7 @@ namespace ft{
 				
 			}
 			template <class InputIterator>
-			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree(comp, alloc) {
+			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree() {
 				// tree = std::allocator<RedBlackTree>().allocate(1);
 				// std::allocator<RedBlackTree>().construct(tree, RedBlackTree());
 				while (first != last)
@@ -60,22 +60,11 @@ namespace ft{
 				}
 			}
 	
-			// ~map() {
-			// 	// std::cout << "ccc\n";
-			// 	if (tree.get_root()){
-			// 		tree.deleter();
-			// 		alloc.destroy(tree.get_nil());
-			// 		alloc.deallocate(tree.get_nil(), 1);
-			// 	}
-				
-			// }
+			~map() {}
 
-			map(const map& copy) : tree(copy.tree), alloc(copy.alloc) {
+			map(const map& copy) : tree(copy.tree), alloc(copy.alloc) {}
 
-				
-			}
-
-			map& operator=(const map& copy) {
+			map& operator=(const map& copy){
 				tree = copy.tree;
 				alloc = copy.alloc;
 				return *this;

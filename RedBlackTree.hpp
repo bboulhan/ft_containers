@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/06 16:30:27 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/07 17:13:57 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define red 1
 # define COUNT 10
 // 	COLOR 1 == RED | COLOR 0 = BLACK //
+
 
 
 namespace ft{
@@ -44,14 +45,20 @@ struct node{
 	}
 	node() : data(NULL), color(black), right(NULL), left(NULL), parent(NULL) {}
 	void clear(){
-		if (data){
-			// std::cout << data->first << "\n";
-			alloc.destroy(data);
+		if (this->data){
+			// alloc.destroy(data);
 			alloc.deallocate(data, 1);
+			data = NULL;
 		}
 	}
 
-	~node(){}
+	~node(){
+		// if (data){
+		// 	// std::cout << data->first << "\n";
+		// 	alloc.destroy(data);
+		// 	alloc.deallocate(data, 1);
+		// }
+	}
 };
 
 template <class T, class Compare, class Alloc>
@@ -150,7 +157,7 @@ class RedBlackTree{
 			display_set(root->left, space);
 		}
 	
-		void display_map(node *root, int space){		
+		void display_map(node *root, int space)const{		
 			if (root == NULL || root == nil)
 				return;
 			space += COUNT;
@@ -190,46 +197,36 @@ class RedBlackTree{
 
 		RedBlackTree &operator=(const RedBlackTree &op){
 			
-			// clean(nil);
-			// this->destroy(root);
-			// alloc = op.alloc;
-			// root = NULL;
-			// // if (!nil){
-			// // 	nil = alloc.allocate(1);
-			// // 	alloc.construct(nil, node());
-			// // }
-			// // else{
-			// // 	clean(nil);
-			// // std::cout << "wtf\n";
-			// // 	nil = alloc.allocate(1);
-			// // 	alloc.construct(nil, node());
-			// // }
-			// ft::RedBlackTree<T, Compare, Alloc>::iterator it(op.first_elem());
-			// ft::RedBlackTree<T, Compare, Alloc>::iterator ite(op.last_elem());
-			// while (it != ite){
-			// 	this->insert(*it);
-			// 	it++;
-			// }
+			if (nil)
+				clean(nil);
+			this->destroy(root);
 			alloc = op.alloc;
-			root = op.root;
-			nil = op.nil;
+			root = NULL;
+			nil = alloc.allocate(1);
+			alloc.construct(nil, node());
+			if (op.size() == 0)
+				return *this;
+			ft::RedBlackTree<T, Compare, Alloc>::iterator it(op.first_elem());
+			ft::RedBlackTree<T, Compare, Alloc>::iterator ite(op.last_elem());
+			while (it != ite){
+				this->insert(*it);
+				it++;
+			}
 			return *this;
 		};
 		
 		RedBlackTree(const RedBlackTree &copy){
-
-			// ft::RedBlackTree<T, Compare, Alloc>::iterator it(copy.first_elem());
-			// ft::RedBlackTree<T, Compare, Alloc>::iterator ite(copy.last_elem());
-			// alloc = copy.alloc;
-			// _size = 0;
-			// root = NULL;
-			// nil = alloc.allocate(1);
-			// alloc.construct(nil, node());
-			// while (it != ite){
-			// 	this->insert(*it);
-			// 	it++;
-			// }
-			*this = copy;	
+			node *first = copy.first_elem();
+			node *last = copy.last_elem();
+			alloc = copy.alloc;
+			_size = 0;
+			root = NULL;
+			nil = alloc.allocate(1);
+			alloc.construct(nil, node());
+			while (first != last){
+				this->insert(*first->data);
+				first = next(first);
+			}
 		};
 		
 		RedBlackTree(T data){
@@ -259,9 +256,9 @@ class RedBlackTree{
 		}
 
 		~RedBlackTree(){
+			if (this->nil != NULL)
+				clean(nil);
 			destroy(root);
-			// if (this->nil != NULL)
-			// 	clean(this->nil);
 		}
 
 		void cleaner(node *tree){
@@ -288,9 +285,8 @@ class RedBlackTree{
 				trash->parent->right = NULL;
 			else if (trash->parent)
 				trash->parent->left = NULL;
-			trash->data = NULL;
 			trash->clear();
-			// std::cout << "here\n";
+
 			alloc.destroy(trash);
 			alloc.deallocate(trash, 1);
 			trash = NULL;
@@ -636,7 +632,7 @@ class RedBlackTree{
 
 		node *first_elem() const{
 			node *tmp = root;
-			while (tmp->left)
+			while (tmp && tmp->left)
 				tmp = tmp->left;
 			return tmp;
 		}

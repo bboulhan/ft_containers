@@ -24,10 +24,9 @@ int main()
 	ab.insert(std::pair<int, std::string>(4, "OUB4"));
 
 	std::map<int, std::string>::iterator it = ab.begin();
-	std::map<int, std::string> cc(ab);
-	cc.insert(std::pair<int, std::string>(22, "PO22"));
-	cc = ab;
-
+	std::map<int, std::string> cc;
+	// cc.insert(std::pair<int, std::string>(22, "PO22"));
+	ab = cc;
 
 	std::map<int, std::string>::iterator ss = cc.begin();
 

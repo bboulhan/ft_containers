@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/23 15:48:38 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/08 14:54:51 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,15 @@ namespace ft{
 		size_v = 0;
 		capacity_v = 0;
 	}
+	
 	explicit vector (size_type n, const value_type& val = value_type(), const Alloc& _alloc = Alloc())
 	{
+		(void)_alloc;
+		if (n > max_size())
+			throw std::length_error("vector");
 		try{
 		container = alloc.allocate(n);
-		for(int i = 0; i < n; i++){
+		for(size_type i = 0; i < n; i++){
 			alloc.construct(container + i, val);
 		}
 		size_v = n;
@@ -63,41 +67,50 @@ namespace ft{
 			throw std::bad_alloc();
 		}
 	}
-	template <class itr> 
-	vector (itr first, itr last, const Alloc& _alloc = Alloc()){
+
+	template<class InputIterator>
+	vector(InputIterator first, InputIterator last, const Alloc& _alloc = Alloc(), typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0){
+		(void)_alloc;
 		try{
 		size_type n = last - first;
 		size_type i = 0;
 		container = alloc.allocate(n);
-		for(itr it = first; it != last; it++)
-			alloc.construct(container + i++, *it);
-		size_v = n;
+		for(InputIterator it = first; it != last; it++, i++)
+			alloc.construct(container + i, *it);
 		capacity_v = n;
+		size_v = n;
 		}
 		catch(...){
 			throw std::bad_alloc();
 		}
 	}
 	
+	
 	vector(const vector &copy){
-		container = copy.container;
 		alloc = copy.alloc;
 		size_v = copy.size_v;
 		capacity_v = copy.capacity_v;
+		container = alloc.allocate(capacity_v);
+		for (size_type i = 0; i < size_v; i++)
+			alloc.construct(container + i, copy.container[i]);
 	}
 
 	vector &operator=(const vector &copy){
-		container = copy.container;
+		clear();
+		alloc.deallocate(container, capacity_v);
 		alloc = copy.alloc;
 		size_v = copy.size_v;
 		capacity_v = copy.capacity_v;
+		container = alloc.allocate(capacity_v);
+		for (size_type i = 0; i < size_v; i++)
+			alloc.construct(container + i, copy.container[i]);
 		return (*this);
 	}
 
-	// ~vector(){
-	// 	clear();
-	// 	alloc.deallocate(container, capacity_v);
-	// }
+	~vector(){
+		clear();
+		alloc.deallocate(container, capacity_v);
+	}
 	
 /************************************ Iterators *******************************************************/		
 
@@ -123,7 +136,7 @@ namespace ft{
 
 	void insert(iterator pos, size_type n, const value_type &val){
 		size_type ps = pos - begin();
-		if (abs(pos - begin()) > size_v)
+		if ((size_type)abs(pos - begin()) > size_v)
 			ps = size_v;
 		reserve(size_v + n);
 		iterator it(&container[ps]);
@@ -133,7 +146,6 @@ namespace ft{
 
 	iterator insert(iterator pos, const value_type &val){
 		if (size_v + 1 <= capacity_v){
-			value_type tmp;
 			size_type n = size_v;
 			for (iterator it = end(); it != pos; it--){
 				alloc.construct(container + n, container[n - 1]);
@@ -173,8 +185,6 @@ namespace ft{
 			tmp.push_back(*it);
 		for(iterator it = pos; it != end(); it++)
 			tmp.push_back(*it);
-		clear();
-		alloc.deallocate(container, capacity_v);
 		*this = tmp;
 	}
 	
@@ -192,8 +202,8 @@ namespace ft{
 	}
 
 	iterator erase(iterator first, iterator last){
-		int n = last - first;
-		for (int i = 0; i < n; i++)
+		size_type n = last - first;
+		for (size_type i = 0; i < n; i++)
 			erase(first);
 		return first;
 	}
@@ -214,7 +224,7 @@ namespace ft{
 				else
 					capacity_v *= 2;
 				tmp = alloc.allocate(capacity_v);
-				for(int i = 0; i < size_v; i++){
+				for(size_type i = 0; i < size_v; i++){
 					alloc.construct(tmp + i, container[i]);
 				}
 				alloc.construct(tmp + size_v, val);
@@ -231,7 +241,7 @@ namespace ft{
 	}
 
 	template<class inIter>
-	void assign(inIter first, inIter last){
+	void assign(inIter first, inIter last, typename ft::enable_if<!ft::is_integral<inIter>::value>::type* = 0){
 		unsigned int n = 0;
 		inIter it = first;
 		while (it++ != last)
@@ -269,7 +279,7 @@ namespace ft{
 		if (n > max_size())
 			throw std::length_error("vector");
 		if (n <= capacity_v){
-			int i = size_v;
+			size_type i = size_v;
 			while (i--)
 				pop_back();
 			while (++i < n)
@@ -279,7 +289,7 @@ namespace ft{
 			alloc.deallocate(container, capacity_v);
 			try{
 				container = alloc.allocate(n);
-				for(int i = 0; i < n; i++){
+				for(size_type i = 0; i < n; i++){
 					alloc.construct(container + i, val);
 				}
 				capacity_v = n;
@@ -290,7 +300,7 @@ namespace ft{
 	}
 
 	void clear(){
-		for(int i = size_v; i > 0;i--){
+		for(size_type i = size_v; i > 0;i--){
 			pop_back();
 		}
 		size_v = 0;
@@ -329,35 +339,17 @@ namespace ft{
 		if (n == size_v)
 			return ;
 		if (n > size_v){
-			for(int  i = size_v; i < n;i++){
+			for(size_type  i = size_v; i < n;i++){
 				push_back(val);
 			}
 		}
 		else{
-			for(int i = size_v; i > n; i--){
+			for(size_type i = size_v; i > n; i--){
 				pop_back();
 			}
 		}
 		size_v = n;	
 	}
-	
-	/*void shrink_to_fit(){
-		if (size_v == capacity_v)
-			return ;
-		try{
-		value_type *tmp;
-		tmp = alloc.allocate(size_v);
-		for(int i = 0; i < size_v; i++){
-			alloc.construct(tmp + i, container[i]);
-		}
-		alloc.deallocate(container, capacity_v);
-		capacity_v = size_v;
-		container = tmp;
-		}
-		catch(...){
-			throw std::bad_alloc();
-		}
-	}*/
 	
 	void reserve(size_type n){
 		if (n > max_size())
@@ -366,7 +358,7 @@ namespace ft{
 			return ;
 		value_type *tmp;
 		tmp = alloc.allocate(n);
-		for(int i = 0; i < size_v; i++){
+		for(size_type i = 0; i < size_v; i++){
 			alloc.construct(tmp + i, container[i]);
 		}
 		alloc.deallocate(container, capacity_v);

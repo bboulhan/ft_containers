@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/07 17:46:24 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/08 14:24:35 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ namespace ft{
 	T *copycat(T *data, unsigned int size){
 		std::allocator<T> alloc;
 		T *copy_cat;
+		if (size == 0)
+			return data;
 		copy_cat = alloc.allocate(size);
 		for (unsigned int i = 0; i < size; i++)
 			alloc.construct(copy_cat + i, data[i]);

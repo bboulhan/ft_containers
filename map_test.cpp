@@ -30,8 +30,12 @@ void test(){
 
 	cc[5] = "pol";
 
-	if (cc == ab)
-		std::cout << "yess\n";
+	std::cout << ab.size() << "\n";
+	ab.erase(45);
+	ab.erase(ab.begin());
+	ab.erase(ab.begin(), ab.end());
+	// if (cc == ab)
+	// 	std::cout << "yess\n";
 	// ft::map<int, std::string>::iterator it = ab.begin();
 	// ft::map<int, std::string>::iterator ite = ab.end();
 	// while (it != ite)

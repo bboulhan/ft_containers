@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/07 17:13:57 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/08 14:41:52 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ struct node{
 		left = NULL;
 		parent = NULL;
 	}
-	node() : data(NULL), color(black), right(NULL), left(NULL), parent(NULL) {}
+	node() : data(NULL), color(black), parent(NULL), right(NULL) , left(NULL) {}
 	void clear(){
 		if (this->data){
 			// alloc.destroy(data);
@@ -503,7 +503,6 @@ class RedBlackTree{
 		}
 		
 		void del_fix(node *fix){
-			node *tmp = NULL;
 			node *sibling = NULL;
 			
 			while (fix->color == black && fix != root){
@@ -519,7 +518,7 @@ class RedBlackTree{
 					left_rotation(fix->parent);
 					sibling = fix->parent->right;
 				}
-				else if (special_case(sibling, fix) == true)
+				else if (special_case(sibling) == true)
 					fix = fix->parent;
 				else if (sibling && sibling->color == black){
 					if (((sibling->left && sibling->left == black) || !sibling->left) && ((sibling->right && sibling->right == black) || !sibling->right)){
@@ -546,7 +545,7 @@ class RedBlackTree{
 			fix->color = black;
 		}
  
-		bool special_case(node *sibling, node *fix){
+		bool special_case(node *sibling){
 			if ((sibling && sibling->color == black) || !sibling)
 			{
 				if ((sibling->right && sibling->right->color == black) || !sibling->right)

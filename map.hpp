@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/07 17:47:52 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/08 14:38:11 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ namespace ft{
 			map() : tree() {}
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree() {
+				(void)comp;
+				(void)alloc;
 				while (first != last)
 				{
 					tree.insert(*first);
@@ -239,26 +241,26 @@ namespace ft{
 		x.swap(y);
 	}
 
-	template<class Key, class T, class Compare, class Alloc>
-	bool operator==(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs) {
-		if (lhs.size() != rhs.size())
-			return false;
-		// map<Key, T, Compare, Alloc>::iterator 
+	// template<class Key, class T, class Compare, class Alloc>
+	// bool operator==(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs) {
+	// 	if (lhs.size() != rhs.size())
+	// 		return false;
+	// 	// map<Key, T, Compare, Alloc>::iterator 
 		
 		
-		map<Key, T, Compare, Alloc>::iterator tmp;
-		tmp = lhs.begin();
-		map<Key, T, Compare, Alloc>::iterator tmp2;
-		tmp2 = rhs.begin();
-		while (tmp != lhs.end())
-		{
-			if (*tmp != *tmp2)
-				return false;
-			tmp++;
-			tmp2++;
-		}
-		return true;
-	}
+	// 	map<Key, T, Compare, Alloc>::iterator tmp;
+	// 	tmp = lhs.begin();
+	// 	map<Key, T, Compare, Alloc>::iterator tmp2;
+	// 	tmp2 = rhs.begin();
+	// 	while (tmp != lhs.end())
+	// 	{
+	// 		if (*tmp != *tmp2)
+	// 			return false;
+	// 		tmp++;
+	// 		tmp2++;
+	// 	}
+	// 	return true;
+	// }
 
 	// template<class key, class T, class Compare, class Alloc>
 	// bool operator!=(const map<key, T, Compare, Alloc>& lhs, const map<key, T, Compare, Alloc>& rhs) {

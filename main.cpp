@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:12:08 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/01/23 15:50:23 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/08 14:51:57 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,36 +23,8 @@ int main()
 	
 	try{
 	std::vector<int> ab(p.begin(), p.end());
-	// for (int i = 11; i < 26; i++)
-	// 	ab.push_back(i);
-
 
 	std::vector<int>::iterator it = ab.begin();
-	// ab.insert(it, p.begin(), p.end());
-	
-	// it = ab.begin();
-	// ab.insert(it + 2, 10, 22);
-	
-	// it = ab.insert(it +2, 100);
-	// it = ab.insert(it + 1, 200);
-	
-	// it = ab.insert(it+3, 300);
-	// // it = ab.insert(it, 400);
-	// it = ab.insert(it+ 4 , 500);
-	
-	// it = ab.erase(it + 2);
-	// it = ab.erase(it);
-	// it = ab.erase(it);
-	// it = ab.erase(it);
-	// it = ab.erase(it , it +3);
-	// it = ab.erase(it , it +2);
-	// it = ab.begin();
-
-
-	// ab.erase(it + 2, ab.end());
-	
-	// it = ab.begin();
-	
 	
 	while (it != ab.end()){
 		std::cout << *it << std::endl;
@@ -71,39 +43,18 @@ int main()
 		
 	try{
 	ft::vector<int> a(p.begin(), p.end());
-
-	// for (int i = 11; i < 26; i++)
-	// 	a.push_back(i);
-
+	ft::vector<int>b(a);
+	ft::vector<int>c(10, 2);
+	
+	b.resize(10);
 	
 	ft::vector<int>::iterator it = a.begin();
 
-	// it = a.erase(it +2);
-	// it = a.erase(it);
-	// it = a.erase(it);
-	// it = a.erase(it);
-	
-	// it = a.erase(it , it +3);
-	// it = a.erase(it , it +2);
-	// it = a.begin();
 
-	// a.insert(it, p.begin(), p.end());
-	// it = a.begin();
-	// a.insert(it + 2, 10, 22);
-	// it = a.insert(it + 2, 100);
-	// it = a.insert(it + 1, 200);
-	// it = a.insert(it + 3, 300);
-	// it = a.insert(it, 400);
-	// it = a.insert(it+ 4 , 500);
-
-	
 	while (it != a.end()){
 		std::cout << *it << std::endl;
 		it++;
 	}
-
-	// for (int i = 0; i < a.size(); i++)
-	// 	std::cout << a[i] << std::endl;
 	
 	std::cout << "---------------------\n";
 	

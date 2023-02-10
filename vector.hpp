@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/08 14:54:51 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/10 20:32:45 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ namespace ft{
 			typedef typename Alloc::reference        		reference;
 			typedef typename Alloc::const_reference  		const_reference;
 			typedef typename Alloc::pointer         		pointer;
-			typedef typename Alloc::const_pointer    		const_pointer;
-
+			// typedef typename Alloc::const_pointer    		const_pointer;
+			
 			typedef ft::iterator<T>               			iterator;
-			// typedef ft::vector_iterator<T, true>         const_iterator;
-			// typedef ft::reverse_iterator<iterator>       reverse_iterator;
-			// typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+			typedef ft::iterator<const T>                   const_iterator;
+			typedef ft::reverse_iterator<T>       	reverse_iterator;
+			typedef ft::reverse_iterator<T> 	const_reverse_iterator;
 			typedef std::ptrdiff_t                  difference_type;
 			typedef std::size_t                     size_type;
 		
@@ -126,6 +126,42 @@ namespace ft{
 		return iterator();
 	}
 
+	// const_iterator begin() const{
+	// 	if (size_v > 0)
+	// 		return const_iterator(&container[0]);
+	// 	return const_iterator();
+	// }
+
+	// const_iterator end() const{
+	// 	if (size_v > 0)
+	// 		return const_iterator(&container[size_v]);
+	// 	return const_iterator();
+	// }
+
+	reverse_iterator rbegin(){
+		if (size_v > 0)
+			return reverse_iterator(&container[size_v - 1]);
+		return reverse_iterator();
+	}
+
+	reverse_iterator rend(){
+		if (size_v > 0)
+			return reverse_iterator(&container[-1]);
+		return reverse_iterator();
+	}
+
+	// const_reverse_iterator rbegin() const{
+	// 	if (size_v > 0)
+	// 		return const_reverse_iterator(&container[size_v - 1]);
+	// 	return const_reverse_iterator();
+	// }
+
+	// const_reverse_iterator rend() const{
+	// 	if (size_v > 0)
+	// 		return const_reverse_iterator(&container[-1]);
+	// 	return const_reverse_iterator();
+	// }
+	
 
 
 
@@ -139,9 +175,17 @@ namespace ft{
 		if ((size_type)abs(pos - begin()) > size_v)
 			ps = size_v;
 		reserve(size_v + n);
-		iterator it(&container[ps]);
-		for(size_type i = 0; i < n; i++)
-			it = insert(it, val);
+		size_type i = ps;
+		value_type *tmp = smart_copycat(container, ps, size_v);
+		for (; i < n;i++)
+			alloc.construct(container + i, val);
+		if (ps < size_v){
+		for (size_type j = 0; j < size_v - ps; j++, i++)
+			alloc.construct(container + i, tmp[j]);
+		}
+		alloc.deallocate(tmp, size_v - ps);
+		size_v += n;
+		capacity_v = size_v;	
 	}
 
 	iterator insert(iterator pos, const value_type &val){
@@ -173,38 +217,52 @@ namespace ft{
 
 	template<class inIter>
 	void insert(iterator pos, inIter first, inIter last, typename ft::enable_if<!ft::is_integral<inIter>::value>::type* = 0){
-		size_type n = abs(last - first);
-		vector tmp;
-		if (n >= capacity_v)
-			capacity_v += n;
-		tmp.container = alloc.allocate(capacity_v);
-		tmp.capacity_v = capacity_v;
-		for(iterator it = begin(); it != pos; it++)
-			tmp.push_back(*it);
-		for(inIter it = first; it != last; it++)
-			tmp.push_back(*it);
-		for(iterator it = pos; it != end(); it++)
-			tmp.push_back(*it);
-		*this = tmp;
-	}
-	
-	iterator erase(iterator pos){
-		value_type *tmp = ft::copycat(container, size_v);
-		size_type n = size_v;
 		size_type ps = pos - begin();
-		clear();
-		for (size_type i = 0; i < n; i++){
-			if (i != ps)
-				push_back(tmp[i]);
+		if ((size_type)abs(pos - begin()) > size_v)
+			ps = size_v;
+		reserve(capacity_v + (size_type)abs(last - first));
+		size_type i = ps;
+		// printf("ps: %lu\tcapacity : %lu\n", ps, capacity_v);
+		value_type *tmp = smart_copycat(container, ps, size_v);
+		// std::cout << "hey\n";
+		
+		for (inIter it = first; it != last ;i++, it++){
+			// std::cout << (*it) << "\t" << i << "\n";
+			alloc.construct(container + i, *it);
 		}
-		alloc.deallocate(tmp, n);
+		// std::cout << "hey 2\n";
+		if (ps < size_v){
+		for (size_type j = 0; j < size_v - ps; j++, i++)
+			alloc.construct(container + i, tmp[j]);
+		}
+		alloc.deallocate(tmp, size_v - ps);
+		size_v += (last - first);
+		capacity_v = size_v;
+	}
+		
+	iterator erase(iterator pos){
+		size_type ps = pos - begin();
+		if (ps >= size_v)
+			return pos;
+		alloc.destroy(&container[ps]);
+		for (size_type i = ps; i < size_v - 1; i++)
+			container[i] = container[i + 1];
+		alloc.destroy(&container[size_v - 1]);
+		size_v--;
+		
+
 		return pos;
 	}
 
 	iterator erase(iterator first, iterator last){
 		size_type n = last - first;
-		for (size_type i = 0; i < n; i++)
-			erase(first);
+		size_type ps = first - begin();
+		size_type en = end() - last;
+		en = size_v - en;
+		for(size_type i = ps; en < size_v ;i++, en++)
+			container[i] = container[en];
+		while (n--)
+			pop_back();
 		return first;
 	}
  
@@ -218,7 +276,6 @@ namespace ft{
 		try{
 			if (size_v + 1 > capacity_v){
 				value_type *tmp;
-		
 				if (capacity_v == 0)
 					capacity_v = 1;
 				else
@@ -405,13 +462,44 @@ namespace ft{
 	}
 
 
+	};
 
+	// template <class T, class Alloc>
+	// bool operator==(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+	// 	if (lhs.size() != rhs.size())
+	// 		return false;
+	// 	for(typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++){
+	// 		if (lhs[i] != rhs[i])
+	// 			return false;
+	// 	}
+	// 	return true;
+	// }
+
+	// template <class T, class Alloc>
+	// bool operator!=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+	// 	return !(lhs == rhs);
+	// }
+
+	// template <class T, class Alloc>
+	// bool operator<(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+	// 	typename vector<T, Alloc>::size_type i = 0;
+	// 	while (i < lhs.size() && i < rhs.size()){
+	// 		if (lhs[i] < rhs[i])
+	// 			return true;
+	// 		else if (lhs[i] > rhs[i])
+	// 			return false;
+	// 		i++;
+	// 	}
+	// 	if (i == lhs.size() && i != rhs.size())
+	// 		return true;
+	// 	return false;
+	// }
+	
 
 
 
 
 	
-	};
 };
 
 

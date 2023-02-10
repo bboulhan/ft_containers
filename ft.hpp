@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/08 14:24:35 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/10 18:50:45 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ namespace ft{
 	T *smart_copycat(T *data, int begin, int end){
 		std::allocator<T> alloc;
 		T *Smart_Copycat;
-		Smart_Copycat = alloc.allocator(end - begin);
+		Smart_Copycat = alloc.allocate(end - begin);
 		for (int i = begin; i <= end; i++)
 			alloc.construct(Smart_Copycat + i, data[i]);
 		return Smart_Copycat;
@@ -207,11 +207,37 @@ namespace ft{
 		return (first2 != last2);
 	}
 	
+	template <class T>
+	class iterator_traits {
+	public:
+		typedef typename T::iterator_category iterator_category;
+		typedef typename T::value_type         value_type;
+		typedef typename T::pointer            pointer;
+		typedef typename T::reference          reference;
+		typedef typename std::ptrdiff_t       difference_type;
+	};
+	template<class T>
+	class iterator_traits<T*> {
+	public:
+		typedef std::random_access_iterator_tag iterator_category;
+		typedef T                               value_type;
+		typedef T*                              pointer;
+		typedef T&                              reference;
+		typedef std::ptrdiff_t                  difference_type;
+	};
+
+	template<class T>
+	
+	class iterator_traits<const T*> {
+	public:
+		typedef std::random_access_iterator_tag iterator_category;
+		typedef const T                               value_type;
+		typedef const T*                              pointer;
+		typedef const T&                              reference;
+		typedef std::ptrdiff_t                  difference_type;
+	};	
+
 }
-
-
-
-
 
 
 

@@ -31,9 +31,12 @@ void test(){
 	cc[5] = "pol";
 
 	std::cout << ab.size() << "\n";
-	ab.erase(45);
-	ab.erase(ab.begin());
-	ab.erase(ab.begin(), ab.end());
+
+
+	// ft::map<int, std::string>::const_iterator it = ab.begin();
+
+	// std::cout << ab.equal_range(10)->first << "\n";
+	// std::cout << ab.count(10)->first << "\n";
 	// if (cc == ab)
 	// 	std::cout << "yess\n";
 	// ft::map<int, std::string>::iterator it = ab.begin();

@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 12:00:11 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/02 17:09:40 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/10 15:56:34 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,9 @@ namespace ft{
 			set(): tree(), alloc(){};
 
 			template <class InputIterator>
-			set(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): tree(comp, alloc), alloc(alloc){
+			set(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()){
+				(void)comp;
+				(void)alloc;
 				while (first != last)
 				{
 					tree.insert(*first);
@@ -69,7 +71,9 @@ namespace ft{
 	/*********************************************** Iterators ******************************************************************/
 
 			iterator begin(){
-				return (iterator(tree.first_elem()));
+				if (tree.get_root())
+					return iterator(tree.first_elem());
+				return (iterator(tree.get_nil()));
 			};
 
 			iterator end(){
@@ -108,8 +112,7 @@ namespace ft{
 				node *tmp = tree.search(val);
 				if (tmp)
 					return iterator(tmp);
-				if (!tmp)
-					tmp = tree.insert(val);
+				tmp = tree.insert(val);
 				return iterator(tmp);
 			};
 
@@ -147,7 +150,7 @@ namespace ft{
 			};
 
 			void swap(set &x){
-				RedBlackTree tmp = tree;
+				RedBlackTree tmp(tree);
 				tree = x.tree;
 				x.tree = tmp;
 			}

@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/08 14:41:52 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/10 20:10:16 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,67 @@ class RedBlackTree{
 				bool operator!=(const iterator &op) const{
 					return (this->ptr->data != op.ptr->data);
 				}
-		};	
+		};
+
+		class const_iterator{
+			typedef const T value_type;
+			typedef T* pointer;
+			typedef T& reference;
+			typedef node* base;
+			typedef std::ptrdiff_t difference_type;
+			typedef std::random_access_iterator_tag iterator_category;
+
+			private:
+				base 	ptr;
+			public:
+			
+				const_iterator() {ptr = NULL;}
+				const_iterator(const const_iterator &src){ *this = src;}
+				const_iterator(base container) : ptr(container) {}
+				const_iterator &operator=(const const_iterator &op){
+					this->ptr = op.ptr;
+					return *this;
+				}
+				
+				pointer operator->() const{
+					return this->ptr->data;
+				}
+		
+				reference operator*() const{
+					return *this->ptr->data;
+				}
+		
+				const_iterator &operator++(){
+					ptr = next(ptr);
+					return *this;
+				}
+	
+				const_iterator operator++(int){
+					const_iterator tmp = *this;
+					ptr = next(ptr);
+					return tmp;
+				}
+
+				const_iterator operator--(){
+					ptr = prev(ptr);
+					return *this;
+				}
+
+				const_iterator operator--(int){
+					const_iterator tmp = *this;
+					ptr = prev(ptr);
+					return tmp;
+				}
+
+				bool operator==(const const_iterator &op) const{
+					return (this->ptr->data == op.ptr->data);
+				}
+
+				bool operator!=(const const_iterator &op) const{
+					return (this->ptr->data != op.ptr->data);
+				}
+			
+		};
 
 	/************************************************ display ************************************************/
 	
@@ -575,7 +635,7 @@ class RedBlackTree{
 			return tmp2;
 		}
 
-		node *find(T data){
+		node *find(T data) const{
 			node *tmp = root;
 			while (tmp && tmp != nil && tmp->data->first != data.first){
 				if (tmp->data->first < data.first)

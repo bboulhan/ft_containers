@@ -14,30 +14,35 @@
 
 void test2(){
 	std::map<int, int> mp;
+    std::vector<int> v;
 
-    for (int i = 0, j = 0; i < 25 * _ratio; ++i, ++j)
-        mp.insert(std::make_pair(i, j));
-    
-	std::map<T, V> mp2;
-    for (int i = 25 * _ratio, j = 0; i < 35 * _ratio; ++i, j--)
-        mp.insert(std::make_pair(i, j));
+    mp.insert(std::make_pair(5, 5));
+    mp.insert(std::make_pair(3, 3));
+    mp.insert(std::make_pair(7, 7));
 
-    // long *adr1 = reinterpret_cast<long *>(&mp);
-    // long *adr2 = reinterpret_cast<long *>(&mp2);
-    mp.swap(mp2);
-    std::swap(mp, mp2);
-    std::map<T, V>::iterator it = mp2.begin();
-	while (it != mp2.end()){
-		std::cout << it->first << "\n";
-		it++;
-	}
-	std::cout << "-----------------------------------------\n";
+    std::map<T, V>::reverse_iterator rit = mp.rbegin();
+    std::map<T, V>::reverse_iterator rit2 = mp.rend();
+    v.push_back(rit->first);
+    rit++;
+    rit2--;
+    v.push_back(rit->first);
+    v.push_back(rit2->first);
+    rit++;
+    v.push_back(*rit == *rit2);
+    rit2--;
+    v.push_back(rit->first);
+    v.push_back(rit2->first);
+    v.push_back(*rit2 > *rit);
+    v.push_back(*rit2 < *rit);
+    v.push_back((--rit)->first);
+    v.push_back((++rit2)->first);
+    v.push_back((rit--)->first);
+    v.push_back((rit2++)->first);
+	// std::cout << "-----------------------------------------\n";
 
-    std::map<T, V>::iterator it2 = mp.begin();
-	while (it2 != mp.end()){
-		std::cout << it2->first << "\n";
-		it2++;
-	}
+	std::vector<int>::iterator it = v.begin();
+	for(;it != v.end();it++)
+		std::cout << *it << "\n";
 
 }
 
@@ -49,40 +54,47 @@ void test2(){
 
 void test(){
 	ft::map<int, int> mp;
+    std::vector<int> v;
 
-    for (int i = 0, j = 0; i < 25 * _ratio; ++i, ++j)
-        mp.insert(ft::make_pair(i, j));
-    
-	ft::map<T, V> mp2;
-    for (int i = 25 * _ratio, j = 0; i < 35 * _ratio; ++i, j--)
-        mp.insert(ft::make_pair(i, j));
+    mp.insert(ft::make_pair(5, 5));
+    mp.insert(ft::make_pair(3, 3));
+    mp.insert(ft::make_pair(7, 7));
 
-    // long *adr1 = reinterpret_cast<long *>(&mp);
-    // long *adr2 = reinterpret_cast<long *>(&mp2);
-	// std::cout << "hey\n";
-    mp.swap(mp2);
-	// std::cout << "hey 2\n";
-    // ft::swap(mp, mp2);
-    ft::map<T, V>::iterator it = mp2.begin();
-	while (it != mp2.end()){
-		std::cout << it->first << "\n";
-		it++;
-	}
-	std::cout << "-----------------------------------------\n";
+    ft::map<T, V>::reverse_iterator rit = mp.rbegin();
+    ft::map<T, V>::reverse_iterator rit2 = mp.rend();
 
-    ft::map<T, V>::iterator it2 = mp.begin();
-	while (it2 != mp.end()){
-		std::cout << it2->first << "\n";
-		it2++;
-	}
+    v.push_back(rit->first);
+    rit++;
+    rit2--;
+    v.push_back(rit->first);
+	std::cout << "hey\n";
+    v.push_back(rit2->first);
+	std::cout << "hey 2\n";
+    rit++;
+    v.push_back(*rit == *rit2);
+    rit2--;
+    v.push_back(rit->first);
+    v.push_back(rit2->first);
+    v.push_back(*rit2 > *rit);
+    v.push_back(*rit2 < *rit);
+    v.push_back((--rit)->first);
+    v.push_back((++rit2)->first);
+    v.push_back((rit--)->first);
+    v.push_back((rit2++)->first);
+	// std::cout << "-----------------------------------------\n";
+
+	std::vector<int>::iterator it = v.begin();
+	for(;it != v.end();it++)
+		std::cout << *it << "\n";
 }
 
 
 int main()
 {
-	test();
 	// test2();
-	system("leaks a.out");
+	// std::cout << "-----------------------------------------\n";
+	test();
+	// system("leaks a.out");
 	return 0;
 }
 

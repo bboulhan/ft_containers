@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/10 20:32:45 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/11 18:07:50 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ namespace ft{
 			// typedef typename Alloc::const_pointer    		const_pointer;
 			
 			typedef ft::iterator<T>               			iterator;
-			typedef ft::iterator<const T>                   const_iterator;
+			// typedef ft::iterator<const T> const                const_iterator;
+			// typedef ft::const_iterator<T>                   const_iterator;
 			typedef ft::reverse_iterator<T>       	reverse_iterator;
-			typedef ft::reverse_iterator<T> 	const_reverse_iterator;
+			// typedef ft::reverse_iterator<T> 	const_reverse_iterator;
 			typedef std::ptrdiff_t                  difference_type;
 			typedef std::size_t                     size_type;
 		
@@ -464,16 +465,16 @@ namespace ft{
 
 	};
 
-	// template <class T, class Alloc>
-	// bool operator==(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
-	// 	if (lhs.size() != rhs.size())
-	// 		return false;
-	// 	for(typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++){
-	// 		if (lhs[i] != rhs[i])
-	// 			return false;
-	// 	}
-	// 	return true;
-	// }
+	template <class T, class Alloc>
+	bool operator==(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+		if (lhs.size() != rhs.size())
+			return false;
+		for(typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++){
+			if (lhs[i] != rhs[i])
+				return false;
+		}
+		return true;
+	}
 
 	// template <class T, class Alloc>
 	// bool operator!=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){

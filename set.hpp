@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 12:00:11 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/10 15:56:34 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/11 18:04:07 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ namespace ft{
 			typedef T value_type;
 			typedef Compare key_compare;
 			typedef Alloc allocator_type;
-			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::iterator iterator;
+
+			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::iterator 		iterator;
+			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::reverse_iterator reverse_iterator;
 			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::node		node;
 			typedef typename Alloc::size_type       					size_type;//A type that counts the number of elements in a vector.
 			typedef typename Alloc::difference_type					 	difference_type;//A type that provides the difference between the addresses of two elements in a vector.
@@ -79,6 +81,17 @@ namespace ft{
 			iterator end(){
 				return (iterator(tree.get_nil()));
 			};
+
+			reverse_iterator rbegin() {
+				if (tree.get_root())
+					return reverse_iterator(tree.last_elem()->parent);
+				return (reverse_iterator(tree.get_nil()));
+			}
+
+			reverse_iterator rend() {
+				return (reverse_iterator(tree.get_nil()));
+			}
+			
 
 	/********************************************** Capacity ****************************************************************************/
 			
@@ -188,6 +201,13 @@ namespace ft{
 			if (!tmp)
 				return end();
 			return iterator(tmp);
+		}
+
+		size_type count(const key_type& k) const {
+			node *tmp = tree.search(k);
+			if (!tmp)
+				return 0;
+			return 1;
 		}
 	
 		ft::pair<iterator,iterator> equal_range(const key_type& k) {

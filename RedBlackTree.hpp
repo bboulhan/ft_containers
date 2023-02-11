@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/10 20:10:16 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/11 17:48:39 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ class RedBlackTree{
 				}
 		};
 
-		class const_iterator{
+		/*class const_iterator{
 			typedef const T value_type;
 			typedef T* pointer;
 			typedef T& reference;
@@ -198,7 +198,77 @@ class RedBlackTree{
 					return (this->ptr->data != op.ptr->data);
 				}
 			
+		};*/
+
+		class reverse_iterator{
+			public:
+				typedef T value_type;
+				typedef T* pointer;
+				typedef T& reference;
+				typedef node* base;
+				typedef std::ptrdiff_t difference_type;
+				typedef std::random_access_iterator_tag iterator_category;
+			
+			private:
+				base 	ptr;
+			public:
+				reverse_iterator() {ptr = NULL;}
+				reverse_iterator(const reverse_iterator &src){ *this = src;}
+				reverse_iterator(base container) : ptr(container){}
+
+				reverse_iterator &operator=(const reverse_iterator &op){
+					this->ptr = op.ptr;
+					
+					return *this;
+				}
+
+				pointer operator->() const{
+					return this->ptr->data;
+				}
+
+				reference operator*() const{
+					return *this->ptr->data;
+				}
+
+				reverse_iterator &operator++(){
+					ptr = prev(ptr);
+					return *this;
+				}
+
+				reverse_iterator operator++(int){
+					reverse_iterator tmp = *this;
+					ptr = prev(ptr);
+					return tmp;
+				}
+
+				reverse_iterator operator--(){
+					if (ptr && !ptr->data)
+						ptr = ptr->right;
+					else
+						ptr = next(ptr);
+					return *this;
+				}
+
+				reverse_iterator operator--(int){
+					reverse_iterator tmp = *this;
+					if (ptr && !ptr->data)
+						ptr = ptr->right;
+					else
+						ptr = next(ptr);
+					return tmp;
+				}
+
+				bool operator==(const reverse_iterator &op) const{
+					return (this->ptr->data == op.ptr->data);
+				}
+
+				bool operator!=(const reverse_iterator &op) const{
+					return (this->ptr->data != op.ptr->data);
+				}
 		};
+
+				
+				
 
 	/************************************************ display ************************************************/
 	
@@ -257,6 +327,8 @@ class RedBlackTree{
 
 		RedBlackTree &operator=(const RedBlackTree &op){
 			
+			if (first_elem())
+				first_elem()->left = NULL;
 			if (nil)
 				clean(nil);
 			this->destroy(root);
@@ -298,6 +370,8 @@ class RedBlackTree{
 			nil->data = NULL;
 			nil->parent = root;
 			root->right = nil;
+			root->left = nil;
+			nil->left = NULL;
 			_size = 1;
 		}
 
@@ -316,6 +390,8 @@ class RedBlackTree{
 		}
 
 		~RedBlackTree(){
+			if (first_elem())
+				first_elem()->left = NULL;
 			if (this->nil != NULL)
 				clean(nil);
 			destroy(root);
@@ -332,6 +408,8 @@ class RedBlackTree{
 		void deleter(){
 			if (!root)
 				return;
+			nil->right = NULL;
+			first_elem()->left = NULL;
 			cleaner(root);
 			nil->parent = NULL;
 			_size = 0;
@@ -363,9 +441,12 @@ class RedBlackTree{
 				this->_size++;
 				nil->parent = root;
 				root->right = nil;
+				root->left = nil;
+				nil->right = root;
 				return root;
 			}
 			nil->parent->right = NULL;
+			first_elem()->left = NULL;
 			node *child = alloc.allocate(1);
 			alloc.construct(child, node(data));
 			child->parent = parent;
@@ -377,6 +458,8 @@ class RedBlackTree{
 			check_violation(child);
 			nil->parent = last_elem();
 			nil->parent->right = nil;
+			first_elem()->left = nil;
+			nil->right = first_elem();
 			return child;
 		}
 		
@@ -507,6 +590,9 @@ class RedBlackTree{
 
 		void Delete(T data){
 			nil->parent->right = NULL;
+			nil->right = NULL;
+			if (first_elem())
+				first_elem()->left = NULL;
 			node *del = search(data);
 			if (!del)
 				return ;
@@ -557,6 +643,9 @@ class RedBlackTree{
 			nil->parent = last_elem();
 			if (nil->parent)
 				nil->parent->right = nil;
+			if (first_elem())
+				first_elem()->left = nil;
+			nil->right = first_elem();
 			del->clear();
 			alloc.destroy(del);
 			alloc.deallocate(del, 1);
@@ -691,14 +780,14 @@ class RedBlackTree{
 
 		node *first_elem() const{
 			node *tmp = root;
-			while (tmp && tmp->left)
+			while (tmp && tmp->left && tmp->left != nil)
 				tmp = tmp->left;
 			return tmp;
 		}
 
 		node *last_elem() const {
 			node *tmp = root;
-			while (tmp && tmp->right)
+			while (tmp && tmp->right && tmp != nil)
 				tmp = tmp->right;
 			return tmp;
 		}
@@ -735,7 +824,7 @@ class RedBlackTree{
 			else{
 				if (tmp->left)
 					tmp = tmp->left;
-				while (tmp->right && *tmp->data < *tree->data)
+				while (tmp->right && tmp->data && (*tmp->data < *tree->data))
 					tmp = tmp->right;
 			}
 			return tmp;

@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:38:16 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/10 19:04:37 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/11 13:51:20 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ namespace ft{
 			typedef T& reference;
 			typedef std::ptrdiff_t difference_type;
 			typedef std::random_access_iterator_tag iterator_category;
-		private:
+		protected:
 			pointer 	ptr;
 		public:
 			iterator() {ptr = NULL;}
@@ -141,6 +141,90 @@ namespace ft{
 			}
 		};
 
+		/*template<class T>
+		class const_iterator{
+			public :
+				typedef const T value_type;
+				typedef const T* pointer;
+				typedef const T& reference;
+				typedef std::ptrdiff_t difference_type;
+				typedef std::random_access_iterator_tag iterator_category;
+			
+			private:
+				pointer 	ptr;
+			public:
+			
+				const_iterator() {ptr = NULL;}
+				const_iterator(const const_iterator &src) {*this = src;}
+				const_iterator(pointer container) : ptr(container) {}
+				// const_iterator(const const_iterator &src) : iterator(src) {}
+
+				const_iterator &operator=(const const_iterator &op){
+					this->ptr = op.ptr;
+					return *this;
+				}
+
+				const_iterator &operator++(){
+					++this->ptr;
+					return *this;
+				}
+
+				const_iterator operator++(int){
+					const_iterator tmp(*this);
+					++(*this);
+					return tmp;
+				}
+
+				const_iterator &operator--(){
+					--this->ptr;
+					return *this;
+				}
+
+				const_iterator operator--(int){
+					const_iterator tmp(*this);
+					--(*this);
+					return tmp;
+				}
+				
+				reference operator*(){
+					return *this->ptr;
+				}
+				
+				pointer operator->(){
+					return this->ptr;
+				}
+
+				const_iterator operator+(difference_type n){
+					return const_iterator(this->ptr + n);
+				}
+
+				const_iterator operator-(difference_type n){
+					return const_iterator(this->ptr - n);
+				}
+
+				difference_type operator-(const const_iterator &op){
+					difference_type n = 0;
+					pointer p = this->ptr;
+					if (this->ptr < op.ptr){
+						while (p++ != op.ptr)
+							n--;
+					}
+					else{
+						while (p-- != op.ptr)
+							n++;
+					}
+					return n;
+				}
+				
+				value_type operator[](difference_type n){
+					return (this->ptr[n]);
+				}
+
+			
+		};*/
+		
+
+		
 	template<class T>
 	class reverse_iterator{
 		public:

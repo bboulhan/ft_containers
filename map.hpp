@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/10 19:55:25 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/11 18:02:58 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ namespace ft{
 			// typedef value_compare (Compare c) : comp(c) {}
 
 			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::iterator 		iterator;
-			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::const_iterator	const_iterator;
+			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::const_iterator	const_iterator;
+			
+			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::reverse_iterator reverse_iterator;
 			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::node		node;
 			typedef typename Alloc::size_type       					size_type;//A type that counts the number of elements in a vector.
 			typedef typename Alloc::difference_type					 	difference_type;//A type that provides the difference between the addresses of two elements in a vector.
@@ -87,15 +89,25 @@ namespace ft{
 			return iterator(tree.get_nil());
 		}
 
-		const_iterator begin() const {
+		reverse_iterator rbegin() {
 			if (tree.get_root())
-				return const_iterator(tree.first_elem());
-			return (const_iterator(tree.get_nil()));
+				return reverse_iterator(tree.last_elem()->parent);
+			return (reverse_iterator(tree.get_nil()));
 		}
 
-		const_iterator end() const {
-			return const_iterator(tree.get_nil());
+		reverse_iterator rend() {
+			return (reverse_iterator(tree.get_nil()));
 		}
+
+		// const_iterator begin() const {
+		// 	if (tree.get_root())
+		// 		return const_iterator(tree.first_elem());
+		// 	return (const_iterator(tree.get_nil()));
+		// }
+
+		// const_iterator end() const {
+		// 	return const_iterator(tree.get_nil());
+		// }
 
 
 
@@ -223,16 +235,16 @@ namespace ft{
 			return end();
 		}
 
-		const_iterator lower_bound(const key_type& k) const {
-			const_iterator tmp = begin();
-			while (tmp != end())
-			{
-				if (tmp->first >= k)
-					return tmp;
-				tmp++;
-			}
-			return end();
-		}
+		// const_iterator lower_bound(const key_type& k) const {
+		// 	const_iterator tmp = begin();
+		// 	while (tmp != end())
+		// 	{
+		// 		if (tmp->first >= k)
+		// 			return tmp;
+		// 		tmp++;
+		// 	}
+		// 	return end();
+		// }
 
 		iterator upper_bound(const key_type& k) {
 			iterator tmp = begin();

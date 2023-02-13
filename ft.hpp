@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/10 18:50:45 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/13 20:37:08 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <iostream>
 #include <cmath>
 #include <unistd.h>
+
+
 
 namespace ft{
 
@@ -52,10 +54,10 @@ namespace ft{
 
 	template<class T>
 	T *copycat(T *data, unsigned int size){
+		if (size == 0)
+			return NULL;
 		std::allocator<T> alloc;
 		T *copy_cat;
-		if (size == 0)
-			return data;
 		copy_cat = alloc.allocate(size);
 		for (unsigned int i = 0; i < size; i++)
 			alloc.construct(copy_cat + i, data[i]);
@@ -63,14 +65,27 @@ namespace ft{
 	}
 
 	template<class T>
-	T *smart_copycat(T *data, int begin, int end){
+	T *smart_copycat(T *data, size_t begin, size_t end){
 		std::allocator<T> alloc;
+		size_t n = end - begin;
+		if (n == 0 || alloc.max_size() < n)
+			return NULL;
 		T *Smart_Copycat;
-		Smart_Copycat = alloc.allocate(end - begin);
-		for (int i = begin; i <= end; i++)
-			alloc.construct(Smart_Copycat + i, data[i]);
+		Smart_Copycat = alloc.allocate(n);
+		for (size_t i = 0; i + begin < end; i++)
+			alloc.construct(Smart_Copycat + i, data[i + begin]);
 		return Smart_Copycat;
 	}
+
+	// template <class Compare, class T>
+	// class Comp {
+	// 	public:
+	// 		Comp(Compare c) : comp_(c) {};
+
+	// 		bool operator()(const T& x, const T& y) const { return comp_(x.first, y.first); };
+
+	// 		Compare comp_;
+	// };
 
 	template<class InIter1, class InIter2>
 	bool equal(InIter1 first1, InIter1 last1, InIter2 first2){
@@ -225,9 +240,8 @@ namespace ft{
 		typedef T&                              reference;
 		typedef std::ptrdiff_t                  difference_type;
 	};
-
-	template<class T>
 	
+	template<class T>
 	class iterator_traits<const T*> {
 	public:
 		typedef std::random_access_iterator_tag iterator_category;
@@ -236,6 +250,38 @@ namespace ft{
 		typedef const T&                              reference;
 		typedef std::ptrdiff_t                  difference_type;
 	};	
+
+	// class const_iterator : public RandAccess<value_type>
+    //     {
+    //         public:
+    //             typedef	value_type const&   reference;
+    //             typedef	value_type const&	const_reference;
+    //             typedef	value_type const*   pointer;
+    //             typedef ptrdiff_t			difference_type;
+
+    //         public:
+    //             const_iterator();
+	// 	        const_iterator(T *src);
+    //             const_iterator(const RandAccess<T> &src);
+    //             virtual ~const_iterator();
+
+    //             reference               operator*() const;
+    //             pointer                 operator->() const;
+    //             const_reference         operator[](size_type n) const;
+    //             const_iterator&         operator+=(difference_type n);
+    //             const_iterator&         operator-=(difference_type n);
+
+    //             difference_type		operator-(const RandAccess<value_type> &n) const;
+    //             const_iterator		operator-(difference_type n) const;
+    //             const_iterator			operator+(difference_type n) const;
+    //             friend const_iterator		operator+(difference_type n, const const_iterator &rhs) { return rhs.operator+(n); };
+
+    //             const_iterator			&operator++(void);
+    //             const_iterator			operator++(int);
+    //             const_iterator			&operator--(void);
+    //             const_iterator			operator--(int);
+    //     };
+
 
 }
 

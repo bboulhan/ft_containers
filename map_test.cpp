@@ -27,7 +27,10 @@ void test(){
 	ab.insert(ft::pair<int, std::string>(45, "UI45"));
 
 	
+	ft::map<int, std::string> cc(ab);
 
+	// if (ab == cc)
+	// 	std::cout << "yess\n";
 
 	// ft::map<int, std::string>::iterator it = ab.begin();
 	// ft::map<int, std::string>::iterator ite = ab.end();
@@ -49,7 +52,7 @@ void test(){
 	// ab.erase(65);
 	// ab.erase(45);
 	// ab.erase(10);
-	ab.clear();
+	// ab.clear();
 	// ab.display();
 
 	std::cout << "size : " << ab.size() << std::endl;

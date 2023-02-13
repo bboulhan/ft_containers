@@ -6,31 +6,31 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:38:16 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/11 13:51:20 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/13 20:49:06 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-#include "ft.hpp"
-#include "vector.hpp"
+#include "stack.hpp"
 
 
 namespace ft{
+	
 	template<class T>
-	class iterator{
+	class iterator : public std::iterator<std::random_access_iterator_tag , T>{
 		public:
 			typedef T value_type;
 			typedef T* pointer;
 			typedef T& reference;
 			typedef std::ptrdiff_t difference_type;
 			typedef std::random_access_iterator_tag iterator_category;
-		protected:
-			pointer 	ptr;
+
 		public:
+			pointer 	ptr;
 			iterator() {ptr = NULL;}
-			iterator(const iterator &src){ *this = src;}
+			iterator(const iterator &src) : ptr(src.ptr){}
 			iterator(pointer container) : ptr(container) {}
 			
 			iterator &operator=(const iterator &op){
@@ -141,23 +141,31 @@ namespace ft{
 			}
 		};
 
-		/*template<class T>
-		class const_iterator{
+		
+		
+		
+
+
+		template<class T>
+		class const_iterator : public std::iterator<std::random_access_iterator_tag , T>{
 			public :
-				typedef const T value_type;
-				typedef const T* pointer;
-				typedef const T& reference;
+				typedef  const T value_type;
+				// typedef	value_type const&   reference;
+                // typedef	value_type const&	const_reference;
+                // typedef	value_type const*   pointer;
+				typedef  const T* pointer;
+				typedef  const T& reference;
 				typedef std::ptrdiff_t difference_type;
 				typedef std::random_access_iterator_tag iterator_category;
 			
-			private:
-				pointer 	ptr;
-			public:
 			
-				const_iterator() {ptr = NULL;}
-				const_iterator(const const_iterator &src) {*this = src;}
-				const_iterator(pointer container) : ptr(container) {}
-				// const_iterator(const const_iterator &src) : iterator(src) {}
+			public:
+			    pointer 	ptr;
+			
+				 const_iterator() {ptr = NULL;}
+				 const_iterator(const const_iterator &src) : ptr(src.ptr){}
+				 const_iterator(pointer container) : ptr(container) {}
+				// explicit const_iterator(const iterator<T> &src) {ptr = src.ptr;}
 
 				const_iterator &operator=(const const_iterator &op){
 					this->ptr = op.ptr;
@@ -220,10 +228,56 @@ namespace ft{
 					return (this->ptr[n]);
 				}
 
-			
-		};*/
-		
+				bool operator!=(const const_iterator &comp){
+					if (this->ptr != comp.ptr)
+						return true;
+					return false;
+				}
 
+				bool operator==(const const_iterator &comp){
+					if (this->ptr == comp.ptr)
+						return true;
+					return false;
+				}
+
+				bool operator<(const const_iterator &comp){
+					if (this->ptr < comp.ptr)
+						return true;
+					return false;
+				}
+
+				bool operator>(const const_iterator &comp){
+					if (this->ptr > comp.ptr)
+						return true;
+					return false;
+				}
+
+				bool operator<=(const const_iterator &comp){
+					if (this->ptr <= comp.ptr)
+						return true;
+					return false;
+				}
+
+				bool operator>=(const const_iterator &comp){
+					if (this->ptr >= comp.ptr)
+						return true;
+					return false;
+				}
+
+				const_iterator &operator+=(difference_type n){
+					this->ptr = this->ptr + n;
+					return *this;
+				}
+
+				const_iterator &operator-=(difference_type n){
+					this->ptr = this->ptr - n;
+					return *this;
+				}
+
+		};
+				
+
+			
 		
 	template<class T>
 	class reverse_iterator{
@@ -347,8 +401,6 @@ namespace ft{
 				return (this->ptr - n);
 			}
 	};
-
-
 
 }
 

@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/11 18:07:50 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/13 20:07:21 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 #include "ft.hpp"
 #include "utils.hpp"
 
+#include <chrono>
+using namespace std::chrono;
+
 namespace ft{
 	template <class T, class Alloc = std::allocator<T> >
 	class vector{
@@ -26,15 +29,17 @@ namespace ft{
 			typedef typename Alloc::reference        		reference;
 			typedef typename Alloc::const_reference  		const_reference;
 			typedef typename Alloc::pointer         		pointer;
-			// typedef typename Alloc::const_pointer    		const_pointer;
+			typedef typename Alloc::const_pointer    		const_pointer;
 			
 			typedef ft::iterator<T>               			iterator;
-			// typedef ft::iterator<const T> const                const_iterator;
-			// typedef ft::const_iterator<T>                   const_iterator;
+			// typedef ft::iterator<const T> 	                const_iterator;
+			typedef ft::const_iterator<T>                   const_iterator;
 			typedef ft::reverse_iterator<T>       	reverse_iterator;
 			// typedef ft::reverse_iterator<T> 	const_reverse_iterator;
 			typedef std::ptrdiff_t                  difference_type;
 			typedef std::size_t                     size_type;
+
+	
 		
 		private:
 		    value_type      *container;
@@ -97,6 +102,8 @@ namespace ft{
 	}
 
 	vector &operator=(const vector &copy){
+		if (*this == copy)
+			return *this;
 		clear();
 		alloc.deallocate(container, capacity_v);
 		alloc = copy.alloc;
@@ -110,8 +117,15 @@ namespace ft{
 
 	~vector(){
 		clear();
-		alloc.deallocate(container, capacity_v);
+		if (container)
+			alloc.deallocate(container, capacity_v);
 	}
+
+	void display(){
+		for (size_type i = 0; i < size_v;i++)
+			std::cout << *(container + i) << "\n";
+	}
+	
 	
 /************************************ Iterators *******************************************************/		
 
@@ -127,17 +141,17 @@ namespace ft{
 		return iterator();
 	}
 
-	// const_iterator begin() const{
-	// 	if (size_v > 0)
-	// 		return const_iterator(&container[0]);
-	// 	return const_iterator();
-	// }
+	const_iterator begin() const{
+		// if (size_v > 0)
+			return const_iterator(&container[0]);
+		// return const_iterator();
+	}
 
-	// const_iterator end() const{
-	// 	if (size_v > 0)
-	// 		return const_iterator(&container[size_v]);
-	// 	return const_iterator();
-	// }
+	const_iterator end() const{
+		// if (size_v > 0)
+			return const_iterator(&container[size_v]);
+		// return const_iterator();
+	}
 
 	reverse_iterator rbegin(){
 		if (size_v > 0)
@@ -218,27 +232,39 @@ namespace ft{
 
 	template<class inIter>
 	void insert(iterator pos, inIter first, inIter last, typename ft::enable_if<!ft::is_integral<inIter>::value>::type* = 0){
-		size_type ps = pos - begin();
-		if ((size_type)abs(pos - begin()) > size_v)
+		value_type *tmp = NULL;
+		size_type ps = 0;
+		try{
+		ps = pos - begin();
+		size_type n = last - first;
+		size_type c = capacity_v;
+		if (ps > size_v)
 			ps = size_v;
-		reserve(capacity_v + (size_type)abs(last - first));
+		if (c == 0)
+			c++;
+		while (size_v + n > c)
+			c *= 2;
+		reserve(c);
 		size_type i = ps;
-		// printf("ps: %lu\tcapacity : %lu\n", ps, capacity_v);
-		value_type *tmp = smart_copycat(container, ps, size_v);
-		// std::cout << "hey\n";
-		
-		for (inIter it = first; it != last ;i++, it++){
-			// std::cout << (*it) << "\t" << i << "\n";
-			alloc.construct(container + i, *it);
+		tmp = smart_copycat(container, ps, size_v);
+		for (inIter it = first; it != last ;it++, i++)
+			container[i] = *it;
+		if (tmp){
+			for (size_type j = 0; j < size_v - ps; j++, i++)
+				alloc.construct(container + i, tmp[j]);
+			alloc.deallocate(tmp, size_v - ps);
 		}
-		// std::cout << "hey 2\n";
-		if (ps < size_v){
-		for (size_type j = 0; j < size_v - ps; j++, i++)
-			alloc.construct(container + i, tmp[j]);
+		size_v += n;
 		}
-		alloc.deallocate(tmp, size_v - ps);
-		size_v += (last - first);
-		capacity_v = size_v;
+		catch(...){
+			alloc.deallocate(container, capacity_v);
+			if (tmp)
+				alloc.deallocate(tmp, size_v - ps);
+			capacity_v = 0;
+			size_v = 0;
+			container = NULL;
+			throw std::bad_alloc();
+		}
 	}
 		
 	iterator erase(iterator pos){
@@ -250,8 +276,6 @@ namespace ft{
 			container[i] = container[i + 1];
 		alloc.destroy(&container[size_v - 1]);
 		size_v--;
-		
-
 		return pos;
 	}
 
@@ -300,10 +324,8 @@ namespace ft{
 
 	template<class inIter>
 	void assign(inIter first, inIter last, typename ft::enable_if<!ft::is_integral<inIter>::value>::type* = 0){
-		unsigned int n = 0;
+		size_type n = (last - first);
 		inIter it = first;
-		while (it++ != last)
-			n++;
 		if (n <= capacity_v){
 			clear();
 			it = first;
@@ -365,9 +387,30 @@ namespace ft{
 	}
 
 	void swap(vector &x){
-		vector tmp = *this;
-		*this = x;
-		x = tmp;
+		// auto start = high_resolution_clock::now();
+		value_type *tmp = this->container;
+		size_type size_tmp = size_v;
+		size_type capacity_tmp = capacity_v;
+		// vector tmp = *this;
+		// *this = x;
+		// x = tmp;
+
+ 
+		
+		this->container = x.container;
+		this->size_v = x.size_v;
+		this->capacity_v = x.capacity_v;
+
+		x.container = tmp;
+		x.size_v = size_tmp;
+		x.capacity_v = capacity_tmp;
+		// auto stop = high_resolution_clock::now();
+		// auto duration = duration_cast<microseconds>(stop - start);
+		// std::cout << duration.count() << std::endl;
+		// std::cout<< "--------------------------------------------------\n";
+		// std::cout << "tmp : " << &(*tmp) << "\n";
+		// std::cout << "container  : " << &(*container) << "\n";
+		// std::cout << "copy x : " << &(*x.container) << "\n";
 	}
 
 
@@ -426,7 +469,11 @@ namespace ft{
 
 /*********************************** Element access ************************************/
 	
-	value_type &operator[](difference_type i){
+	reference &operator[](difference_type i){
+		return (container[i]);
+	}
+
+	const_reference &operator[](difference_type i) const{
 		return (container[i]);
 	}
 	
@@ -436,27 +483,27 @@ namespace ft{
 		return (container[n]);
 	}
 	
-	// const_reference at(size_type n) const{
-	// 	if (n < 0 || n >= size_v)
-	// 		throw std::out_of_range("vector");
-	// 	return (container[n]);
-	// }
+	const_reference at(size_type n) const{
+		if (n < 0 || n >= size_v)
+			throw std::out_of_range("vector");
+		return (container[n]);
+	}
 
 	reference front(){
 		return (container[0]);
 	}
 	
-	// const_reference front() const {
-	// 	return (container[0]);
-	// }
+	const_reference front() const {
+		return (container[0]);
+	}
 
 	reference back(){
 		return (container[size_v - 1]);
 	}
 
-	// const_reference back() const{
-	// 	return (container[size_v - 1]);
-	// }
+	const_reference back() const{
+		return (container[size_v - 1]);
+	}
 
 	value_type *data(){
 		return (container);
@@ -468,33 +515,54 @@ namespace ft{
 	template <class T, class Alloc>
 	bool operator==(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
 		if (lhs.size() != rhs.size())
-			return false;
-		for(typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++){
+      		return false;
+		for (size_t i = 0; i < lhs.size(); i++){
 			if (lhs[i] != rhs[i])
 				return false;
 		}
 		return true;
+  	}
+
+	template <class T, class Alloc>
+	bool operator!=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+		return !(lhs == rhs);
 	}
 
-	// template <class T, class Alloc>
-	// bool operator!=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
-	// 	return !(lhs == rhs);
-	// }
+	template <class T, class Alloc>
+	bool operator<(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+		size_t i = 0;
+		while (i < lhs.size() && i < rhs.size()){
+			if (lhs[i] < rhs[i])
+				return true;
+			else if (lhs[i] > rhs[i])
+				return false;
+			i++;
+		}
+		if (i == lhs.size() && i != rhs.size())
+			return true;
+		return false;
+	}
 
-	// template <class T, class Alloc>
-	// bool operator<(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
-	// 	typename vector<T, Alloc>::size_type i = 0;
-	// 	while (i < lhs.size() && i < rhs.size()){
-	// 		if (lhs[i] < rhs[i])
-	// 			return true;
-	// 		else if (lhs[i] > rhs[i])
-	// 			return false;
-	// 		i++;
-	// 	}
-	// 	if (i == lhs.size() && i != rhs.size())
-	// 		return true;
-	// 	return false;
-	// }
+	template <class T, class Alloc>
+	bool operator<=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+		return !(rhs < lhs);
+	}
+
+	template <class T, class Alloc>
+	bool operator>(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+		return (rhs < lhs);
+	}
+
+	template <class T, class Alloc>
+	bool operator>=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
+		return !(lhs < rhs);
+	}
+	
+	template <class T, class Alloc>
+	void swap(vector <T, Alloc>& x, vector <T, Alloc>& y){
+		x.swap(y);
+	}
+	
 	
 
 

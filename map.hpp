@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/11 18:02:58 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/11 19:27:08 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,13 +280,8 @@ namespace ft{
 	// bool operator==(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs) {
 	// 	if (lhs.size() != rhs.size())
 	// 		return false;
-	// 	// map<Key, T, Compare, Alloc>::iterator 
-		
-		
-	// 	map<Key, T, Compare, Alloc>::iterator tmp;
-	// 	tmp = lhs.begin();
-	// 	map<Key, T, Compare, Alloc>::iterator tmp2;
-	// 	tmp2 = rhs.begin();
+	// 	typename map<Key, T, Compare, Alloc>::iterator tmp = lhs.begin();
+	// 	typename map<Key, T, Compare, Alloc>::iterator tmp2 = rhs.begin();
 	// 	while (tmp != lhs.end())
 	// 	{
 	// 		if (*tmp != *tmp2)
@@ -297,28 +292,6 @@ namespace ft{
 	// 	return true;
 	// }
 
-	// template<class key, class T, class Compare, class Alloc>
-	// bool operator!=(const map<key, T, Compare, Alloc>& lhs, const map<key, T, Compare, Alloc>& rhs) {
-	// 	return !(lhs == rhs);
-	// }
-
-	// template<class key, class T, class Compare, class Alloc>
-	// bool operator<(const map<key, T, Compare, Alloc>& lhs, const map<key, T, Compare, Alloc>& rhs) {
-	// 	typename map<key, T, Compare, Alloc>::const_iterator tmp = lhs.begin();
-	// 	typename map<key, T, Compare, Alloc>::const_iterator tmp2 = rhs.begin();
-	// 	while (tmp != lhs.end() && tmp2 != rhs.end())
-	// 	{
-	// 		if (*tmp < *tmp2)
-	// 			return true;
-	// 		if (*tmp > *tmp2)
-	// 			return false;
-	// 		tmp++;
-	// 		tmp2++;
-	// 	}
-	// 	if (tmp == lhs.end() && tmp2 != rhs.end())
-	// 		return true;
-	// 	return false;
-	// }
 
 
 };

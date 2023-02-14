@@ -23,12 +23,17 @@ int main()
 	ab.insert(std::pair<int, std::string>(7, "WE7"));
 	ab.insert(std::pair<int, std::string>(4, "OUB4"));
 
-	std::map<int, std::string>::iterator it = ab.begin();
-	std::map<int, std::string> cc;
-	// cc.insert(std::pair<int, std::string>(22, "PO22"));
-	ab = cc;
+	// std::map<int, std::string>::iterator it = ab.begin();
+	// std::map<int, std::string>::const_iterator it = ab.begin();
+	// std::map<int, std::string>::const_iterator ite = ab.end();
 
-	std::map<int, std::string>::iterator ss = cc.begin();
+	std::cout << ab.end()->first << "\n";
+
+	// std::map<int, std::string> cc;
+	// // cc.insert(std::pair<int, std::string>(22, "PO22"));
+	// ab = cc;
+
+	// std::map<int, std::string>::iterator ss = cc.begin();
 
 	// cc.insert(ab.begin(), ab.end());
 	// cc.insert(std::pair<int, std::string>(80, "80YY"));
@@ -37,25 +42,21 @@ int main()
 	// ab.erase(40);
 	// ab.erase(12);
 
-	it = ab.begin();
-	ss = cc.begin();
-	while (it != ab.end())
-	{
-		std::cout << (*it).first << "\t" << it->second << std::endl;
-		it++;
-	}
+	// it = ab.begin();
+	// ss = cc.begin();
+	// while (it != ab.end())
+	// {
+	// 	std::cout << (*it).first << "\t" << it->second << std::endl;
+	// 	it++;
+	// }
 	std::cout << "size : " << ab.size() << std::endl;
 	std::cout << "\n---------------------------------------------\n";
-	while (ss != cc.end())
-	{
-		std::cout << (*ss).first << "\t" << ss->second << std::endl;
-		ss++;
-	}
+
 
 
 	
 
-	std::cout << "size : " << cc.size() << std::endl;
+	// std::cout << "size : " << cc.size() << std::endl;
 
 	return 0;
 }

@@ -6,15 +6,12 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:38:16 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/13 20:49:06 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/14 17:32:03 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
-
-#include "stack.hpp"
-
 
 namespace ft{
 	
@@ -27,11 +24,21 @@ namespace ft{
 			typedef std::ptrdiff_t difference_type;
 			typedef std::random_access_iterator_tag iterator_category;
 
-		public:
+		private:
 			pointer 	ptr;
+		public:
+
+			pointer base() const {return ptr;}
 			iterator() {ptr = NULL;}
-			iterator(const iterator &src) : ptr(src.ptr){}
+			iterator(const iterator &src) : ptr(src.base()){}
 			iterator(pointer container) : ptr(container) {}
+			
+			// template<class B>
+			// iterator(const iterator<B> &src) : ptr(src.base()){}
+			operator iterator<const T>() const{
+				return iterator<const T>(ptr);
+			}
+			
 			
 			iterator &operator=(const iterator &op){
 				this->ptr = op.ptr;
@@ -158,15 +165,19 @@ namespace ft{
 				typedef std::ptrdiff_t difference_type;
 				typedef std::random_access_iterator_tag iterator_category;
 			
-			
-			public:
+			private:
 			    pointer 	ptr;
+			public:
+				pointer base() const {return ptr;}
 			
-				 const_iterator() {ptr = NULL;}
-				 const_iterator(const const_iterator &src) : ptr(src.ptr){}
-				 const_iterator(pointer container) : ptr(container) {}
+				const_iterator() {ptr = NULL;}
+				const_iterator(const const_iterator &src) : ptr(src.base()){}
+				const_iterator(pointer container) : ptr(container) {}
 				// explicit const_iterator(const iterator<T> &src) {ptr = src.ptr;}
 
+				template<class B>
+				const_iterator(const const_iterator<B> &src) : ptr(src.base()){}
+				
 				const_iterator &operator=(const const_iterator &op){
 					this->ptr = op.ptr;
 					return *this;
@@ -290,10 +301,17 @@ namespace ft{
 		private:
 			pointer 	ptr;
 		public:
+			pointer base() const{return ptr;}			
+			
 			reverse_iterator() {ptr = NULL;}
 			reverse_iterator(const reverse_iterator &src){ *this = src;}
 			reverse_iterator(pointer container) : ptr(container) {}
 			
+			template<class B>
+			reverse_iterator(const reverse_iterator<B> &src){ *this = src;}
+			
+			
+
 			reverse_iterator &operator=(const reverse_iterator &op){
 				this->ptr = op.ptr;
 				return *this;
@@ -401,6 +419,10 @@ namespace ft{
 				return (this->ptr - n);
 			}
 	};
+
+
+
+	
 
 }
 

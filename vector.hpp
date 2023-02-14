@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/13 20:07:21 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/14 15:59:15 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,11 @@ namespace ft{
 			typedef typename Alloc::const_pointer    		const_pointer;
 			
 			typedef ft::iterator<T>               			iterator;
-			// typedef ft::iterator<const T> 	                const_iterator;
-			typedef ft::const_iterator<T>                   const_iterator;
-			typedef ft::reverse_iterator<T>       	reverse_iterator;
-			// typedef ft::reverse_iterator<T> 	const_reverse_iterator;
-			typedef std::ptrdiff_t                  difference_type;
-			typedef std::size_t                     size_type;
+			typedef ft::iterator<const T> 	                const_iterator;
+			typedef ft::reverse_iterator<T>       			reverse_iterator;
+			typedef ft::reverse_iterator<const T> 			const_reverse_iterator;
+			typedef std::ptrdiff_t                 		    difference_type;
+			typedef std::size_t                     		size_type;
 
 	
 		
@@ -129,7 +128,7 @@ namespace ft{
 	
 /************************************ Iterators *******************************************************/		
 
-	iterator begin(){
+	 iterator begin(){
 		if (size_v > 0)
 			return iterator(&container[0]);
 		return iterator();

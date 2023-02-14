@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/11 17:48:39 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/14 19:34:44 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include "ft.hpp"
+#include "utils2.hpp"
 #include <unistd.h>
 
 # define black 0
@@ -30,6 +31,7 @@ namespace ft{
 template<class T> 
 struct node{
 	T *data;
+	bool nil;
 	std::allocator<T> alloc;
 	int color;
 	node *parent;
@@ -42,10 +44,15 @@ struct node{
 		right = NULL;
 		left = NULL;
 		parent = NULL;
+		nil = false;
 	}
-	node() : data(NULL), color(black), parent(NULL), right(NULL) , left(NULL) {}
+	node() : color(black), parent(NULL), right(NULL) , left(NULL) {
+		T tmp;
+		data = &tmp;
+		nil = true;
+	}
 	void clear(){
-		if (this->data){
+		if (this->data && !this->nil){
 			// alloc.destroy(data);
 			alloc.deallocate(data, 1);
 			data = NULL;
@@ -68,6 +75,7 @@ class RedBlackTree{
         typedef Compare value_compare;
         typedef T value_type;
 		typedef typename Alloc::size_type size_type;
+		typedef typename ft::map_iterator<value_type, node > 		iterator;
 	
 		std::allocator <node> alloc;
 	private:
@@ -78,7 +86,7 @@ class RedBlackTree{
 	
 	/******************************************** iterators ********************************************************/
 
-		class iterator{
+		/*class iterator{
 			public:
 				typedef T value_type;
 				typedef T* pointer;
@@ -95,6 +103,7 @@ class RedBlackTree{
 				iterator() {ptr = NULL;}
 				iterator(const iterator &src){ *this = src;}
 				iterator(base container) : ptr(container) {}
+					
 				
 				iterator &operator=(const iterator &op){
 					this->ptr = op.ptr;
@@ -138,12 +147,12 @@ class RedBlackTree{
 				bool operator!=(const iterator &op) const{
 					return (this->ptr->data != op.ptr->data);
 				}
-		};
+		};*/
 
 		/*class const_iterator{
 			typedef const T value_type;
-			typedef T* pointer;
-			typedef T& reference;
+			typedef const T* pointer;
+			typedef const T& reference;
 			typedef node* base;
 			typedef std::ptrdiff_t difference_type;
 			typedef std::random_access_iterator_tag iterator_category;
@@ -155,6 +164,14 @@ class RedBlackTree{
 				const_iterator() {ptr = NULL;}
 				const_iterator(const const_iterator &src){ *this = src;}
 				const_iterator(base container) : ptr(container) {}
+
+				// template<class B>
+				// const_iterator(const const_iterator<B> &src){*this = src;}
+				// operator const_iterator(){
+				// 	return const_iterator(this->ptr);
+				// }
+
+
 				const_iterator &operator=(const const_iterator &op){
 					this->ptr = op.ptr;
 					return *this;
@@ -200,7 +217,7 @@ class RedBlackTree{
 			
 		};*/
 
-		class reverse_iterator{
+		/*class reverse_iterator{
 			public:
 				typedef T value_type;
 				typedef T* pointer;
@@ -242,7 +259,7 @@ class RedBlackTree{
 				}
 
 				reverse_iterator operator--(){
-					if (ptr && !ptr->data)
+					if (ptr && ptr->nil)
 						ptr = ptr->right;
 					else
 						ptr = next(ptr);
@@ -251,7 +268,7 @@ class RedBlackTree{
 
 				reverse_iterator operator--(int){
 					reverse_iterator tmp = *this;
-					if (ptr && !ptr->data)
+					if (ptr && ptr->nil)
 						ptr = ptr->right;
 					else
 						ptr = next(ptr);
@@ -265,7 +282,7 @@ class RedBlackTree{
 				bool operator!=(const reverse_iterator &op) const{
 					return (this->ptr->data != op.ptr->data);
 				}
-		};
+		};*/
 
 				
 				
@@ -367,7 +384,6 @@ class RedBlackTree{
 			root->color = black;
 			nil = alloc.allocate(1);
 			alloc.construct(nil, node());
-			nil->data = NULL;
 			nil->parent = root;
 			root->right = nil;
 			root->left = nil;
@@ -792,43 +808,7 @@ class RedBlackTree{
 			return tmp;
 		}
 
-		static node *next(node *tree){
-			node *tmp = tree;
-			if (!tree || !tree->data)
-				return NULL;
-			if (!tmp->right){
-				tmp = tmp->parent;
-				while (tmp && *tmp->data < *tree->data)
-					tmp = tmp->parent;
-			}
-			else{
-				if (tmp->right)
-					tmp = tmp->right;
-				while (tmp->left && *tmp->data > *tree->data)
-					tmp = tmp->left;
-			}
-			return tmp;
-		}
-
-		static node *prev(node *tree){
-			node *tmp = tree;
-			if (!tree)
-				return NULL;
-			if (!tree->data)
-				return tree->parent;
-			if (!tmp->left){
-				tmp = tmp->parent;
-				while (tmp && *tmp->data > *tree->data)
-					tmp = tmp->parent;
-			}
-			else{
-				if (tmp->left)
-					tmp = tmp->left;
-				while (tmp->right && tmp->data && (*tmp->data < *tree->data))
-					tmp = tmp->right;
-			}
-			return tmp;
-		}
+		
 
 		void DownToUp(node *first, node *last){
 			while (first && first != last){
@@ -860,7 +840,47 @@ class RedBlackTree{
 
 		
 };
-	
+
+	template <class node>
+	node *next(node *tree){
+		node *tmp = tree;
+		if (!tree || tree->nil)
+			return NULL;
+		if (!tmp->right){
+			tmp = tmp->parent;
+			while (tmp && *tmp->data < *tree->data)
+				tmp = tmp->parent;
+		}
+		
+		else{
+			if (tmp->right)
+				tmp = tmp->right;
+			while (tmp->left && *tmp->data > *tree->data)
+				tmp = tmp->left;
+		}
+		return tmp;
+	}
+
+	template <class node>
+	node *prev(node *tree){
+	node *tmp = tree;
+	if (!tree)
+		return NULL;
+	if (tree->nil)
+		return tree->parent;
+	if (!tmp->left){
+		tmp = tmp->parent;
+		while (tmp && *tmp->data > *tree->data)
+			tmp = tmp->parent;
+	}
+	else{
+		if (tmp->left)
+			tmp = tmp->left;
+		while (tmp->right && tmp->nil == false && (*tmp->data < *tree->data))
+			tmp = tmp->right;
+	}
+	return tmp;
+}
 };
 
 

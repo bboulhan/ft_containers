@@ -26,34 +26,25 @@ void test(){
 	ab.insert(ft::pair<int, std::string>(65, "WQQ65"));
 	ab.insert(ft::pair<int, std::string>(45, "UI45"));
 
-	
-	ft::map<int, std::string> cc(ab);
 
-	// if (ab == cc)
-	// 	std::cout << "yess\n";
-
+	ft::map<int, std::string>::const_iterator it = ab.begin();
 	// ft::map<int, std::string>::iterator it = ab.begin();
-	// ft::map<int, std::string>::iterator ite = ab.end();
-	ft::map<int, std::string>::reverse_iterator it = ab.rbegin();
-	ft::map<int, std::string>::reverse_iterator ite = ab.rend();
-	// std::cout << it->first << "\n";
-	// std::cout << "hey\n";
+	// ft::map<int, std::string>::reverse_iterator it = ab.rbegin();
 
-	std::cout << "\n---------------------------------------------\n";
-	while (it != ite)
+
+	while (it != ab.end())
 	{
 		std::cout << (*it).first << "\t" << it->second << std::endl;
 	// std::cout << "hey\n";
 		it++;
 	}
+	std::cout << "\n---------------------------------------------\n";
 	
-	// ab.clear();
-	// ab.erase(ab.begin());
-	// ab.erase(65);
-	// ab.erase(45);
-	// ab.erase(10);
-	// ab.clear();
-	// ab.display();
+	it = ab.lower_bound(18);
+	std::cout << it->first << std::endl;
+	it = ab.upper_bound(18);
+
+	std::cout << it->first << std::endl;
 
 	std::cout << "size : " << ab.size() << std::endl;
 	// return  ab;
@@ -63,7 +54,7 @@ void test(){
 
 int main(){
 
-	/*ft::map<int, std::string> ab;
+	ft::map<int, std::string> ab;
 
 	ab.insert(ft::pair<int, std::string>(11, "A11"));
 	ab.insert(ft::pair<int, std::string>(15, "B15"));
@@ -79,16 +70,18 @@ int main(){
 	cc.insert(ft::pair<int, std::string>(45, "UI45"));
 	cc.insert(ft::pair<int, std::string>(13, "E13"));
 
-	ab.swap(cc);
+	// ab.swap(cc);
 
-
-	ft::map<int, std::string>::iterator it = ab.begin();
+	// ft::map<int, std::string>::iterator it = ab.begin();
+	ft::map<int, std::string>::reverse_iterator it = ab.rbegin();
 	ft::map<int, std::string>::iterator ss = cc.begin();
 
+	it = ab.rend();
+	it++;it++;
 
-	it = ab.begin();
-
-	while (it != ab.end())
+	// it = ab.begin();
+	it = ab.rbegin();
+	while (it != ab.rend())
 	{
 		std::cout << (*it).first << "\t" << it->second << std::endl;
 		it++;
@@ -96,19 +89,18 @@ int main(){
 	// ab.display();
 	std::cout << "size : " << ab.size() << std::endl;
 	std::cout << "\n---------------------------------------------\n";
-	std::cout << "\n---------------------------------------------\n";
 	
 	ss = cc.begin();
 
-	while (ss != cc.end())
-	{
-		std::cout << (*ss).first << "\t" << ss->second << std::endl;
-		ss++;
-	}
+	// while (ss != cc.end())
+	// {
+	// 	std::cout << (*ss).first << "\t" << ss->second << std::endl;
+	// 	ss++;
+	// }
 	// cc.display();
-	std::cout << "size : " << cc.size() << std::endl;*/
+	// std::cout << "size : " << cc.size() << std::endl;
 
-	test();
+	// test();
 
 	// system("leaks a.out");
 	return 0;

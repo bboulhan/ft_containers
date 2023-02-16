@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/14 19:34:44 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/16 20:48:05 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include "ft.hpp"
-#include "utils2.hpp"
+#include "map_iterators.hpp"
 #include <unistd.h>
 
 # define black 0
@@ -47,25 +47,17 @@ struct node{
 		nil = false;
 	}
 	node() : color(black), parent(NULL), right(NULL) , left(NULL) {
-		T tmp;
-		data = &tmp;
+		data = alloc.allocate(1);
 		nil = true;
 	}
 	void clear(){
-		if (this->data && !this->nil){
-			// alloc.destroy(data);
+		if (this->data){
 			alloc.deallocate(data, 1);
 			data = NULL;
 		}
 	}
 
-	~node(){
-		// if (data){
-		// 	// std::cout << data->first << "\n";
-		// 	alloc.destroy(data);
-		// 	alloc.deallocate(data, 1);
-		// }
-	}
+	~node(){}
 };
 
 template <class T, class Compare, class Alloc>
@@ -76,216 +68,16 @@ class RedBlackTree{
         typedef T value_type;
 		typedef typename Alloc::size_type size_type;
 		typedef typename ft::map_iterator<value_type, node > 		iterator;
+		typedef typename 	Alloc:: template rebind<node>::other 	allocator;
 	
-		std::allocator <node> alloc;
 	private:
+		allocator alloc;
+		Compare comp;
 		node *root;
 		node *nil;
 		size_type _size;
 	public:
 	
-	/******************************************** iterators ********************************************************/
-
-		/*class iterator{
-			public:
-				typedef T value_type;
-				typedef T* pointer;
-				typedef T& reference;
-				typedef node* base;
-				typedef std::ptrdiff_t difference_type;
-				typedef std::random_access_iterator_tag iterator_category;
-				
-			
-			private:
-				base 	ptr;		
-				
-			public:
-				iterator() {ptr = NULL;}
-				iterator(const iterator &src){ *this = src;}
-				iterator(base container) : ptr(container) {}
-					
-				
-				iterator &operator=(const iterator &op){
-					this->ptr = op.ptr;
-					return *this;
-				}
-				
-				pointer operator->() const{
-					return this->ptr->data;
-				}
-		
-				reference operator*() const{
-					return *this->ptr->data;
-				}
-		
-				iterator &operator++(){
-					ptr = next(ptr);
-					return *this;
-				}
-	
-				iterator operator++(int){
-					iterator tmp = *this;
-					ptr = next(ptr);
-					return tmp;
-				}
-
-				iterator operator--(){
-					ptr = prev(ptr);
-					return *this;
-				}
-
-				iterator operator--(int){
-					iterator tmp = *this;
-					ptr = prev(ptr);
-					return tmp;
-				}
-
-				bool operator==(const iterator &op) const{
-					return (this->ptr->data == op.ptr->data);
-				}
-
-				bool operator!=(const iterator &op) const{
-					return (this->ptr->data != op.ptr->data);
-				}
-		};*/
-
-		/*class const_iterator{
-			typedef const T value_type;
-			typedef const T* pointer;
-			typedef const T& reference;
-			typedef node* base;
-			typedef std::ptrdiff_t difference_type;
-			typedef std::random_access_iterator_tag iterator_category;
-
-			private:
-				base 	ptr;
-			public:
-			
-				const_iterator() {ptr = NULL;}
-				const_iterator(const const_iterator &src){ *this = src;}
-				const_iterator(base container) : ptr(container) {}
-
-				// template<class B>
-				// const_iterator(const const_iterator<B> &src){*this = src;}
-				// operator const_iterator(){
-				// 	return const_iterator(this->ptr);
-				// }
-
-
-				const_iterator &operator=(const const_iterator &op){
-					this->ptr = op.ptr;
-					return *this;
-				}
-				
-				pointer operator->() const{
-					return this->ptr->data;
-				}
-		
-				reference operator*() const{
-					return *this->ptr->data;
-				}
-		
-				const_iterator &operator++(){
-					ptr = next(ptr);
-					return *this;
-				}
-	
-				const_iterator operator++(int){
-					const_iterator tmp = *this;
-					ptr = next(ptr);
-					return tmp;
-				}
-
-				const_iterator operator--(){
-					ptr = prev(ptr);
-					return *this;
-				}
-
-				const_iterator operator--(int){
-					const_iterator tmp = *this;
-					ptr = prev(ptr);
-					return tmp;
-				}
-
-				bool operator==(const const_iterator &op) const{
-					return (this->ptr->data == op.ptr->data);
-				}
-
-				bool operator!=(const const_iterator &op) const{
-					return (this->ptr->data != op.ptr->data);
-				}
-			
-		};*/
-
-		/*class reverse_iterator{
-			public:
-				typedef T value_type;
-				typedef T* pointer;
-				typedef T& reference;
-				typedef node* base;
-				typedef std::ptrdiff_t difference_type;
-				typedef std::random_access_iterator_tag iterator_category;
-			
-			private:
-				base 	ptr;
-			public:
-				reverse_iterator() {ptr = NULL;}
-				reverse_iterator(const reverse_iterator &src){ *this = src;}
-				reverse_iterator(base container) : ptr(container){}
-
-				reverse_iterator &operator=(const reverse_iterator &op){
-					this->ptr = op.ptr;
-					
-					return *this;
-				}
-
-				pointer operator->() const{
-					return this->ptr->data;
-				}
-
-				reference operator*() const{
-					return *this->ptr->data;
-				}
-
-				reverse_iterator &operator++(){
-					ptr = prev(ptr);
-					return *this;
-				}
-
-				reverse_iterator operator++(int){
-					reverse_iterator tmp = *this;
-					ptr = prev(ptr);
-					return tmp;
-				}
-
-				reverse_iterator operator--(){
-					if (ptr && ptr->nil)
-						ptr = ptr->right;
-					else
-						ptr = next(ptr);
-					return *this;
-				}
-
-				reverse_iterator operator--(int){
-					reverse_iterator tmp = *this;
-					if (ptr && ptr->nil)
-						ptr = ptr->right;
-					else
-						ptr = next(ptr);
-					return tmp;
-				}
-
-				bool operator==(const reverse_iterator &op) const{
-					return (this->ptr->data == op.ptr->data);
-				}
-
-				bool operator!=(const reverse_iterator &op) const{
-					return (this->ptr->data != op.ptr->data);
-				}
-		};*/
-
-				
-				
 
 	/************************************************ display ************************************************/
 	
@@ -335,7 +127,7 @@ class RedBlackTree{
 
 	/****************************************** Constructors *****************************************/
 
-		RedBlackTree(){
+		RedBlackTree(Compare comp = Compare(), allocator alloc = allocator()) : alloc(alloc), comp(comp){
 			root = NULL;
 			nil = alloc.allocate(1);
 			alloc.construct(nil, node());
@@ -364,7 +156,7 @@ class RedBlackTree{
 			return *this;
 		};
 		
-		RedBlackTree(const RedBlackTree &copy){
+		RedBlackTree(const RedBlackTree &copy) : comp(copy.comp){
 			node *first = copy.first_elem();
 			node *last = copy.last_elem();
 			alloc = copy.alloc;
@@ -378,7 +170,7 @@ class RedBlackTree{
 			}
 		};
 		
-		RedBlackTree(T data){
+		RedBlackTree(T data) : comp(Compare()), alloc(allocator()){
 			root = alloc.allocate(1);
 			alloc.construct(root, node(data));
 			root->color = black;
@@ -753,7 +545,7 @@ class RedBlackTree{
 			return tmp;
 		}
 
-		node *search(T data){
+		node *search(T data) const{
 			node *tmp = root;
 			while (tmp && tmp != nil && *tmp->data != data){
 				if (*tmp->data < data)
@@ -837,8 +629,6 @@ class RedBlackTree{
 		node *get_root()const{
 			return root;
 		}
-
-		
 };
 
 	template <class node>
@@ -881,10 +671,10 @@ class RedBlackTree{
 	}
 	return tmp;
 }
+
+
+
 };
-
-
-
 
 
 

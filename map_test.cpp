@@ -31,6 +31,11 @@ void test(){
 	// ft::map<int, std::string>::iterator it = ab.begin();
 	// ft::map<int, std::string>::reverse_iterator it = ab.rbegin();
 
+	// std::cout << ab.end()->first << "\n";
+	// std::cout << ab.end()->first << "\n";
+	// std::cout << ab.end()->first << "\n";
+
+	// std::cout << it->first << std::endl;
 
 	while (it != ab.end())
 	{
@@ -40,9 +45,8 @@ void test(){
 	}
 	std::cout << "\n---------------------------------------------\n";
 	
-	it = ab.lower_bound(18);
-	std::cout << it->first << std::endl;
-	it = ab.upper_bound(18);
+	// it = ab.lower_bound(18);
+	// it = ab.upper_bound(18);
 
 	std::cout << it->first << std::endl;
 
@@ -54,7 +58,7 @@ void test(){
 
 int main(){
 
-	ft::map<int, std::string> ab;
+	/*ft::map<int, std::string> ab;
 
 	ab.insert(ft::pair<int, std::string>(11, "A11"));
 	ab.insert(ft::pair<int, std::string>(15, "B15"));
@@ -77,7 +81,9 @@ int main(){
 	ft::map<int, std::string>::iterator ss = cc.begin();
 
 	it = ab.rend();
+	std::cout << it->first << std::endl;
 	it++;it++;
+	std::cout << it->first << std::endl;
 
 	// it = ab.begin();
 	it = ab.rbegin();
@@ -98,9 +104,9 @@ int main(){
 	// 	ss++;
 	// }
 	// cc.display();
-	// std::cout << "size : " << cc.size() << std::endl;
+	// std::cout << "size : " << cc.size() << std::endl;*/
 
-	// test();
+	test();
 
 	// system("leaks a.out");
 	return 0;

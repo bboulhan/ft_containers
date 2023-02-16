@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/14 15:28:02 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:41:51 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,6 @@
 
 
 namespace ft{
-
-	int get_capacity(int x){
-		int a = 0;
-		int y = 0;
-		while (x > 1){
-			y++;
-			a += x % 2;
-			x = x / 2;
-		}
-		if (a > 0)
-			y++;
-		return (pow(2, y));
-	}
 
 	template<class T>
 	T *add(T *data, T elem, unsigned int size){
@@ -240,39 +227,16 @@ namespace ft{
 		typedef const T*                              pointer;
 		typedef const T&                              reference;
 		typedef std::ptrdiff_t                  difference_type;
-	};	
+	};
 
-	// class const_iterator : public RandAccess<value_type>
-    //     {
-    //         public:
-    //             typedef	value_type const&   reference;
-    //             typedef	value_type const&	const_reference;
-    //             typedef	value_type const*   pointer;
-    //             typedef ptrdiff_t			difference_type;
-
-    //         public:
-    //             const_iterator();
-	// 	        const_iterator(T *src);
-    //             const_iterator(const RandAccess<T> &src);
-    //             virtual ~const_iterator();
-
-    //             reference               operator*() const;
-    //             pointer                 operator->() const;
-    //             const_reference         operator[](size_type n) const;
-    //             const_iterator&         operator+=(difference_type n);
-    //             const_iterator&         operator-=(difference_type n);
-
-    //             difference_type		operator-(const RandAccess<value_type> &n) const;
-    //             const_iterator		operator-(difference_type n) const;
-    //             const_iterator			operator+(difference_type n) const;
-    //             friend const_iterator		operator+(difference_type n, const const_iterator &rhs) { return rhs.operator+(n); };
-
-    //             const_iterator			&operator++(void);
-    //             const_iterator			operator++(int);
-    //             const_iterator			&operator--(void);
-    //             const_iterator			operator--(int);
-    //     };
-
+	template<class T>
+	class compare{
+	public:
+		bool operator()(const T &lhs, const T &rhs){
+			return (lhs < rhs);
+		}
+	};
+	
 
 }
 

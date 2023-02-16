@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 12:00:11 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/11 18:04:07 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/16 20:51:56 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "ft.hpp"
 #include "RedBlackTree.hpp"
+#include "map_iterators.hpp"
 
 
 namespace ft{
@@ -26,8 +27,15 @@ namespace ft{
 			typedef Compare key_compare;
 			typedef Alloc allocator_type;
 
-			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::iterator 		iterator;
-			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::reverse_iterator reverse_iterator;
+			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::iterator 		iterator;
+			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::reverse_iterator reverse_iterator;
+			typedef typename ft::map_iterator<value_type, node<value_type> > iterator;
+			typedef typename ft::map_iterator<const value_type, node<value_type> > const_iterator;
+
+			typedef typename ft::map_reverse_iterator<value_type, node<value_type> > reverse_iterator;
+			typedef typename ft::map_reverse_iterator<const value_type, node<value_type> > const_reverse_iterator;
+			
+			
 			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::node		node;
 			typedef typename Alloc::size_type       					size_type;//A type that counts the number of elements in a vector.
 			typedef typename Alloc::difference_type					 	difference_type;//A type that provides the difference between the addresses of two elements in a vector.
@@ -40,6 +48,7 @@ namespace ft{
 		private:
 			RedBlackTree tree;
 			allocator_type alloc;
+			key_compare comp;
 			
 		public:
 			// explicit set(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): tree(comp, alloc), alloc(alloc){};
@@ -82,6 +91,16 @@ namespace ft{
 				return (iterator(tree.get_nil()));
 			};
 
+			const_iterator begin() const{
+				if (tree.get_root())
+					return const_iterator(tree.first_elem());
+				return (const_iterator(tree.get_nil()));
+			};
+
+			const_iterator end() const{
+				return (const_iterator(tree.get_nil()));
+			};
+
 			reverse_iterator rbegin() {
 				if (tree.get_root())
 					return reverse_iterator(tree.last_elem()->parent);
@@ -90,6 +109,16 @@ namespace ft{
 
 			reverse_iterator rend() {
 				return (reverse_iterator(tree.get_nil()));
+			}
+
+			const_reverse_iterator rbegin() const {
+				if (tree.get_root())
+					return const_reverse_iterator(tree.last_elem()->parent);
+				return (const_reverse_iterator(tree.get_nil()));
+			}
+
+			const_reverse_iterator rend() const {
+				return (const_reverse_iterator(tree.get_nil()));
 			}
 			
 
@@ -174,7 +203,7 @@ namespace ft{
 
 	/*********************************************** Operations ************************************************************/
 
-			iterator lower_bound(const key_type& k) {
+		iterator lower_bound(const key_type& k) {
 			iterator tmp = begin();
 			while (tmp != end())
 			{
@@ -217,13 +246,74 @@ namespace ft{
 		Alloc get_allocator() const {
 			return alloc;
 		}
+
+		key_compare key_comp() const {
+			return comp;
+		}
 	
 	};
 
+	template <class Key, class Compare, class Alloc>
+	bool operator==(const set<Key,Compare,Alloc>& lhs, const set<Key,Compare,Alloc>& rhs){
+		if (lhs.size() != rhs.size())
+			return false;
+		typename set<Key, Compare, Alloc>::const_iterator tmp = lhs.begin();
+		typename set<Key, Compare, Alloc>::const_iterator tmp2 = rhs.begin();
+		while (tmp != lhs.end())
+		{
+			if (*tmp != *tmp2)
+				return false;
+			tmp++;
+			tmp2++;
+		}
+		return true;
+	}
 
-};
+	template <class Key, class Compare, class Alloc>
+	bool operator!=(const set<Key,Compare,Alloc>& lhs, const set<Key,Compare,Alloc>& rhs){
+		return !(lhs == rhs);
+	}
+
+	template <class Key, class Compare, class Alloc>
+	bool operator<(const set<Key,Compare,Alloc>& lhs, const set<Key,Compare,Alloc>& rhs){
+		typename set<Key, Compare, Alloc>::const_iterator tmp = lhs.begin();
+		typename set<Key, Compare, Alloc>::const_iterator tmp2 = rhs.begin();
+		while (tmp != lhs.end() && tmp2 != rhs.end())
+		{
+			if (*tmp < *tmp2)
+				return true;
+			if (*tmp > *tmp2)
+				return false;
+			tmp++;
+			tmp2++;
+		}
+		if (tmp == lhs.end() && tmp2 != rhs.end())
+			return true;
+		return false;
+	}
+
+	template <class Key, class Compare, class Alloc>
+	bool operator<=(const set<Key,Compare,Alloc>& lhs, const set<Key,Compare,Alloc>& rhs){
+		return ((lhs < rhs) || (lhs == rhs));
+	}
+
+	template <class Key, class Compare, class Alloc>
+	bool operator>(const set<Key,Compare,Alloc>& lhs, const set<Key,Compare,Alloc>& rhs){
+		return (rhs < lhs);
+	}
+
+	template <class Key, class Compare, class Alloc>
+	bool operator>=(const set<Key,Compare,Alloc>& lhs, const set<Key,Compare,Alloc>& rhs){
+		return ((rhs < lhs) || (lhs == rhs));
+	}
+
+	template <class Key, class Compare, class Alloc>
+	void swap(set<Key,Compare,Alloc>& x, set<Key,Compare,Alloc>& y){
+		x.swap(y);
+	}
 
 
+}
 
 
 

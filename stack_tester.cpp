@@ -17,9 +17,10 @@ int main()
 	std::cout << q.top() << std::endl;
 	std::cout << q.top() << std::endl;
 
-	for (int i = 0; i < q.size(); i++)
+	for (size_t i = 0; i < q.size(); i++)
 		std::cout << q.top() << std::endl;
 
+	
 
 
 
@@ -38,10 +39,12 @@ int main()
 	if (x == p)
 		std::cout << "true\n";
 
+	// if (x < p)
+	// 	std::cout << "true 2\n";
 
 
 	
-	for (int i = 0; i < p.size(); i++)
+	for (size_t i = 0; i < p.size(); i++)
 		std::cout << p.top() << std::endl;
 
 

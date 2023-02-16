@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:12:08 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/13 22:53:41 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:05:41 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int main()
 /***************************************************************************************************************/
 		
 	try{
-	ft::vector<int> a(p.begin(), p.end());
+	ft::vector<int> a(7,7);
 	// ft::vector<int> b;
 	// b.push_back(5);
 	// b.push_back(5);
@@ -58,8 +58,8 @@ int main()
 
 	// a.swap(b);
 	// ft::vector<int>::reverse_iterator it = a.rbegin();
-	// ft::vector<int>::iterator it = a.begin();
-	ft::vector<int>::const_iterator it(a.begin());
+	ft::vector<int>::iterator it = a.begin();
+	// ft::vector<int>::const_iterator it(a.begin());
 	
 	// std::cout << "hey\n";
 

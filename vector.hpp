@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/14 15:59:15 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/16 18:29:15 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,17 +164,17 @@ namespace ft{
 		return reverse_iterator();
 	}
 
-	// const_reverse_iterator rbegin() const{
-	// 	if (size_v > 0)
-	// 		return const_reverse_iterator(&container[size_v - 1]);
-	// 	return const_reverse_iterator();
-	// }
+	const_reverse_iterator rbegin() const{
+		if (size_v > 0)
+			return const_reverse_iterator(&container[size_v - 1]);
+		return const_reverse_iterator();
+	}
 
-	// const_reverse_iterator rend() const{
-	// 	if (size_v > 0)
-	// 		return const_reverse_iterator(&container[-1]);
-	// 	return const_reverse_iterator();
-	// }
+	const_reverse_iterator rend() const{
+		if (size_v > 0)
+			return const_reverse_iterator(&container[-1]);
+		return const_reverse_iterator();
+	}
 	
 
 
@@ -544,7 +544,7 @@ namespace ft{
 
 	template <class T, class Alloc>
 	bool operator<=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
-		return !(rhs < lhs);
+		return ((lhs < rhs) || (lhs == rhs));
 	}
 
 	template <class T, class Alloc>
@@ -554,14 +554,14 @@ namespace ft{
 
 	template <class T, class Alloc>
 	bool operator>=(const vector <T, Alloc>& lhs, const vector <T, Alloc>& rhs){
-		return !(lhs < rhs);
+		return ((rhs < lhs) || (lhs == rhs));
 	}
 	
 	template <class T, class Alloc>
 	void swap(vector <T, Alloc>& x, vector <T, Alloc>& y){
 		x.swap(y);
 	}
-	
+
 	
 
 

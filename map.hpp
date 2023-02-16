@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/14 19:39:57 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/16 20:55:53 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <iostream>
 #include "RedBlackTree.hpp"
 #include "ft.hpp"
-#include "utils2.hpp"
+#include "map_iterators.hpp"
 
 namespace ft{
 
@@ -32,12 +32,9 @@ namespace ft{
 			typedef typename ft::map_iterator<value_type, node<value_type> > 	iterator;
 			typedef typename ft::map_iterator<const value_type, node<value_type> > 	const_iterator;
 			
-			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::iterator 		iterator;
-			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::const_iterator	const_iterator;
 			typedef typename ft::map_reverse_iterator<value_type, node<value_type> > reverse_iterator;
 			typedef typename ft::map_reverse_iterator<const value_type, node<value_type> > const_reverse_iterator;
 			
-			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::reverse_iterator reverse_iterator;
 			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::node		node;
 			typedef typename Alloc::size_type       					size_type;//A type that counts the number of elements in a vector.
 			typedef typename Alloc::difference_type					 	difference_type;//A type that provides the difference between the addresses of two elements in a vector.
@@ -51,11 +48,12 @@ namespace ft{
 		private:
 			RedBlackTree tree;
 			Alloc alloc;
+			key_compare comp;
 			
 			
 		public:
-			// explicit map(const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree(comp, alloc) {}
-			map() : tree() {}
+			explicit map(const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree(comp, alloc) {}
+			
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree() {
 				(void)comp;
@@ -248,48 +246,74 @@ namespace ft{
 		}
 	
 		iterator lower_bound(const key_type& k) {
-			iterator tmp = begin();
-			while (tmp != end())
+			iterator it = begin();
+			iterator ite = end();
+
+			while (it != ite)
 			{
-				if (tmp->first >= k)
-					return tmp;
-				tmp++;
+				if (!key_comp()(it->first, k))
+					return it;
+				it++;
 			}
-			return end();
+			return ite;
 		}
 
 		const_iterator lower_bound(const key_type& k) const {
 			const_iterator tmp = begin();
+			const_iterator tmp2 = tmp;
 			while (tmp != end())
 			{
-				if (tmp->first >= k)
-					return tmp;
+				if (tmp->first <= k)
+					tmp2 = tmp;
+				else if (tmp->first > k)
+					return tmp2;
 				tmp++;
 			}
+			if (tmp2 == --end())
+				return tmp2;
 			return end();
 		}
 
 		iterator upper_bound(const key_type& k) {
 			iterator tmp = begin();
-			while (tmp != end())
-			{
-				if (tmp->first > k)
+			iterator tmp2 = tmp;
+			bool exist = false;
+			if (k < tmp->first && tmp == (--end()))
+				return end();
+			
+			while (tmp != end()){
+				if (tmp->first == k)
+					exist = true;
+				if (tmp->first < k)
+					tmp2 = tmp;
+				else if (tmp->first > k){
+					if (exist == true)	
+						return tmp2;
 					return tmp;
+				}
 				tmp++;
 			}
+			if (tmp2 != begin() && tmp2 == --end())
+				return tmp2;
+			
 			return end();
 		}
 
-		const_iterator upper_bound(const key_type& k) const {
+		/*const_iterator upper_bound(const key_type& k) const {
 			const_iterator tmp = begin();
+			const_iterator tmp2 = NULL;
 			while (tmp != end())
 			{
-				if (tmp->first > k)
-					return tmp;
+				if (tmp->first < k)
+					tmp2 = tmp;
+				else if (tmp->first >= k)
+					return tmp2;
 				tmp++;
 			}
+			if (tmp2 && tmp2 == --end())
+				return tmp2;
 			return end();
-		}
+		}*/
 
 		
 
@@ -305,6 +329,9 @@ namespace ft{
 			return alloc;
 		}
 		
+		key_compare key_comp() const {
+			return comp;
+		}
 	
 	/*********************************************** Observers ************************************************************/
 	
@@ -357,7 +384,7 @@ namespace ft{
 
 	template<class Key, class T, class Compare, class Alloc>
 	bool operator<=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs) {
-		return !(rhs < lhs);
+		return ((lhs < rhs) || (lhs == rhs));
 	}
 
 	template<class Key, class T, class Compare, class Alloc>
@@ -367,7 +394,7 @@ namespace ft{
 
 	template<class Key, class T, class Compare, class Alloc>
 	bool operator>=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs) {
-		return !(lhs < rhs);
+		return ((rhs < lhs) || (lhs == rhs));
 	}
 
 	

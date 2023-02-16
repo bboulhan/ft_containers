@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:38:16 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/14 17:32:03 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:38:17 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ namespace ft{
 			iterator(const iterator &src) : ptr(src.base()){}
 			iterator(pointer container) : ptr(container) {}
 			
-			// template<class B>
-			// iterator(const iterator<B> &src) : ptr(src.base()){}
 			operator iterator<const T>() const{
 				return iterator<const T>(ptr);
 			}
@@ -148,148 +146,6 @@ namespace ft{
 			}
 		};
 
-		
-		
-		
-
-
-		template<class T>
-		class const_iterator : public std::iterator<std::random_access_iterator_tag , T>{
-			public :
-				typedef  const T value_type;
-				// typedef	value_type const&   reference;
-                // typedef	value_type const&	const_reference;
-                // typedef	value_type const*   pointer;
-				typedef  const T* pointer;
-				typedef  const T& reference;
-				typedef std::ptrdiff_t difference_type;
-				typedef std::random_access_iterator_tag iterator_category;
-			
-			private:
-			    pointer 	ptr;
-			public:
-				pointer base() const {return ptr;}
-			
-				const_iterator() {ptr = NULL;}
-				const_iterator(const const_iterator &src) : ptr(src.base()){}
-				const_iterator(pointer container) : ptr(container) {}
-				// explicit const_iterator(const iterator<T> &src) {ptr = src.ptr;}
-
-				template<class B>
-				const_iterator(const const_iterator<B> &src) : ptr(src.base()){}
-				
-				const_iterator &operator=(const const_iterator &op){
-					this->ptr = op.ptr;
-					return *this;
-				}
-
-				const_iterator &operator++(){
-					++this->ptr;
-					return *this;
-				}
-
-				const_iterator operator++(int){
-					const_iterator tmp(*this);
-					++(*this);
-					return tmp;
-				}
-
-				const_iterator &operator--(){
-					--this->ptr;
-					return *this;
-				}
-
-				const_iterator operator--(int){
-					const_iterator tmp(*this);
-					--(*this);
-					return tmp;
-				}
-				
-				reference operator*(){
-					return *this->ptr;
-				}
-				
-				pointer operator->(){
-					return this->ptr;
-				}
-
-				const_iterator operator+(difference_type n){
-					return const_iterator(this->ptr + n);
-				}
-
-				const_iterator operator-(difference_type n){
-					return const_iterator(this->ptr - n);
-				}
-
-				difference_type operator-(const const_iterator &op){
-					difference_type n = 0;
-					pointer p = this->ptr;
-					if (this->ptr < op.ptr){
-						while (p++ != op.ptr)
-							n--;
-					}
-					else{
-						while (p-- != op.ptr)
-							n++;
-					}
-					return n;
-				}
-				
-				value_type operator[](difference_type n){
-					return (this->ptr[n]);
-				}
-
-				bool operator!=(const const_iterator &comp){
-					if (this->ptr != comp.ptr)
-						return true;
-					return false;
-				}
-
-				bool operator==(const const_iterator &comp){
-					if (this->ptr == comp.ptr)
-						return true;
-					return false;
-				}
-
-				bool operator<(const const_iterator &comp){
-					if (this->ptr < comp.ptr)
-						return true;
-					return false;
-				}
-
-				bool operator>(const const_iterator &comp){
-					if (this->ptr > comp.ptr)
-						return true;
-					return false;
-				}
-
-				bool operator<=(const const_iterator &comp){
-					if (this->ptr <= comp.ptr)
-						return true;
-					return false;
-				}
-
-				bool operator>=(const const_iterator &comp){
-					if (this->ptr >= comp.ptr)
-						return true;
-					return false;
-				}
-
-				const_iterator &operator+=(difference_type n){
-					this->ptr = this->ptr + n;
-					return *this;
-				}
-
-				const_iterator &operator-=(difference_type n){
-					this->ptr = this->ptr - n;
-					return *this;
-				}
-
-		};
-				
-
-			
-		
 	template<class T>
 	class reverse_iterator{
 		public:

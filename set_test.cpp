@@ -31,6 +31,7 @@ int main()
 	set.erase(it);
 	set.erase(39);
 
+	set.count(28);
 	// std::cout << *(set.find(28)) << std::endl;
 	// std::cout << *(set.lower_bound(28)) << std::endl;
 	// std::cout << *(set.upper_bound(28)) << std::endl;

@@ -14,10 +14,12 @@ void test3(){
 	std::map<T, V> mp;
     std::map<int, int, std::greater<int> > mp2;
     mp.insert(std::make_pair(10, 10));
+    // mp.insert(std::make_pair(200, 200));
     mp2.insert(std::make_pair(10, 10));
+    // mp2.insert(std::make_pair(200, 200));
     if (mp.upper_bound(11) == mp.end())
        std::cout << "true" << std::endl;
-    if (mp2.upper_bound(1) == mp2.end())
+    if (mp2.upper_bound(11) == mp2.end())
         std::cout << "true 2" << std::endl;
 	
     mp.insert(std::make_pair(20, 20));
@@ -34,25 +36,23 @@ void test3(){
     for (int i = 1; i < 60; i += 10) {
         // std::cout << "##i = " << i << std::endl;
         it = mp.upper_bound(i);
-        // std::cout << it->first << std::endl;
+        std::cout << it->first << std::endl;
     }
+	std::cout << "$$$$$$\n";
     for (int i = 11; i < 70; i += 10) {
         // std::cout << "##i = " << i << std::endl;
         it = mp2.upper_bound(i);
-		// std::cout << it->first << std::endl;
+		std::cout << it->first << std::endl;
     }
-	std::cout << mp.end()->first << "\n";
     std::map<int, int> mp3;
     for (int i = 0, j = 0; i < 50 * _ratio; ++i, ++j) {
         mp3.insert(std::make_pair(i, j));
     }
 	std::cout << "$$$$$$\n";
-	std::cout << mp3.end()->first << "\n";
 	std::cout << mp3.upper_bound(49 * _ratio)->first << "\n";
 	mp.insert(std::make_pair(-10, 10));
     mp.insert(std::make_pair(-20, 20));
 	std::cout << (--mp.upper_bound(0))->first << "\n";
-	std::cout << mp.end()->first << "\n";
 }
 
 void test4(){
@@ -79,25 +79,23 @@ void test4(){
     for (int i = 1; i < 60; i += 10) {
         // std::cout << "##i = " << i << std::endl;
 		it = mp.upper_bound(i);
-        // std::cout << it->first << std::endl;
+        std::cout << it->first << std::endl;
     }
+	std::cout << "$$$$$$\n";
     for (int i = 11; i < 70; i += 10) {
         // std::cout << "##i = " << i << std::endl;
         it = mp2.upper_bound(i);
-		// std::cout << it->first << std::endl;
+		std::cout << it->first << std::endl;
     }
-	std::cout << mp.end()->first << "\n";
     ft::map<int, int> mp3;
     for (int i = 0, j = 0; i < 50 * _ratio; ++i, ++j) {
         mp3.insert(ft::make_pair(i, j));
     }
 	std::cout << "$$$$$$\n";
-	std::cout << mp3.end()->first << "\n";
     std::cout << mp3.upper_bound(49 * _ratio)->first << "\n";
 	mp.insert(ft::make_pair(-10, 10));
     mp.insert(ft::make_pair(-20, 20));
 	std::cout << (--mp.upper_bound(0))->first << "\n";
-	std::cout << mp.end()->first << "\n";
 }
 
 void test2(){

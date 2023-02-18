@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:10:41 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/16 17:41:51 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/18 19:22:04 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,18 @@
 # define FT_HPP
 
 #include <iostream>
-#include <cmath>
 #include <unistd.h>
+#include <cstddef>
 
 
 
 namespace ft{
+
+
+
+
+	
+
 
 	template<class T>
 	T *add(T *data, T elem, unsigned int size){
@@ -104,6 +110,11 @@ namespace ft{
 			second = pr.second;
 			return *this;
 		}
+
+		operator T1() const {
+			return first;
+		}
+
 	};
 
 	template<class T1, class T2>
@@ -200,43 +211,63 @@ namespace ft{
 		return (first2 != last2);
 	}
 	
-	template <class T>
-	class iterator_traits {
-	public:
-		typedef typename T::iterator_category iterator_category;
-		typedef typename T::value_type         value_type;
-		typedef typename T::pointer            pointer;
-		typedef typename T::reference          reference;
-		typedef typename std::ptrdiff_t       difference_type;
-	};
-	template<class T>
-	class iterator_traits<T*> {
-	public:
-		typedef std::random_access_iterator_tag iterator_category;
-		typedef T                               value_type;
-		typedef T*                              pointer;
-		typedef T&                              reference;
-		typedef std::ptrdiff_t                  difference_type;
-	};
-	
-	template<class T>
-	class iterator_traits<const T*> {
-	public:
-		typedef std::random_access_iterator_tag iterator_category;
-		typedef const T                               value_type;
-		typedef const T*                              pointer;
-		typedef const T&                              reference;
-		typedef std::ptrdiff_t                  difference_type;
+	template<typename Iterator>
+	struct iterator_traits {
+		typedef typename Iterator::value_type value_type;
+		typedef typename Iterator::difference_type difference_type;
+		typedef typename Iterator::pointer pointer;
+		typedef typename Iterator::reference reference;
+		typedef std::forward_iterator_tag iterator_category;
 	};
 
-	template<class T>
-	class compare{
-	public:
-		bool operator()(const T &lhs, const T &rhs){
-			return (lhs < rhs);
-		}
+	template<typename T>
+	struct iterator_traits<T*> {
+		typedef T value_type;
+		typedef std::ptrdiff_t difference_type;
+		typedef T* pointer;
+		typedef T& reference;
+		typedef std::random_access_iterator_tag iterator_category;
+	};
+
+	template<typename T>
+	struct iterator_traits<const T*> {
+		typedef T value_type;
+		typedef std::ptrdiff_t difference_type;
+		typedef const T* pointer;
+		typedef const T& reference;
+		typedef std::random_access_iterator_tag iterator_category;
 	};
 	
+	// template <class T>
+	// class iterator_traits {
+	// public:
+	// 	typedef typename T::iterator_category iterator_category;
+	// 	typedef typename T::value_type         value_type;
+	// 	typedef typename T::pointer            pointer;
+	// 	typedef typename T::reference          reference;
+	// 	typedef typename std::ptrdiff_t       difference_type;
+	// };
+	// template<class T>
+	// class iterator_traits<T*> {
+	// public:
+	// 	typedef std::random_access_iterator_tag iterator_category;
+	// 	typedef T                               value_type;
+	// 	typedef T*                              pointer;
+	// 	typedef T&                              reference;
+	// 	typedef std::ptrdiff_t                  difference_type;
+	// };
+	
+	// template<class T>
+	// class iterator_traits<const T*> {
+	// public:
+	// 	typedef std::random_access_iterator_tag iterator_category;
+	// 	typedef const T                               value_type;
+	// 	typedef const T*                              pointer;
+	// 	typedef const T&                              reference;
+	// 	typedef std::ptrdiff_t                  difference_type;
+	// };
+
+
 
 }
 

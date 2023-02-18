@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/16 20:55:53 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/18 15:56:59 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@ namespace ft{
 	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
 	class map{
 		public:
-			typedef 									Key key_type;
-			typedef 									T mapped_type;
-			typedef 									ft::pair<const Key,T> value_type;
-			typedef 									Compare key_compare;
-			// typedef value_compare (Compare c) : comp(c) {}
+			typedef			Key 								key_type;
+			typedef			T 									mapped_type;
+			typedef			ft::pair<const Key,T> 				value_type;
+			typedef			Compare								key_compare;
+			typedef			Alloc								allocator_type;
+			
 
 			typedef typename ft::map_iterator<value_type, node<value_type> > 	iterator;
 			typedef typename ft::map_iterator<const value_type, node<value_type> > 	const_iterator;
@@ -36,28 +37,27 @@ namespace ft{
 			typedef typename ft::map_reverse_iterator<const value_type, node<value_type> > const_reverse_iterator;
 			
 			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::node		node;
-			typedef typename Alloc::size_type       					size_type;//A type that counts the number of elements in a vector.
-			typedef typename Alloc::difference_type					 	difference_type;//A type that provides the difference between the addresses of two elements in a vector.
-			typedef typename Alloc::pointer         					pointer;//A type that provides a pointer to a component of a vector.
-			typedef typename Alloc::const_pointer  					 	const_pointer;//A t
-			typedef typename Alloc::reference       					reference;//A type that provides a reference to an element stored in a vector.
+			typedef typename Alloc::size_type       					size_type;
+			typedef typename Alloc::difference_type					 	difference_type;
+			typedef typename Alloc::pointer         					pointer;
+			typedef typename Alloc::const_pointer  					 	const_pointer;
+			typedef typename Alloc::reference       					reference;
 			typedef typename Alloc::const_reference 					const_reference;
 			typedef 		 RedBlackTree<value_type, Compare, Alloc>	RedBlackTree;
 		
 		
 		private:
-			RedBlackTree tree;
-			Alloc alloc;
-			key_compare comp;
+			RedBlackTree 	tree;
+			allocator_type  _alloc;
+			key_compare 	comp;
 			
 			
 		public:
-			explicit map(const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree(comp, alloc) {}
+			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : tree(comp, alloc), _alloc(alloc) {}
 			
 			template <class InputIterator>
-			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc()) : tree() {
-				(void)comp;
-				(void)alloc;
+			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : tree(comp, alloc) {
+
 				while (first != last)
 				{
 					tree.insert(*first);
@@ -67,11 +67,11 @@ namespace ft{
 	
 			~map() {}
 
-			map(const map& copy) : tree(copy.tree), alloc(copy.alloc) {}
+			map(const map& copy) : tree(copy.tree), _alloc(copy._alloc) {}
 
 			map& operator=(const map& copy){
 				tree = copy.tree;
-				alloc = copy.alloc;
+				_alloc = copy._alloc;
 				return *this;
 			}
 
@@ -137,7 +137,7 @@ namespace ft{
 		}
 
 		size_type max_size() const {
-			return alloc.max_size();
+			return _alloc.max_size();
 		}
 	
 	/********************************************* Element access ******************************************************************/
@@ -245,77 +245,51 @@ namespace ft{
 			return 1;
 		}
 	
-		iterator lower_bound(const key_type& k) {
+		iterator lower_bound(const key_type& k){
 			iterator it = begin();
-			iterator ite = end();
-
-			while (it != ite)
+			while (it != end())
 			{
-				if (!key_comp()(it->first, k))
+				if (comp(k, it->first) || it->first == k)
 					return it;
 				it++;
 			}
-			return ite;
+			return end();
 		}
 
 		const_iterator lower_bound(const key_type& k) const {
-			const_iterator tmp = begin();
-			const_iterator tmp2 = tmp;
-			while (tmp != end())
+			const_iterator it = begin();
+			while (it != end())
 			{
-				if (tmp->first <= k)
-					tmp2 = tmp;
-				else if (tmp->first > k)
-					return tmp2;
-				tmp++;
+				if (comp(k, it->first) || it->first == k)
+					return it;
+				it++;
 			}
-			if (tmp2 == --end())
-				return tmp2;
 			return end();
 		}
 
 		iterator upper_bound(const key_type& k) {
 			iterator tmp = begin();
-			iterator tmp2 = tmp;
-			bool exist = false;
-			if (k < tmp->first && tmp == (--end()))
-				return end();
-			
-			while (tmp != end()){
-				if (tmp->first == k)
-					exist = true;
-				if (tmp->first < k)
-					tmp2 = tmp;
-				else if (tmp->first > k){
-					if (exist == true)	
-						return tmp2;
-					return tmp;
-				}
-				tmp++;
-			}
-			if (tmp2 != begin() && tmp2 == --end())
-				return tmp2;
-			
-			return end();
-		}
-
-		/*const_iterator upper_bound(const key_type& k) const {
-			const_iterator tmp = begin();
-			const_iterator tmp2 = NULL;
 			while (tmp != end())
 			{
-				if (tmp->first < k)
-					tmp2 = tmp;
-				else if (tmp->first >= k)
-					return tmp2;
+				if (comp(k, tmp->first))
+					return tmp;
 				tmp++;
 			}
-			if (tmp2 && tmp2 == --end())
-				return tmp2;
 			return end();
-		}*/
-
+		}
 		
+
+
+		const_iterator upper_bound(const key_type& k) const {
+			const_iterator tmp = begin();
+			while (tmp != end())
+			{
+				if (comp(k, tmp->first))
+					return tmp;
+				tmp++;
+			}
+			return end();
+		}
 
 		ft::pair<iterator,iterator> equal_range(const key_type& k) {
 			return ft::pair<iterator, iterator>(lower_bound(k), upper_bound(k));
@@ -326,7 +300,7 @@ namespace ft{
 		}
 
 		Alloc get_allocator() const {
-			return alloc;
+			return _alloc;
 		}
 		
 		key_compare key_comp() const {
@@ -396,10 +370,6 @@ namespace ft{
 	bool operator>=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs) {
 		return ((rhs < lhs) || (lhs == rhs));
 	}
-
-	
-
-
 
 };
 

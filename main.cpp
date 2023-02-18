@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:12:08 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/16 16:05:41 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/17 14:44:56 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ int main()
 		
 	try{
 	ft::vector<int> a(7,7);
-	// ft::vector<int> b;
-	// b.push_back(5);
-	// b.push_back(5);
-	// b.push_back(5);
-	// // b = a;
+	ft::vector<int> b;
+	b.push_back(5);
+	b.push_back(5);
+	b.push_back(5);
+	// b = a;
 
 	// a.swap(b);
 	// ft::vector<int>::reverse_iterator it = a.rbegin();

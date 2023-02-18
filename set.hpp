@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 12:00:11 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/16 20:51:56 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/18 16:00:35 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,11 @@ namespace ft{
 	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T> >
 	class set{
 		public:
-			typedef T key_type;
-			typedef T value_type;
-			typedef Compare key_compare;
-			typedef Alloc allocator_type;
+			typedef T 				key_type;
+			typedef T 				value_type;
+			typedef Compare 		key_compare;
+			typedef Alloc 			allocator_type;
 
-			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::iterator 		iterator;
-			// typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::reverse_iterator reverse_iterator;
 			typedef typename ft::map_iterator<value_type, node<value_type> > iterator;
 			typedef typename ft::map_iterator<const value_type, node<value_type> > const_iterator;
 
@@ -37,27 +35,24 @@ namespace ft{
 			
 			
 			typedef typename ft::RedBlackTree<value_type, Compare, Alloc>::node		node;
-			typedef typename Alloc::size_type       					size_type;//A type that counts the number of elements in a vector.
-			typedef typename Alloc::difference_type					 	difference_type;//A type that provides the difference between the addresses of two elements in a vector.
-			typedef typename Alloc::pointer         					pointer;//A type that provides a pointer to a component of a vector.
-			typedef typename Alloc::const_pointer  					 	const_pointer;//A t
-			typedef typename Alloc::reference       					reference;//A type that provides a reference to an element stored in a vector.
+			typedef typename Alloc::size_type       					size_type;
+			typedef typename Alloc::difference_type					 	difference_type;
+			typedef typename Alloc::pointer         					pointer;
+			typedef typename Alloc::const_pointer  					 	const_pointer;
+			typedef typename Alloc::reference       					reference;
 			typedef typename Alloc::const_reference 					const_reference;
 			typedef 		 RedBlackTree<value_type, Compare, Alloc>	RedBlackTree;
 		
 		private:
 			RedBlackTree tree;
-			allocator_type alloc;
+			allocator_type _alloc;
 			key_compare comp;
 			
 		public:
-			// explicit set(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): tree(comp, alloc), alloc(alloc){};
-			set(): tree(), alloc(){};
+			explicit set(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): tree(comp, alloc), _alloc(alloc){};
 
 			template <class InputIterator>
-			set(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()){
-				(void)comp;
-				(void)alloc;
+			set(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()) : tree(comp, alloc), _alloc(alloc){
 				while (first != last)
 				{
 					tree.insert(*first);
@@ -65,13 +60,13 @@ namespace ft{
 				}
 			};
 
-			set(const set &x): tree(x.tree), alloc(x.alloc){};
+			set(const set &x): tree(x.tree), _alloc(x._alloc){};
 			
 			~set(){};
 
 			set &operator=(const set &x){
 				tree = x.tree;
-				alloc = x.alloc;
+				_alloc = x._alloc;
 				return (*this);
 			};
 
@@ -135,7 +130,7 @@ namespace ft{
 			};
 			
 			size_type max_size() const{
-				return (alloc.max_size());
+				return (_alloc.max_size());
 			};		
 
 	/********************************************** Modifiers ****************************************************************************/
@@ -207,18 +202,40 @@ namespace ft{
 			iterator tmp = begin();
 			while (tmp != end())
 			{
-				if (*tmp >= k)
+				if (comp(k, *tmp) || k == *tmp)
 					return tmp;
 				tmp++;
 			}
 			return end();
 		}
 		
+		const_iterator lower_bound(const key_type& k) const {
+			const_iterator tmp = begin();
+			while (tmp != end())
+			{
+				if (comp(k, *tmp) || k == *tmp)
+					return tmp;
+				tmp++;
+			}
+			return end();
+		}
+				
 		iterator upper_bound(const key_type& k) {
 			iterator tmp = begin();
 			while (tmp != end())
 			{
-				if (*tmp > k)
+				if (comp(k, *tmp))
+					return tmp;
+				tmp++;
+			}
+			return end();
+		}
+
+		const_iterator upper_bound(const key_type& k) const {
+			const_iterator tmp = begin();
+			while (tmp != end())
+			{
+				if (comp(k, *tmp))
 					return tmp;
 				tmp++;
 			}
@@ -244,7 +261,7 @@ namespace ft{
 		}
 
 		Alloc get_allocator() const {
-			return alloc;
+			return _alloc;
 		}
 
 		key_compare key_comp() const {

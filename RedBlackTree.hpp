@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/16 20:48:05 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/18 14:51:57 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ namespace ft{
 
 template<class T> 
 struct node{
+	std::allocator<T> alloc;
 	T *data;
 	bool nil;
-	std::allocator<T> alloc;
 	int color;
 	node *parent;
 	node *right;
@@ -258,7 +258,7 @@ class RedBlackTree{
 			node *child = alloc.allocate(1);
 			alloc.construct(child, node(data));
 			child->parent = parent;
-			if (data > *parent->data)
+			if (!comp(data, *parent->data))
 				parent->right = child;
 			else
 				parent->left = child;
@@ -288,9 +288,9 @@ class RedBlackTree{
 			if (gay->parent->parent)
 				grand_pa = gay->parent->parent;
 			if (grand_pa){
-				if (*gay->parent->data < *grand_pa->data && grand_pa->right)
+				if (grand_pa->left == gay->parent && grand_pa->right)
 					uncle = grand_pa->right;
-				else if (*gay->parent->data > *grand_pa->data && grand_pa->left)
+				else if (grand_pa->right == gay->parent && grand_pa->left)
 					uncle = grand_pa->left;
 			}
 
@@ -302,17 +302,17 @@ class RedBlackTree{
 			}
 			else{
 				// triangle case //
-				if (gay->parent->right && *gay->parent->data < *grand_pa->data && gay->parent->right == gay){
+				if (gay->parent->right && gay->parent == grand_pa->left && gay->parent->right == gay){
 					left_rotation(gay->parent);
 					check_violation(original_parent);
 				}
-				else if (gay->parent->left && *gay->parent->data > *grand_pa->data && gay->parent->left == gay){
+				else if (gay->parent->left && gay->parent == grand_pa->right && gay->parent->left == gay){
 					right_rotation(gay->parent);
 					check_violation(original_parent);
 				}
 				// line case //
 				else{
-					if (*gay->parent->data < *grand_pa->data && gay->parent->left && gay->parent->left == gay)
+					if (gay->parent == grand_pa->left && gay->parent->left && gay->parent->left == gay)
 						right_rotation(grand_pa);
 					else
 						left_rotation(grand_pa);
@@ -335,7 +335,7 @@ class RedBlackTree{
 			parent = tree->parent;
 			child_L = tree->left;
 			
-			if (parent && *tmp->data < *parent->data)
+			if (parent && tmp == parent->left)
 				parent->left = child_L;
 			else if (parent)
 				parent->right = child_L;
@@ -365,7 +365,7 @@ class RedBlackTree{
 			parent = tree->parent;
 			child_R = tree->right;
 
-			if (parent && *tmp->data < *parent->data)	
+			if (parent && tmp == parent->left)	
 				parent->left = child_R;
 			else if (parent)
 				parent->right = child_R;
@@ -524,7 +524,7 @@ class RedBlackTree{
 			node *tmp2 = tmp;
 			while (tmp && tmp != nil){
 				tmp2 = tmp;
-				if (data > *tmp->data)
+				if (!comp(data, *tmp->data))
 					tmp = tmp->right;
 				else
 					tmp = tmp->left;
@@ -535,7 +535,7 @@ class RedBlackTree{
 		node *find(T data) const{
 			node *tmp = root;
 			while (tmp && tmp != nil && tmp->data->first != data.first){
-				if (tmp->data->first < data.first)
+				if (comp(tmp->data->first, data.first))
 					tmp = tmp->right;
 				else
 					tmp = tmp->left;
@@ -548,7 +548,7 @@ class RedBlackTree{
 		node *search(T data) const{
 			node *tmp = root;
 			while (tmp && tmp != nil && *tmp->data != data){
-				if (*tmp->data < data)
+				if (comp(*tmp->data, data))
 					tmp = tmp->right;
 				else
 					tmp = tmp->left;
@@ -631,48 +631,64 @@ class RedBlackTree{
 		}
 };
 
-	template <class node>
+	template<class node>
 	node *next(node *tree){
 		node *tmp = tree;
+		node *tmp2 = NULL;
+		
 		if (!tree || tree->nil)
 			return NULL;
-		if (!tmp->right){
-			tmp = tmp->parent;
-			while (tmp && *tmp->data < *tree->data)
-				tmp = tmp->parent;
-		}
-		
-		else{
-			if (tmp->right)
-				tmp = tmp->right;
-			while (tmp->left && *tmp->data > *tree->data)
+		if (tmp->right){
+			tmp = tmp->right;
+			while (tmp && tmp->left && !tmp->left->nil)
 				tmp = tmp->left;
+		}
+		else if(tmp->parent && tmp->parent->left == tmp)
+			return tmp->parent;
+		else if (tmp->parent && tmp->parent->right == tmp){
+			if (tmp->parent->parent)
+				tmp2 = tmp->parent->parent;
+			else
+				return tmp->parent;
+			while (tmp && tmp2 && tmp2->right == tmp->parent){
+				tmp = tmp->parent;
+				tmp2 = tmp2->parent;
+			}
+			tmp = tmp2;
 		}
 		return tmp;
 	}
-
-	template <class node>
+	
+	template<class node>
 	node *prev(node *tree){
-	node *tmp = tree;
-	if (!tree)
-		return NULL;
-	if (tree->nil)
-		return tree->parent;
-	if (!tmp->left){
-		tmp = tmp->parent;
-		while (tmp && *tmp->data > *tree->data)
-			tmp = tmp->parent;
-	}
-	else{
-		if (tmp->left)
+		node *tmp = tree;
+		node *tmp2 = NULL;
+		
+		if (!tree)
+			return NULL;
+		if (tree->nil)
+			return tree->parent;
+		
+		if (tmp->left){
 			tmp = tmp->left;
-		while (tmp->right && tmp->nil == false && (*tmp->data < *tree->data))
-			tmp = tmp->right;
+			while (tmp && tmp->right && !tmp->nil)
+				tmp = tmp->right;
+		}
+		else if (tmp->parent && tmp->parent->right == tmp)
+			return tmp->parent;
+		else if (tmp->parent && tmp->parent->left == tmp){
+			if (tmp->parent->parent)
+				tmp2 = tmp->parent->parent;
+			else
+				return tmp->parent;
+			while (tmp && tmp2 && tmp2->left == tmp->parent){
+				tmp = tmp->parent;
+				tmp2 = tmp2->parent;
+			}
+			tmp = tmp2;
+		}
+		return tmp;
 	}
-	return tmp;
-}
-
-
 
 };
 

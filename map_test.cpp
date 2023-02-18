@@ -4,10 +4,14 @@
 #include "ft.hpp"
 #include "RedBlackTree.hpp"
 #include "map.hpp"
+// #define ft std
 
+// std::multiplies<int>
+// std::greater<int>
 void test(){
 
-	ft::map<int, std::string> ab;
+
+	ft::map<int, std::string, std::multiplies<int> > ab;
 	
 	ab.insert(ft::pair<int, std::string>(20, "A11"));
 	ab.insert(ft::pair<int, std::string>(15, "B15"));
@@ -26,21 +30,18 @@ void test(){
 	ab.insert(ft::pair<int, std::string>(65, "WQQ65"));
 	ab.insert(ft::pair<int, std::string>(45, "UI45"));
 
-
-	ft::map<int, std::string>::const_iterator it = ab.begin();
-	// ft::map<int, std::string>::iterator it = ab.begin();
-	// ft::map<int, std::string>::reverse_iterator it = ab.rbegin();
+	ab.display();
+	// ft::map<int, std::string>::const_iterator it = ab.begin();
+	// ft::map<int, std::string >::iterator it = ab.begin();
+	ft::map<int, std::string>::reverse_iterator it = ab.rbegin();
 
 	// std::cout << ab.end()->first << "\n";
 	// std::cout << ab.end()->first << "\n";
 	// std::cout << ab.end()->first << "\n";
 
-	// std::cout << it->first << std::endl;
-
-	while (it != ab.end())
+	while (it != ab.rend())
 	{
 		std::cout << (*it).first << "\t" << it->second << std::endl;
-	// std::cout << "hey\n";
 		it++;
 	}
 	std::cout << "\n---------------------------------------------\n";
@@ -57,6 +58,11 @@ void test(){
 
 
 int main(){
+
+	// ft::mirror<std::less<int> > ab;
+	// std::cout << ab()(5,20) << "\n";
+	// std::cout << ab(5, 2) << "\n";
+
 
 	/*ft::map<int, std::string> ab;
 

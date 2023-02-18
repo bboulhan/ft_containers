@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:38:16 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/16 17:38:17 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/18 19:40:08 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ namespace ft{
 			typedef T& reference;
 			typedef std::ptrdiff_t difference_type;
 			typedef std::random_access_iterator_tag iterator_category;
-
+			typedef iterator_category iterator_type;
 		private:
 			pointer 	ptr;
 		public:
@@ -154,6 +154,7 @@ namespace ft{
 			typedef T& reference;
 			typedef std::ptrdiff_t difference_type;
 			typedef std::random_access_iterator_tag iterator_category;
+			typedef iterator_category iterator_type;
 		private:
 			pointer 	ptr;
 		public:

@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 12:45:51 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/18 14:51:57 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/19 15:00:35 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 
 # define black 0
 # define red 1
-# define COUNT 10
 // 	COLOR 1 == RED | COLOR 0 = BLACK //
 
 
@@ -81,7 +80,7 @@ class RedBlackTree{
 
 	/************************************************ display ************************************************/
 	
-		void display_set(node *root, int space){		
+		/*void display_set(node *root, int space){		
 			if (root == NULL || root == nil)
 				return;
 			space += COUNT;
@@ -123,7 +122,7 @@ class RedBlackTree{
 				std::cout << "right first : " <<tree->right->data->first << "\tright second : " << tree->right->data->second << std::endl;
 			if (tree->data)
 				std::cout << "first : " <<tree->data->first << "\tsecond : " << tree->data->second << std::endl;
-		}
+		}*/
 
 	/****************************************** Constructors *****************************************/
 

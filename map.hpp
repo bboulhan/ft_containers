@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 19:35:14 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/18 15:56:59 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/19 13:40:21 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,20 @@ namespace ft{
 			void display(){
 				tree.display_map(tree.get_root(), 0);
 			}
+
+			class value_compare{   
+				friend class map;
+				protected:
+					Compare comp;
+					value_compare (Compare c) : comp(c) {}
+				public:
+					typedef bool result_type;
+					typedef value_type first_argument_type;
+					typedef value_type second_argument_type;
+					bool operator() (const value_type& x, const value_type& y) const{
+						return comp(x.first, y.first);
+					}
+			};
 
 			
 			
@@ -304,6 +318,10 @@ namespace ft{
 		}
 		
 		key_compare key_comp() const {
+			return comp;
+		}
+
+		value_compare value_comp() const {
 			return comp;
 		}
 	

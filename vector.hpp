@@ -6,7 +6,7 @@
 /*   By: bboulhan <bboulhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 18:23:12 by bboulhan          #+#    #+#             */
-/*   Updated: 2023/02/17 14:49:35 by bboulhan         ###   ########.fr       */
+/*   Updated: 2023/02/19 16:15:37 by bboulhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,9 @@
 #include "ft.hpp"
 #include "utils.hpp"
 
-#include <chrono>
-using namespace std::chrono;
 
 namespace ft{
+	
 	template <class T, class Alloc = std::allocator<T> >
 	class vector{
 		public:
